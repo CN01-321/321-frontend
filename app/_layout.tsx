@@ -1,20 +1,42 @@
-import { Slot } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Link, Stack, useRouter } from 'expo-router';
+import { MD3LightTheme as DefaultTheme, PaperProvider, Text, BottomNavigation, Appbar} from 'react-native-paper';
+import { useState } from 'react';
 
-export function Layout() {
-    return (
-        <>
-            <Text>Some text above the page</Text>
-            <Slot />
-        </>
-    );
+// here is where the themes settings can be changed
+const theme = {
+  ...DefaultTheme,
+  dark: true,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'red',
+    secondary: 'yellow'
+    
+  },
+  background : "red"
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+
+
+
+export default function Layout() {
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    {key: 'home', title: 'Home', focusedIcon: 'home-circle', unfocused: 'home-circle-outline'},
+    {key: 'landing', title: 'Landing', focusedIcon: 'airballoon', unfocused: 'airballoon-outline'}
+  ]);
+  const router = useRouter();
+
+  return (
+    <PaperProvider theme={theme}>
+      <Stack />
+      <BottomNavigation.Bar
+        navigationState={{ index, routes }}
+        onTabPress={({route, preventDefault}) => {
+          setIndex(routes.findIndex(r => r.key === route.key))
+          router.push(route.key);
+        }}
+      /> 
+    </PaperProvider>
+  );
+}
