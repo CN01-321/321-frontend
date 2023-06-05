@@ -1,19 +1,19 @@
-import { StyleSheet, Text, View } from "react-native";
-import Home from "./home";
-import Landing from "./landing";
-import { useState } from "react";
 import { useRouter } from "expo-router";
-
-const authorised = true;
+import { View } from "react-native";
+import { Title, Button } from "react-native-paper"
 
 export default function Main() {
   const router = useRouter();
 
-  if (authorised) {
-    router.replace("/home");
-  }
-
   return (
-      <Landing /> 
+      <View>
+        <Title>Pet Carer</Title>
+        <Button 
+          onPress={() => router.push('/signup')}
+          mode="contained"
+        >
+          Sign Up
+        </Button>
+      </View>
   );
 }

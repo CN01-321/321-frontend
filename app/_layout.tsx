@@ -1,6 +1,7 @@
-import { Link, Stack, useRouter } from 'expo-router';
+import { Link, Stack, useRouter, useSegments } from 'expo-router';
 import { MD3LightTheme as DefaultTheme, PaperProvider, Text, BottomNavigation, Appbar} from 'react-native-paper';
 import { useState } from 'react';
+import { AuthProvider } from '../contexts/auth';
 
 // here is where the themes settings can be changed
 const theme = {
@@ -26,17 +27,16 @@ export default function Layout() {
     {key: 'landing', title: 'Landing', focusedIcon: 'airballoon', unfocused: 'airballoon-outline'}
   ]);
   const router = useRouter();
+  
+
+  const segments = useSegments();
+  console.log(segments);
 
   return (
     <PaperProvider theme={theme}>
-      <Stack />
-      <BottomNavigation.Bar
-        navigationState={{ index, routes }}
-        onTabPress={({route, preventDefault}) => {
-          setIndex(routes.findIndex(r => r.key === route.key))
-          router.push(route.key);
-        }}
-      /> 
+      <AuthProvider>
+        <Stack />
+      </AuthProvider>
     </PaperProvider>
   );
 }
