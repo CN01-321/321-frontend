@@ -4,21 +4,28 @@ import { Button, TextInput, Title } from "react-native-paper";
 import { useAuth } from "../../contexts/auth";
 import axios from "axios";
 
+type GetToken = {
+    token: string
+}
+
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { logIn } = useAuth();
 
-    const login = () => {
+    const login = async () => {
         try {
-            const token = axios.post('/login');
-            // decode token
-            
+            const { data } = await axios.post<GetToken>('/login', {
+                email,
+                password
+            });
+            console.log(data.token);
+            await logIn(data.token)
+            console.log(`logged in with: ${email} and ${password}`);
         } catch (error) {
             console.error(error);
         }
 
-        console.log(`logged in with: ${email} and ${password}`);
     } 
 
     return (
