@@ -1,6 +1,7 @@
 import axios from "axios";
+import { AXIOS_BASE_URL } from '@env'
 import "expo-router/entry";
 
 console.log('index.ts');
 
-axios.defaults.baseURL = 'http://10.0.2.2:5000';
+axios.defaults.baseURL = AXIOS_BASE_URL;

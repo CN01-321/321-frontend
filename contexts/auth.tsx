@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import JWT from 'expo-jwt'
 import * as SecureStore from 'expo-secure-store'
 import { JWT_SECRET } from '@env'
+import axios from "axios";
 
 
 type User = {
@@ -74,23 +75,42 @@ export function AuthProvider(props: any) {
         let ignore = false;
 
         (async () => {
+
+            console.log('token is currently', await SecureStore.getItemAsync('token'))
+
             if (ignore) return;
+
 
             let user = null;
 
             if (token === "") {
                 console.log("deleting token")
-                await SecureStore.deleteItemAsync('token');
+                try {
+                    await SecureStore.deleteItemAsync('token');
+                } catch (e) {
+                    console.error(e);
+                }
+                
+                // remove the Authorization header from sending in axios http calls
+                delete axios.defaults.headers.common['Authorization']
             } else {
                 console.log("storing token")
                 // if token user is verified, store the token in secure store
-                await SecureStore.setItemAsync('token', token);
+                try {
+                    await SecureStore.setItemAsync('token', token);
+                } catch (e) {
+                    console.error(e);
+                }
                 // no need for try as this token has already been tested
                 const decode = JWT.decode<User>(token, JWT_SECRET);
                 console.log(decode);
                 user = decode.user;
+
+                // set this token to be sent with every axios call
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             }
             
+            console.log('token is now', await SecureStore.getItemAsync('token'))
             setUser(user)
             console.log("set user", user)
         }) ()
@@ -103,11 +123,15 @@ export function AuthProvider(props: any) {
         let ignore = false;
 
         (async () => {
-            let token = await SecureStore.getItemAsync('token');
-            if (token && !ignore) {
-                // calling set token will call the other useeffect which will
-                // update the user
-                setToken(token);
+            try {
+                let token = await SecureStore.getItemAsync('token');
+                if (token && !ignore) {
+                    // calling set token will trigger the other useeffect which 
+                    // will update the user
+                    setToken(token);
+                }
+            } catch (e) {
+                console.error(e);
             }
         }) ()
 
