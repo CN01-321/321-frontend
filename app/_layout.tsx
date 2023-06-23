@@ -1,6 +1,5 @@
-import { Link, Slot, Stack, useRouter, useSegments } from 'expo-router';
-import { MD3LightTheme as DefaultTheme, PaperProvider, Text, BottomNavigation, Appbar} from 'react-native-paper';
-import { useState } from 'react';
+import { Slot } from 'expo-router';
+import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
 import { AuthProvider } from '../contexts/auth';
 
 // here is where the themes settings can be changed
