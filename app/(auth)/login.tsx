@@ -19,7 +19,7 @@ export default function Login() {
                 email,
                 password
             });
-            console.log(data.token);
+            console.log("new token in login.tsx", data.token);
             await logIn(data.token)
             console.log(`logged in with: ${email} and ${password}`);
         } catch (error) {

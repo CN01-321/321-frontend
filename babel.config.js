@@ -5,7 +5,7 @@ module.exports = function(api) {
     plugins: [
       require.resolve("expo-router/babel"),
       ['module:react-native-dotenv', {
-        "envName": "APP_ENV",
+        "envName": "pet-carer-env",
         "moduleName": "@env",
         "path": ".env",
         "blocklist": null,

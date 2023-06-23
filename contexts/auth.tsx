@@ -6,10 +6,11 @@ import * as SecureStore from 'expo-secure-store'
 import { JWT_SECRET } from '@env'
 import axios from "axios";
 
+export type UserType = "owner" | "carer";
 
 type User = {
     email: string
-    type: "owner" | "carer"
+    type: UserType
 }
 
 export type AuthContextType = {
@@ -65,6 +66,46 @@ export function AuthProvider(props: any) {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState("");
 
+    const storeToken = async () => {
+        console.log("storing token")
+        // if token user is verified, store the token in secure store
+        try {
+            await SecureStore.setItemAsync('token', token);
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+
+        // no need for try as this token has already been tested
+        const decode = JWT.decode(token, JWT_SECRET);
+        console.log('user from storeToken: ', decode);
+
+        // set this token to be sent with every axios call
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+        const newUser: User = {
+            email: decode['email'] as string,
+            type: decode['type'] as "owner" | "carer"
+        }
+
+        console.log("new user", decode.body)
+
+        setUser(newUser);
+    }
+
+    const deleteToken = async () => {
+        console.log("deleting token")
+        try {
+            await SecureStore.deleteItemAsync('token');
+        } catch (e) {
+            console.error(e);
+        }
+        
+        // remove the Authorization header from sending in axios http calls
+        delete axios.defaults.headers.common['Authorization']
+        setUser(null)
+    }
+
     // set the user whenever the token is reset or changed 
     // and store/remove token from secure storage
     useEffect((): (() => void) => {
@@ -75,44 +116,16 @@ export function AuthProvider(props: any) {
         let ignore = false;
 
         (async () => {
-
+            // if (ignore) return;
             console.log('token is currently', await SecureStore.getItemAsync('token'))
 
-            if (ignore) return;
-
-
-            let user = null;
-
             if (token === "") {
-                console.log("deleting token")
-                try {
-                    await SecureStore.deleteItemAsync('token');
-                } catch (e) {
-                    console.error(e);
-                }
-                
-                // remove the Authorization header from sending in axios http calls
-                delete axios.defaults.headers.common['Authorization']
-            } else {
-                console.log("storing token")
-                // if token user is verified, store the token in secure store
-                try {
-                    await SecureStore.setItemAsync('token', token);
-                } catch (e) {
-                    console.error(e);
-                }
-                // no need for try as this token has already been tested
-                const decode = JWT.decode<User>(token, JWT_SECRET);
-                console.log(decode);
-                user = decode.user;
-
-                // set this token to be sent with every axios call
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                await deleteToken()
+                return
             }
-            
+
+            await storeToken()
             console.log('token is now', await SecureStore.getItemAsync('token'))
-            setUser(user)
-            console.log("set user", user)
         }) ()
 
         return () => ignore = true;
