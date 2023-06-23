@@ -12,7 +12,7 @@ export default function GetStarted({userType}: {userType: UserType}) {
         <View>
             <Button 
                 mode="contained" 
-                onPress={() => router.push(`/(auth)/(${userType})/signup`)}
+                onPress={() => router.push(`/(auth)/${userType}/signup`)}
                 theme={{ colors: { primary: colour } }}
             >
                 Get Started

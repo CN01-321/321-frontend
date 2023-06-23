@@ -1,4 +1,4 @@
-import { Link, Stack, useRouter, useSegments } from 'expo-router';
+import { Link, Slot, Stack, useRouter, useSegments } from 'expo-router';
 import { MD3LightTheme as DefaultTheme, PaperProvider, Text, BottomNavigation, Appbar} from 'react-native-paper';
 import { useState } from 'react';
 import { AuthProvider } from '../contexts/auth';
@@ -16,26 +16,11 @@ const theme = {
   background : "red"
 }
 
-
-
-
-
 export default function Layout() {
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    {key: 'home', title: 'Home', focusedIcon: 'home-circle', unfocused: 'home-circle-outline'},
-    {key: 'landing', title: 'Landing', focusedIcon: 'airballoon', unfocused: 'airballoon-outline'}
-  ]);
-  const router = useRouter();
-  
-
-  const segments = useSegments();
-  console.log(segments);
-
   return (
     <PaperProvider theme={theme}>
       <AuthProvider>
-        <Stack />
+        <Slot />
       </AuthProvider>
     </PaperProvider>
   );

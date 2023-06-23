@@ -12,14 +12,14 @@ export default function Landing() {
             <Button 
                 mode="contained"
                 theme={{ colors: { primary: "brown" } }}
-                onPress={() => router.push("/(auth)/(owner)/get-started")}
+                onPress={() => router.push("/(auth)/owner/get-started")}
             >
                 Pet Owner
             </Button>
             <Button 
                 mode="contained" 
                 theme={{ colors: { primary: "yellow" } }}
-                onPress={() => router.push("/(auth)/(carer)/get-started")}
+                onPress={() => router.push("/(auth)/carer/get-started")}
             >
                 Pet Carer
             </Button>

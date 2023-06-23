@@ -33,6 +33,8 @@ function useProtectedRoute(user: User | null) {
     const segments = useSegments();
     const router = useRouter();
 
+    console.log(segments);
+
     useEffect(() => {
         const isInLoginPages = segments[0] === '(auth)';
         const isInOwnerPages = segments[0] === '(owner)';
@@ -52,12 +54,12 @@ function useProtectedRoute(user: User | null) {
 
         // if owner is in carer pages redirect them 
         if (user?.type === 'owner' && isInCarerPages) {
-            // todo redirect to owner main page
+            router.replace('/(owner)/home')
         }
 
         // if owner is in carer pages redirect them 
         if (user?.type === 'carer' && isInOwnerPages) {
-            // todo redirect to carer main page
+            router.replace('/(carer)/home')
         }
     }, [user, segments]);
 }
@@ -83,12 +85,9 @@ export function AuthProvider(props: any) {
         // set this token to be sent with every axios call
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-        const newUser: User = {
-            email: decode['email'] as string,
-            type: decode['type'] as "owner" | "carer"
-        }
+        const newUser: User = decode['user'] as User
 
-        console.log("new user", decode.body)
+        console.log("new user", newUser)
 
         setUser(newUser);
     }
