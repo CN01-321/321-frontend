@@ -4,19 +4,18 @@ import OwnerBottomNav from "../../components/OwnerBottomNav";
 import CarerBottomNav from "../../components/CarerBottomNav";
 
 export default function SharedRouteLayout({ segment }: { segment: string }) {
-    console.log(segment);
-    const userType: UserType = (segment === "(owner)") ? "owner" : "carer";
+  console.log(segment);
+  const userType: UserType = segment === "(owner)" ? "owner" : "carer";
 
-    const bottomNav = () => {
-        if (userType === "owner") return (<OwnerBottomNav />);
-        else return <CarerBottomNav />;
-    };
+  const bottomNav = () => {
+    if (userType === "owner") return <OwnerBottomNav />;
+    else return <CarerBottomNav />;
+  };
 
-    return (
-        <>
-            <Stack />
-            {bottomNav()}
-        </>
-
-    );
+  return (
+    <>
+      <Stack />
+      {bottomNav()}
+    </>
+  );
 }

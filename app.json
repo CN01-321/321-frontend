@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -23,6 +21,6 @@
         "backgroundColor": "#ffffff"
       }
     },
-    "scheme":"pet-carer"
+    "scheme": "pet-carer"
   }
 }
