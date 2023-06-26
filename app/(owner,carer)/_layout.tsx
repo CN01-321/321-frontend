@@ -7,15 +7,10 @@ export default function SharedRouteLayout({ segment }: { segment: string }) {
   console.log(segment);
   const userType: UserType = segment === "(owner)" ? "owner" : "carer";
 
-  const bottomNav = () => {
-    if (userType === "owner") return <OwnerBottomNav />;
-    else return <CarerBottomNav />;
-  };
-
   return (
     <>
       <Stack />
-      {bottomNav()}
+      {(userType === 'owner') ? <OwnerBottomNav /> : <CarerBottomNav />}
     </>
   );
 }

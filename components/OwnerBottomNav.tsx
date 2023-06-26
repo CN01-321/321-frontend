@@ -6,31 +6,31 @@ export default function OwnerBottomNav() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {
-      key: "home",
+      key: "/(owner)/home",
       title: "Home",
       focusedIcon: "home-circle",
       unfocused: "home-circle-outline",
     },
     {
-      key: "requests",
+      key: "/owner/requests",
       title: "Requests",
       focusedIcon: "pencil-box-multiple",
       unfocused: "pencil-box-multiple-outline",
     },
     {
-      key: "search",
+      key: "/owner/search",
       title: "Find Carers",
       focusedIcon: "magnify-plus",
       unfocused: "magnify-plus-outline",
     },
     {
-      key: "pets",
+      key: "/owner/pets",
       title: "Pets",
       focusedIcon: "food-hot-dog",
       unfocused: "dog",
     },
     {
-      key: "profile",
+      key: "/(owner)/profile",
       title: "Profile",
       focusedIcon: "account",
       unfocused: "account-outline",
@@ -43,7 +43,7 @@ export default function OwnerBottomNav() {
     <BottomNavigation.Bar
       navigationState={{ index, routes }}
       onTabPress={({ route }) => {
-        setIndex(routes.findIndex((r) => r.key === route.key));
+        setIndex(routes.findIndex(r => r.title === route.title));
         router.push(route.key);
       }}
     />
