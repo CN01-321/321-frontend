@@ -1,5 +1,5 @@
-import GetStarted from "../../../components/GetStarted";
+import GetStartedView from "../../../components/GetStartedView";
 
 export default function CarerGetStarted() {
-  return <GetStarted userType="carer" />;
+  return <GetStartedView userType="carer" />;
 }

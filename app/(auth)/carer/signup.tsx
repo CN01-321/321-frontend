@@ -1,5 +1,5 @@
-import SignUp from "../../../components/SignUp";
+import SignUpForm from "../../../components/SignUpForm";
 
 export default function CarerSignUp() {
-  return <SignUp userType="carer" />;
+  return <SignUpForm userType="carer" />;
 }

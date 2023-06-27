@@ -3,7 +3,7 @@ import { UserType } from "../contexts/auth";
 import { Button } from "react-native-paper";
 import { View } from "react-native";
 
-export default function GetStarted({ userType }: { userType: UserType }) {
+export default function GetStartedView({ userType }: { userType: UserType }) {
   const router = useRouter();
 
   const colour = userType === "owner" ? "brown" : "yellow";

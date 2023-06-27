@@ -5,7 +5,7 @@ import axios from "axios";
 import { View } from "react-native";
 import { Button, TextInput, Title } from "react-native-paper";
 
-export default function SignUp({ userType }: { userType: UserType }) {
+export default function SignUpForm({ userType }: { userType: UserType }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();

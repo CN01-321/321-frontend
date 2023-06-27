@@ -1,5 +1,5 @@
-import SignUp from "../../../components/SignUp";
+import SignUpForm from "../../../components/SignUpForm";
 
 export default function OwnerSignUp() {
-  return <SignUp userType="owner" />;
+  return <SignUpForm userType="owner" />;
 }

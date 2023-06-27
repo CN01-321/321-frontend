@@ -1,5 +1,5 @@
-import GetStarted from "../../../components/GetStarted";
+import GetStartedView from "../../../components/GetStartedView";
 
 export default function OwnerGetStarted() {
-  return <GetStarted userType="owner" />;
+  return <GetStartedView userType="owner" />;
 }

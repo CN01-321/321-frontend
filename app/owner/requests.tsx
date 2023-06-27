@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
-import { Button, Card, FAB, Text } from "react-native-paper";
+import { Button, Card, FAB, Modal, Portal, Text } from "react-native-paper";
 import { StyleSheet, Image } from "react-native";
+import NewRequestModal from "../../components/NewRequestModal";
+import { useRouter } from "expo-router";
 
-const icon = require("../../assets/icon.png")
+const icon = require("../../assets/icon.png");
 
 interface BroadRequest {
   id: number,
@@ -70,7 +72,8 @@ const broadRequests: Array<BroadRequest> = [
 ];
 
 export default function BroadRequests() {
-  const [requests, setRequests] = useState<Array<BroadRequest>>([])
+  const [requests, setRequests] = useState<Array<BroadRequest>>([]);
+  const [visible, setVisible] = useState(false);
 
   useEffect((): (() => void) => {
     let ignore = false;
@@ -84,8 +87,12 @@ export default function BroadRequests() {
     return () => ignore = true;
   }, []);
 
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+
   return (
-    <>
+    <View>
+      <NewRequestModal visible={visible} onDismiss={hideModal} />
       <FlatList
         data={ requests }
         renderItem={ ({item}) => <BroadRequestCard {... item} />}
@@ -94,9 +101,9 @@ export default function BroadRequests() {
       <FAB
         icon="plus"
         style={styles.fab}
-        onPress={() => console.log("New request")}
+        onPress={showModal}
       />
-    </>
+    </View>
   );
 }
 
@@ -115,6 +122,11 @@ function BroadRequestCard(req: BroadRequest) {
 }
 
 function BroadRequestCardInfo(req: BroadRequest) {
+  const router = useRouter();
+
+  const handleViewRespondents = () => {
+    router.push({ pathname: "/owner/respondents", params: { requestId: req.id }});
+  }
   return (
     <View style={styles.broadRequestCardInfo}>
       <Text variant="titleMedium">
@@ -122,10 +134,10 @@ function BroadRequestCardInfo(req: BroadRequest) {
       </Text>
       <Text variant="bodySmall">{req.location}</Text>
       <Text variant="bodySmall">
-        { (req.complete) ? `Price: $${req.pricePerHour}` : "completed" }
+        { (req.complete) ? "completed" : `Price: $${req.pricePerHour}/hr` }
       </Text>
       { !req.complete ? 
-        <Button onPress={() => console.log(`Viewing request ${req.id}`)}>
+        <Button onPress={handleViewRespondents}>
           View Respondents
         </Button> : null
       } 
