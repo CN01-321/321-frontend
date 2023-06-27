@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
-import { Button, Card, FAB, Modal, Portal, Text } from "react-native-paper";
+import { Avatar, Button, Card, FAB, Text } from "react-native-paper";
 import { StyleSheet, Image } from "react-native";
 import NewRequestModal from "../../components/NewRequestModal";
 import { useRouter } from "expo-router";
@@ -95,7 +95,7 @@ export default function BroadRequests() {
       <NewRequestModal visible={visible} onDismiss={hideModal} />
       <FlatList
         data={ requests }
-        renderItem={ ({item}) => <BroadRequestCard {... item} />}
+        renderItem={ ({item}) => <BroadRequestCard req={item} />}
         keyExtractor={item => item.id.toString()}
       />
       <FAB
@@ -107,28 +107,28 @@ export default function BroadRequests() {
   );
 }
 
-function BroadRequestCard(req: BroadRequest) {
+function BroadRequestCard({req}: {req: BroadRequest}) {
   return ( 
     <Card>
       <Card.Content style={styles.broadRequestCard}>
-        <Image 
+        <Avatar.Image 
           source={icon} 
-          style={styles.broadRequestCardImg}
+          size={100}
         />
-        <BroadRequestCardInfo {...req} />
+        <BroadRequestCardInfo req={req} />
       </Card.Content>
     </Card>
   );
 }
 
-function BroadRequestCardInfo(req: BroadRequest) {
+function BroadRequestCardInfo({req}: {req: BroadRequest}) {
   const router = useRouter();
 
   const handleViewRespondents = () => {
     router.push({ pathname: "/owner/respondents", params: { requestId: req.id }});
   }
   return (
-    <View style={styles.broadRequestCardInfo}>
+    <View>
       <Text variant="titleMedium">
         { (req.complete) ? req.carerName : req.reqDate.toDateString() }
       </Text>
@@ -156,11 +156,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 5
   },
-  broadRequestCardImg: {
-    height: 100,
-    width: 100,
-  },
-  broadRequestCardInfo: {
-
-  }
-})
+});
