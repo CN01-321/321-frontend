@@ -115,7 +115,7 @@ interface PaymentModalProps {
 function PaymentModal({visible, onDismiss}: PaymentModalProps) {
   return (
     <Portal>
-      <Modal visible={visible} onDismiss={onDismiss} style={{backgroundColor: "white"}}>
+      <Modal visible={visible} onDismiss={onDismiss} style={styles.paymentModal}>
         <Button mode="contained" onPress={onDismiss}>Pay for service</Button>
       </Modal>
     </Portal>
@@ -129,5 +129,8 @@ const styles = StyleSheet.create({
   },
   starRating: {
     flexDirection: "row"
+  },
+  paymentModal: {
+    backgroundColor: "white"
   }
 });
