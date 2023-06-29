@@ -11,6 +11,7 @@ import {
 } from "react-native-paper";
 import { useEffect, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { DatePickerButton } from "./DatePickerButton";
 
 interface NewRequestModalProps {
   visible: boolean;
@@ -55,7 +56,7 @@ export default function NewRequestModal({
   onDismiss,
 }: NewRequestModalProps) {
   const theme = useTheme();
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState<Date | null>(null);
   const [showPicker, setShowPicker] = useState(false);
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [pets, setPets] = useState<Map<string, SelectedPet>>(new Map());
@@ -103,14 +104,10 @@ export default function NewRequestModal({
         style={{ backgroundColor: "white" }}
       >
         <ScrollView>
-          <Button mode="contained" onPress={() => setShowPicker(true)}>
-            Set Date
-          </Button>
-          <DateTimePickerModal
-            isVisible={showPicker}
-            mode="date"
-            onConfirm={handleConfirm}
-            onCancel={() => setShowPicker(false)}
+          <DatePickerButton
+            label="request date"
+            date={date}
+            updateDate={(d: Date) => setDate(d)}
           />
           <TextInput
             label="Additional information"
