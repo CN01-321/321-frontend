@@ -56,12 +56,12 @@ function useProtectedRoute(user: User | null) {
 
     // if owner is in carer pages redirect them
     if (user?.type === "owner" && isInCarerPages) {
-      router.replace("/(owner)/home");
+      router.replace("/home");
     }
 
     // if owner is in carer pages redirect them
     if (user?.type === "carer" && isInOwnerPages) {
-      router.replace("/(carer)/home");
+      router.replace("/home");
     }
   }, [user, segments]);
 }

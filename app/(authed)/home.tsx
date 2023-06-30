@@ -1,6 +1,6 @@
 import { Button, Title, Text } from "react-native-paper";
 import { View } from "react-native";
-import { useAuth } from "../../../contexts/auth";
+import { useAuth } from "../../contexts/auth";
 import { useState } from "react";
 import axios from "axios";
 
