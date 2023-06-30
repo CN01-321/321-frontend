@@ -2,7 +2,11 @@ import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import Slider from "@react-native-community/slider";
 import { Button, Checkbox, Modal, Portal, Text } from "react-native-paper";
-import { DatePickerButton } from "../../components/DatePickerButton";
+import { DatePickerButton } from "../../../components/DatePickerButton";
+import CarerResultsView, {
+  CarerResult,
+} from "../../../components/CarerResultsView";
+import NewRequestModal from "../../../components/NewRequestModal";
 
 interface PetTypes {
   dog: boolean;
@@ -26,6 +30,50 @@ interface Filters {
   petSizes: PetSizes;
 }
 
+const searchResultData: Array<CarerResult> = [
+  {
+    id: "0",
+    name: "Carer 1",
+    rating: 4,
+    message: "I am an enthusiastic pet carer",
+    icon: "../../assets/icon.png",
+  },
+  {
+    id: "1",
+    name: "Carer 2",
+    rating: 2,
+    message: "I am an enthusiastic pet carer",
+    icon: "../../assets/icon.png",
+  },
+  {
+    id: "2",
+    name: "Carer 3",
+    rating: 5,
+    message: "I am an enthusiastic pet carer",
+    icon: "../../assets/icon.png",
+  },
+  {
+    id: "3",
+    name: "Carer 1",
+    rating: 4,
+    message: "I am an enthusiastic pet carer",
+    icon: "../../assets/icon.png",
+  },
+  {
+    id: "4",
+    name: "Carer 2",
+    rating: 2,
+    message: "I am an enthusiastic pet carer",
+    icon: "../../assets/icon.png",
+  },
+  {
+    id: "5",
+    name: "Carer 3",
+    rating: 5,
+    message: "I am an enthusiastic pet carer",
+    icon: "../../assets/icon.png",
+  },
+];
 export default function Search() {
   const [filters, setFilters] = useState<Filters>({
     petTypes: {
@@ -40,7 +88,10 @@ export default function Search() {
       large: false,
     },
   });
-  const [visible, setVisible] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [requestVisible, setRequestVisible] = useState(false);
+  const [searchResults, setSearchResults] = useState<Array<CarerResult>>([]);
+  const [selectedCarer, setSelectedCarer] = useState<CarerResult | null>();
 
   const updateFilters = (filter: Filters) => {
     setFilters({ ...filter });
@@ -48,22 +99,36 @@ export default function Search() {
 
   const doSearch = () => {
     console.log("searching with filters", filters);
+    setSearchResults(searchResultData);
   };
 
   return (
     <View>
       <Text>Search</Text>
-      <Button mode="contained" onPress={() => setVisible(true)}>
+      <Button mode="contained" onPress={() => setFilterVisible(true)}>
         Filters
       </Button>
       <Button mode="contained" onPress={doSearch}>
         Search
       </Button>
       <FilterModal
-        visible={visible}
-        onDismiss={() => setVisible(false)}
+        visible={filterVisible}
+        onDismiss={() => setFilterVisible(false)}
         filters={filters}
         updateFilters={updateFilters}
+      />
+      <CarerResultsView
+        carerResults={searchResults}
+        handleRequest={(carerResult) => {
+          setSelectedCarer(carerResult);
+          setRequestVisible(true);
+        }}
+        cardButtonLabel="Request Carer's Services"
+      />
+      <NewRequestModal
+        carerResult={selectedCarer}
+        visible={requestVisible}
+        onDismiss={() => setRequestVisible(false)}
       />
     </View>
   );

@@ -2,19 +2,19 @@ import { useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
 import { Avatar, Button, Card, FAB, Text } from "react-native-paper";
 import { StyleSheet, Image } from "react-native";
-import NewRequestModal from "../../components/NewRequestModal";
+import NewRequestModal from "../../../components/NewRequestModal";
 import { useRouter } from "expo-router";
 
-const icon = require("../../assets/icon.png");
+const icon = require("../../../assets/icon.png");
 
 interface BroadRequest {
-  id: number,
-  reqDate: Date,
-  carerName?: string,
-  location: string,
-  postedDate: Date,
-  pricePerHour: number,
-  complete: boolean,
+  id: number;
+  reqDate: Date;
+  carerName?: string;
+  location: string;
+  postedDate: Date;
+  pricePerHour: number;
+  complete: boolean;
 }
 
 const broadRequests: Array<BroadRequest> = [
@@ -24,7 +24,7 @@ const broadRequests: Array<BroadRequest> = [
     location: "Wollongong, NSW",
     postedDate: new Date(),
     pricePerHour: 20.0,
-    complete: false
+    complete: false,
   },
   {
     id: 1,
@@ -33,7 +33,7 @@ const broadRequests: Array<BroadRequest> = [
     location: "Wollongong, NSW",
     postedDate: new Date(),
     pricePerHour: 20.0,
-    complete: true
+    complete: true,
   },
   {
     id: 2,
@@ -41,7 +41,7 @@ const broadRequests: Array<BroadRequest> = [
     location: "Wollongong, NSW",
     postedDate: new Date(),
     pricePerHour: 20.0,
-    complete: false
+    complete: false,
   },
   {
     id: 3,
@@ -50,7 +50,7 @@ const broadRequests: Array<BroadRequest> = [
     location: "Wollongong, NSW",
     postedDate: new Date(),
     pricePerHour: 20.0,
-    complete: true
+    complete: true,
   },
   {
     id: 4,
@@ -58,7 +58,7 @@ const broadRequests: Array<BroadRequest> = [
     location: "Wollongong, NSW",
     postedDate: new Date(),
     pricePerHour: 20.0,
-    complete: false
+    complete: false,
   },
   {
     id: 5,
@@ -67,7 +67,7 @@ const broadRequests: Array<BroadRequest> = [
     location: "Wollongong, NSW",
     postedDate: new Date(),
     pricePerHour: 20.0,
-    complete: true
+    complete: true,
   },
 ];
 
@@ -80,11 +80,11 @@ export default function BroadRequests() {
 
     (async () => {
       if (!ignore) {
-        setRequests(broadRequests)
+        setRequests(broadRequests);
       }
     })();
 
-    return () => ignore = true;
+    return () => (ignore = true);
   }, []);
 
   const showModal = () => setVisible(true);
@@ -94,66 +94,60 @@ export default function BroadRequests() {
     <View>
       <NewRequestModal visible={visible} onDismiss={hideModal} />
       <FlatList
-        data={ requests }
-        renderItem={ ({item}) => <BroadRequestCard req={item} />}
-        keyExtractor={item => item.id.toString()}
+        data={requests}
+        renderItem={({ item }) => <BroadRequestCard req={item} />}
+        keyExtractor={(item) => item.id.toString()}
       />
-      <FAB
-        icon="plus"
-        style={styles.fab}
-        onPress={showModal}
-      />
+      <FAB icon="plus" style={styles.fab} onPress={showModal} />
     </View>
   );
 }
 
-function BroadRequestCard({req}: {req: BroadRequest}) {
-  return ( 
+function BroadRequestCard({ req }: { req: BroadRequest }) {
+  return (
     <Card>
       <Card.Content style={styles.broadRequestCard}>
-        <Avatar.Image 
-          source={icon} 
-          size={100}
-        />
+        <Avatar.Image source={icon} size={100} />
         <BroadRequestCardInfo req={req} />
       </Card.Content>
     </Card>
   );
 }
 
-function BroadRequestCardInfo({req}: {req: BroadRequest}) {
+function BroadRequestCardInfo({ req }: { req: BroadRequest }) {
   const router = useRouter();
 
   const handleViewRespondents = () => {
-    router.push({ pathname: "/owner/respondents", params: { requestId: req.id }});
-  }
+    router.push({
+      pathname: "/owner/respondents",
+      params: { requestId: req.id },
+    });
+  };
   return (
     <View>
       <Text variant="titleMedium">
-        { (req.complete) ? req.carerName : req.reqDate.toDateString() }
+        {req.complete ? req.carerName : req.reqDate.toDateString()}
       </Text>
       <Text variant="bodySmall">{req.location}</Text>
       <Text variant="bodySmall">
-        { (req.complete) ? "completed" : `Price: $${req.pricePerHour}/hr` }
+        {req.complete ? "completed" : `Price: $${req.pricePerHour}/hr`}
       </Text>
-      { !req.complete ? 
-        <Button onPress={handleViewRespondents}>
-          View Respondents
-        </Button> : null
-      } 
+      {!req.complete ? (
+        <Button onPress={handleViewRespondents}>View Respondents</Button>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   fab: {
-    position: 'absolute',
+    position: "absolute",
     margin: 16,
     right: 0,
     bottom: 0,
   },
   broadRequestCard: {
     flexDirection: "row",
-    padding: 5
+    padding: 5,
   },
 });

@@ -8,19 +8,21 @@ import axios from "axios";
 
 export type UserType = "owner" | "carer";
 
-type User = {
+interface User {
   email: string;
   type: UserType;
-};
+}
 
 export type AuthContextType = {
   logIn: (token: string) => void;
   logOut: () => void;
+  getUser: () => User | null;
 };
 
 const AuthContext = createContext<AuthContextType>({
   logIn: () => {},
   logOut: () => {},
+  getUser: () => null,
 });
 
 export function useAuth() {
@@ -168,10 +170,12 @@ export function AuthProvider(props: any) {
     setToken("");
   };
 
+  const getUser = () => user;
+
   useProtectedRoute(user);
 
   return (
-    <AuthContext.Provider value={{ logIn, logOut }}>
+    <AuthContext.Provider value={{ logIn, logOut, getUser }}>
       {props.children}
     </AuthContext.Provider>
   );

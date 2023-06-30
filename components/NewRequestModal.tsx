@@ -10,10 +10,11 @@ import {
   useTheme,
 } from "react-native-paper";
 import { useEffect, useState } from "react";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { DatePickerButton } from "./DatePickerButton";
+import { CarerResult } from "./CarerResultsView";
 
 interface NewRequestModalProps {
+  carerResult?: CarerResult | null;
   visible: boolean;
   onDismiss: () => void;
 }
@@ -52,10 +53,10 @@ const petData: Array<Pet> = [
 ];
 
 export default function NewRequestModal({
+  carerResult,
   visible,
   onDismiss,
 }: NewRequestModalProps) {
-  const theme = useTheme();
   const [date, setDate] = useState<Date | null>(null);
   const [showPicker, setShowPicker] = useState(false);
   const [additionalInfo, setAdditionalInfo] = useState("");
@@ -92,7 +93,9 @@ export default function NewRequestModal({
   };
 
   const handleSubmit = () => {
-    console.log("submitted");
+    console.log(
+      carerResult ? `submitted to ${carerResult.name}` : "submitted broadly"
+    );
     onDismiss();
   };
 
@@ -104,6 +107,9 @@ export default function NewRequestModal({
         style={{ backgroundColor: "white" }}
       >
         <ScrollView>
+          <Text variant="titleMedium">
+            {carerResult ? `Request to ${carerResult.name}` : "New Request"}
+          </Text>
           <DatePickerButton
             label="request date"
             date={date}

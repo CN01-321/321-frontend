@@ -1,15 +1,5 @@
-import { Slot, Stack } from "expo-router";
-import { View } from "react-native";
+import { Stack } from "expo-router";
 
 export default function AuthLayout() {
-  return (
-    // <View
-    //     style={{
-    //         paddingTop: 100
-    //     }}
-    // >
-    //     <Slot />
-    // </View>
-    <Stack />
-  );
+  return <Stack />;
 }
