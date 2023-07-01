@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { FlatList, View, StyleSheet } from "react-native";
 import { Avatar, Button, Card, Text } from "react-native-paper";
+import { StarRating } from "./StarRating";
 
 const icon = require("../assets/icon.png");
 
@@ -86,27 +87,9 @@ function CarerResultCardInfo({
   );
 }
 
-// not sure how else to do this
-function StarRating({ stars }: { stars: number }) {
-  const star = <Avatar.Icon icon={"star"} size={20} />;
-
-  return (
-    <View style={styles.starRating}>
-      {stars > 0 && star}
-      {stars > 1 && star}
-      {stars > 2 && star}
-      {stars > 3 && star}
-      {stars > 4 && star}
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   carerResultCard: {
     flexDirection: "row",
     padding: 5,
-  },
-  starRating: {
-    flexDirection: "row",
   },
 });
