@@ -5,6 +5,7 @@ import {
   Avatar,
   Button,
   Card,
+  FAB,
   IconButton,
   Modal,
   Portal,
@@ -13,6 +14,7 @@ import {
   TextInput,
 } from "react-native-paper";
 import { StarRating } from "../../components/StarRating";
+import ShowModalFab from "../../components/ShowModalFab";
 
 const icon = require("../../assets/icon.png");
 const image = require("../../assets/splash.png");
@@ -100,6 +102,8 @@ type SegmentViewValue = "profile" | "reviews";
 
 export default function Profile() {
   const { userId } = useLocalSearchParams<{ userId?: string }>();
+  // TODO update this to true if the user
+  const [isSelf, setIsSelf] = useState(false);
   const [currentView, setCurrentView] = useState<SegmentViewValue>("profile");
   const [user, setUser] = useState<User>({
     id: "",
@@ -111,7 +115,10 @@ export default function Profile() {
   const router = useRouter();
 
   useEffect(() => {
-    userId ? setUser(userData) : setUser(userData);
+    if (userId) {
+      setIsSelf(false);
+    }
+    setUser(userData);
   }, []);
 
   const handleLike = (reviewId: string) => {
@@ -143,9 +150,13 @@ export default function Profile() {
       {currentView === "profile" ? (
         <ProfileInfoView user={user} />
       ) : (
-        <ProfileReviewsView reviews={user.reviews} handleLike={handleLike} />
+        <ProfileReviewsView
+          user={user}
+          isSelf={isSelf}
+          reviews={user.reviews}
+          handleLike={handleLike}
+        />
       )}
-      {/* <ProfileReviewsView reviews={user.reviews} handleLike={handleLike} /> */}
     </View>
   );
 }
@@ -187,11 +198,20 @@ function ProfileInfoView({ user }: ProfileInfoViewProps) {
 }
 
 interface ProfileReviewsViewProps {
+  user: User;
+  isSelf: boolean;
   reviews: Array<Review>;
   handleLike: (reviewId: string) => void;
 }
 
-function ProfileReviewsView({ reviews, handleLike }: ProfileReviewsViewProps) {
+function ProfileReviewsView({
+  user,
+  isSelf,
+  reviews,
+  handleLike,
+}: ProfileReviewsViewProps) {
+  const [newReviewVisible, setNewReviewVisible] = useState(false);
+
   return (
     <View>
       <FlatList
@@ -200,6 +220,18 @@ function ProfileReviewsView({ reviews, handleLike }: ProfileReviewsViewProps) {
           <ReviewCard review={item} handleLike={handleLike} />
         )}
         keyExtractor={(item) => item.reviewerId}
+      />
+
+      {isSelf ? null : (
+        <ShowModalFab
+          icon="lead-pencil"
+          showModal={() => setNewReviewVisible(true)}
+        />
+      )}
+      <NewReviewModal
+        user={user}
+        visible={newReviewVisible}
+        onDismiss={() => setNewReviewVisible(false)}
       />
     </View>
   );
@@ -291,5 +323,79 @@ function CommentCard({ comment }: CommentCardProps) {
         </View>
       </Card.Content>
     </Card>
+  );
+}
+
+interface NewReviewModalProps {
+  user: User;
+  visible: boolean;
+  onDismiss: () => void;
+}
+
+function NewReviewModal({ user, visible, onDismiss }: NewReviewModalProps) {
+  const [rating, setRating] = useState(0);
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = () => {
+    console.log(
+      `submitting rating with rating: ${rating} and message "${message}"`
+    );
+    onDismiss();
+  };
+
+  return (
+    <Portal>
+      <Modal
+        visible={visible}
+        onDismiss={onDismiss}
+        style={{ backgroundColor: "white" }}
+      >
+        <Text variant="titleMedium">Rate & Review</Text>
+        <Avatar.Image source={icon} size={24} />
+        <Text>{user.name}</Text>
+        <RatingPicker rating={rating} onRatingChange={(r) => setRating(r)} />
+        <TextInput
+          mode="outlined"
+          value={message}
+          label="Write Message"
+          onChangeText={(text) => setMessage(text)}
+        />
+        <Button mode="contained" onPress={handleSubmit}>
+          Submit
+        </Button>
+      </Modal>
+    </Portal>
+  );
+}
+
+interface RatingPickerProps {
+  rating: number;
+  onRatingChange: (rating: number) => void;
+}
+
+function RatingPicker({ rating, onRatingChange }: RatingPickerProps) {
+  return (
+    <View style={{ flexDirection: "row" }}>
+      <IconButton
+        icon={rating > 0 ? "star" : "star-outline"}
+        onPress={() => onRatingChange(1)}
+      />
+      <IconButton
+        icon={rating > 1 ? "star" : "star-outline"}
+        onPress={() => onRatingChange(2)}
+      />
+      <IconButton
+        icon={rating > 2 ? "star" : "star-outline"}
+        onPress={() => onRatingChange(3)}
+      />
+      <IconButton
+        icon={rating > 3 ? "star" : "star-outline"}
+        onPress={() => onRatingChange(4)}
+      />
+      <IconButton
+        icon={rating > 4 ? "star" : "star-outline"}
+        onPress={() => onRatingChange(5)}
+      />
+    </View>
   );
 }

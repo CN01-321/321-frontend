@@ -4,6 +4,7 @@ import { Avatar, Button, Card, FAB, Text } from "react-native-paper";
 import { StyleSheet, Image } from "react-native";
 import NewRequestModal from "../../../components/NewRequestModal";
 import { useRouter } from "expo-router";
+import ShowModalFab from "../../../components/ShowModalFab";
 
 const icon = require("../../../assets/icon.png");
 
@@ -98,7 +99,7 @@ export default function BroadRequests() {
         renderItem={({ item }) => <BroadRequestCard req={item} />}
         keyExtractor={(item) => item.id.toString()}
       />
-      <FAB icon="plus" style={styles.fab} onPress={showModal} />
+      <ShowModalFab icon="plus" showModal={showModal} />
     </View>
   );
 }
@@ -140,12 +141,6 @@ function BroadRequestCardInfo({ req }: { req: BroadRequest }) {
 }
 
 const styles = StyleSheet.create({
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
   broadRequestCard: {
     flexDirection: "row",
     padding: 5,
