@@ -5,7 +5,6 @@ import {
   Avatar,
   Button,
   Card,
-  FAB,
   IconButton,
   Modal,
   Portal,
@@ -121,11 +120,6 @@ export default function Profile() {
     setUser(userData);
   }, []);
 
-  const handleLike = (reviewId: string) => {
-    const review = user.reviews.find((r) => r.reviewId === reviewId);
-    console.log(`liked comment by ${review?.reviewerName}`);
-  };
-
   return (
     <View>
       <SegmentedButtons
@@ -154,7 +148,6 @@ export default function Profile() {
           user={user}
           isSelf={isSelf}
           reviews={user.reviews}
-          handleLike={handleLike}
         />
       )}
     </View>
@@ -201,14 +194,12 @@ interface ProfileReviewsViewProps {
   user: User;
   isSelf: boolean;
   reviews: Array<Review>;
-  handleLike: (reviewId: string) => void;
 }
 
 function ProfileReviewsView({
   user,
   isSelf,
   reviews,
-  handleLike,
 }: ProfileReviewsViewProps) {
   const [newReviewVisible, setNewReviewVisible] = useState(false);
 
@@ -216,9 +207,7 @@ function ProfileReviewsView({
     <View>
       <FlatList
         data={reviews}
-        renderItem={({ item }) => (
-          <ReviewCard review={item} handleLike={handleLike} />
-        )}
+        renderItem={({ item }) => <ReviewCard review={item} />}
         keyExtractor={(item) => item.reviewerId}
       />
 
@@ -239,11 +228,14 @@ function ProfileReviewsView({
 
 interface ReviewCardProps {
   review: Review;
-  handleLike: (reviewId: string) => void;
 }
 
-function ReviewCard({ review, handleLike }: ReviewCardProps) {
+function ReviewCard({ review }: ReviewCardProps) {
   const [showComments, setShowComments] = useState(false);
+
+  const handleLike = () => {
+    console.log(`liked comment by ${review.reviewerName}`);
+  };
 
   return (
     <Card>
@@ -259,16 +251,20 @@ function ReviewCard({ review, handleLike }: ReviewCardProps) {
           <Text variant="titleSmall">{review.reviewerName}</Text>
           {review.rating ? <StarRating stars={review.rating} /> : null}
           <Text variant="bodySmall">{review.message}</Text>
-          <IconButton
-            icon="thumb-up-outline"
-            size={20}
-            onPress={() => handleLike(review.reviewerId)}
-          />
-          <IconButton
-            icon="comment-outline"
-            size={20}
-            onPress={() => setShowComments(true)}
-          />
+          <View style={{ flexDirection: "row" }}>
+            <IconButton
+              icon="thumb-up-outline"
+              size={20}
+              onPress={handleLike}
+            />
+            <Text>{review.likes}</Text>
+            <IconButton
+              icon="comment-outline"
+              size={20}
+              onPress={() => setShowComments(true)}
+            />
+            <Text>{review.comments.length}</Text>
+          </View>
         </View>
         <CommentsModal
           comments={review.comments}
@@ -374,28 +370,19 @@ interface RatingPickerProps {
 }
 
 function RatingPicker({ rating, onRatingChange }: RatingPickerProps) {
-  return (
-    <View style={{ flexDirection: "row" }}>
-      <IconButton
-        icon={rating > 0 ? "star" : "star-outline"}
-        onPress={() => onRatingChange(1)}
-      />
-      <IconButton
-        icon={rating > 1 ? "star" : "star-outline"}
-        onPress={() => onRatingChange(2)}
-      />
-      <IconButton
-        icon={rating > 2 ? "star" : "star-outline"}
-        onPress={() => onRatingChange(3)}
-      />
-      <IconButton
-        icon={rating > 3 ? "star" : "star-outline"}
-        onPress={() => onRatingChange(4)}
-      />
-      <IconButton
-        icon={rating > 4 ? "star" : "star-outline"}
-        onPress={() => onRatingChange(5)}
-      />
-    </View>
-  );
+  const renderStars = () => {
+    let stars = [];
+    for (let i = 0; i < 5; i++) {
+      stars.push(
+        <IconButton
+          key={i}
+          icon={rating > i ? "star" : "star-outline"}
+          onPress={() => onRatingChange(i + 1)}
+        />
+      );
+    }
+    return stars;
+  };
+
+  return <View style={{ flexDirection: "row" }}>{renderStars()}</View>;
 }
