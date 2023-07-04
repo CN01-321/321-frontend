@@ -125,13 +125,9 @@ export default function Offers() {
       <FlatList
         data={offers}
         renderItem={({ item }) => (
-          <OfferCard
-            offer={item}
-            offerType={offerType}
-            onAccept={handleAccept}
-            onReject={handleReject}
-          />
+          <OfferCard offer={item} offerType={offerType} />
         )}
+        keyExtractor={(item) => item.offerId}
       />
     </View>
   );
@@ -140,11 +136,11 @@ export default function Offers() {
 interface OfferCardProps {
   offer: Offer;
   offerType: OfferType;
-  onAccept: (offer: Offer) => void;
-  onReject: (offer: Offer) => void;
 }
 
-function OfferCard({ offer, offerType, onAccept, onReject }: OfferCardProps) {
+function OfferCard({ offer, offerType }: OfferCardProps) {
+  const [visible, setVisible] = useState(false);
+
   return (
     <Card>
       <Card.Content>
@@ -168,16 +164,83 @@ function OfferCard({ offer, offerType, onAccept, onReject }: OfferCardProps) {
           >
             View Pets's Profile?
           </Link>
-          <Button mode="contained" onPress={() => onAccept(offer)}>
-            {offerType === "direct" ? "Accept" : "Apply"}
+          <Button mode="contained" onPress={() => setVisible(true)}>
+            View Details
           </Button>
-          {offerType === "broad" ? (
-            <Button mode="contained" onPress={() => onReject(offer)}>
-              Reject
-            </Button>
-          ) : null}
+          <OfferDetailsModal
+            offer={offer}
+            offerType={offerType}
+            visible={visible}
+            onDismiss={() => setVisible(false)}
+          />
         </View>
       </Card.Content>
     </Card>
+  );
+}
+
+interface OfferDetailsModalProps extends OfferCardProps {
+  visible: boolean;
+  onDismiss: () => void;
+}
+
+function OfferDetailsModal({
+  offer,
+  offerType,
+  visible,
+  onDismiss,
+}: OfferDetailsModalProps) {
+  const handleAccept = () => {
+    console.log("Accepted/applied", offer);
+    onDismiss();
+  };
+
+  const handleReject = () => {
+    console.log("Rejected", offer);
+    onDismiss();
+  };
+
+  return (
+    <Portal>
+      <Modal
+        visible={visible}
+        onDismiss={onDismiss}
+        style={{ backgroundColor: "white" }}
+      >
+        <Text variant="titleMedium">View Offer's Details</Text>
+        <Text variant="bodyMedium">
+          Start Date: {offer.startDate.toISOString()}
+        </Text>
+        <Text variant="bodyMedium">
+          End Date: {offer.endDate.toISOString()}
+        </Text>
+        <Text variant="bodyMedium">Location: {offer.location}</Text>
+        <Text variant="bodyMedium">
+          {/* TODO switch to pets page */}
+          Pets:{" "}
+          {offer.pets.map((p) => (
+            <Text>
+              <Link
+                href={{
+                  pathname: "profile",
+                  params: { userId: offer.ownerId },
+                }}
+              >
+                {p.petName}
+              </Link>{" "}
+            </Text>
+          ))}
+        </Text>
+        <Text variant="bodySmall">{offer.additionalInfo}</Text>
+        <Button mode="contained" onPress={handleAccept}>
+          {offerType === "direct" ? "Accept" : "Apply"}
+        </Button>
+        {offerType === "broad" && (
+          <Button mode="contained" onPress={handleReject}>
+            Reject
+          </Button>
+        )}
+      </Modal>
+    </Portal>
   );
 }
