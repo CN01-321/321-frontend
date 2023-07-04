@@ -10,29 +10,11 @@ import {
   SegmentedButtons,
   Text,
 } from "react-native-paper";
+import JobsListView, { Job } from "../../../components/JobsListView";
 
-const icon = require("../../../assets/icon.png");
-
-interface Offer {
-  offerId: string;
-  ownerId: string;
-  ownerName: string;
-  ownerIcon?: string;
-  pets: Array<{
-    petId: string;
-    petName: string;
-    petType: "dog" | "cat" | "bird" | "rabbit";
-  }>;
-  distance: number;
-  startDate: Date;
-  endDate: Date;
-  location: string;
-  additionalInfo: string;
-}
-
-const offersData: Array<Offer> = [
+const offersData: Array<Job> = [
   {
-    offerId: "0",
+    jobId: "0",
     ownerId: "0",
     ownerName: "Owner Name",
     ownerIcon: "icon",
@@ -42,6 +24,7 @@ const offersData: Array<Offer> = [
       { petId: "2", petName: "pet", petType: "bird" },
       { petId: "3", petName: "pet", petType: "rabbit" },
     ],
+    requestedDate: new Date(),
     distance: 3,
     startDate: new Date(),
     endDate: new Date(),
@@ -49,7 +32,7 @@ const offersData: Array<Offer> = [
     additionalInfo: "looking for someone to care for my pets",
   },
   {
-    offerId: "1",
+    jobId: "1",
     ownerId: "1",
     ownerName: "Owner Name",
     ownerIcon: "icon",
@@ -59,6 +42,7 @@ const offersData: Array<Offer> = [
       { petId: "2", petName: "pet", petType: "bird" },
       { petId: "3", petName: "pet", petType: "rabbit" },
     ],
+    requestedDate: new Date(),
     distance: 3,
     startDate: new Date(),
     endDate: new Date(),
@@ -66,7 +50,7 @@ const offersData: Array<Offer> = [
     additionalInfo: "looking for someone to care for my pets",
   },
   {
-    offerId: "2",
+    jobId: "2",
     ownerId: "2",
     ownerName: "Owner Name",
     ownerIcon: "icon",
@@ -76,6 +60,7 @@ const offersData: Array<Offer> = [
       { petId: "2", petName: "pet", petType: "bird" },
       { petId: "3", petName: "pet", petType: "rabbit" },
     ],
+    requestedDate: new Date(),
     distance: 3,
     startDate: new Date(),
     endDate: new Date(),
@@ -88,23 +73,12 @@ type OfferType = "direct" | "broad";
 
 export default function Offers() {
   const [offerType, setOfferType] = useState<OfferType>("direct");
-  const [offers, setOffers] = useState<Array<Offer>>([]);
+  const [offers, setOffers] = useState<Array<Job>>([]);
 
   useEffect(() => {
     // TODO switch datas depending on current view
     setOffers(offerType === "direct" ? offersData : offersData);
   }, [offerType]);
-
-  const handleAccept = (offer: Offer) => {
-    console.log(offer, offerType);
-  };
-
-  const handleReject = (offer: Offer) => {
-    // do nothing if broad request as the carer cannot reject these
-    if (offerType === "broad") return;
-
-    console.log(offer, offerType);
-  };
 
   return (
     <View>
@@ -122,125 +96,7 @@ export default function Offers() {
           },
         ]}
       />
-      <FlatList
-        data={offers}
-        renderItem={({ item }) => (
-          <OfferCard offer={item} offerType={offerType} />
-        )}
-        keyExtractor={(item) => item.offerId}
-      />
+      <JobsListView jobs={offers} jobType={offerType} />
     </View>
-  );
-}
-
-interface OfferCardProps {
-  offer: Offer;
-  offerType: OfferType;
-}
-
-function OfferCard({ offer, offerType }: OfferCardProps) {
-  const [visible, setVisible] = useState(false);
-
-  return (
-    <Card>
-      <Card.Content>
-        {/* TODO switch up for owner icon if present */}
-        <Avatar.Image source={icon} size={40} />
-        <View>
-          <Text variant="titleMedium">
-            {offer.pets.map((p) => p.petName).join(", ")} - {offer.ownerName}
-          </Text>
-          <Text variant="bodyLarge">
-            {offer.pets.map((p) => p.petType).join(", ")}
-          </Text>
-          <Text variant="bodySmall">Distance {offer.distance}km</Text>
-          <Link
-            href={{ pathname: "profile", params: { userId: offer.ownerId } }}
-          >
-            View Owner's Profile
-          </Link>
-          <Link
-            href={{ pathname: "profile", params: { userId: offer.ownerId } }}
-          >
-            View Pets's Profile?
-          </Link>
-          <Button mode="contained" onPress={() => setVisible(true)}>
-            View Details
-          </Button>
-          <OfferDetailsModal
-            offer={offer}
-            offerType={offerType}
-            visible={visible}
-            onDismiss={() => setVisible(false)}
-          />
-        </View>
-      </Card.Content>
-    </Card>
-  );
-}
-
-interface OfferDetailsModalProps extends OfferCardProps {
-  visible: boolean;
-  onDismiss: () => void;
-}
-
-function OfferDetailsModal({
-  offer,
-  offerType,
-  visible,
-  onDismiss,
-}: OfferDetailsModalProps) {
-  const handleAccept = () => {
-    console.log("Accepted/applied", offer);
-    onDismiss();
-  };
-
-  const handleReject = () => {
-    console.log("Rejected", offer);
-    onDismiss();
-  };
-
-  return (
-    <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        style={{ backgroundColor: "white" }}
-      >
-        <Text variant="titleMedium">View Offer's Details</Text>
-        <Text variant="bodyMedium">
-          Start Date: {offer.startDate.toISOString()}
-        </Text>
-        <Text variant="bodyMedium">
-          End Date: {offer.endDate.toISOString()}
-        </Text>
-        <Text variant="bodyMedium">Location: {offer.location}</Text>
-        <Text variant="bodyMedium">
-          {/* TODO switch to pets page */}
-          Pets:{" "}
-          {offer.pets.map((p) => (
-            <Text>
-              <Link
-                href={{
-                  pathname: "profile",
-                  params: { userId: offer.ownerId },
-                }}
-              >
-                {p.petName}
-              </Link>{" "}
-            </Text>
-          ))}
-        </Text>
-        <Text variant="bodySmall">{offer.additionalInfo}</Text>
-        <Button mode="contained" onPress={handleAccept}>
-          {offerType === "direct" ? "Accept" : "Apply"}
-        </Button>
-        {offerType === "broad" && (
-          <Button mode="contained" onPress={handleReject}>
-            Reject
-          </Button>
-        )}
-      </Modal>
-    </Portal>
   );
 }
