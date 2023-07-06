@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ScrollView, View, StyleSheet, Pressable } from "react-native";
 import { Card, FAB, Text } from "react-native-paper";
 import { Review } from "../../../components/ReviewsView";
+import AddPetModal from "../../../components/AddPetModal";
 
 const icon = require("../../../assets/icon.png");
 
@@ -46,6 +47,10 @@ const petData: Array<Pet> = [
 
 export default function Pets() {
   const [pets, setPets] = useState<Array<Pet>>([]);
+  const [visible, setVisible] = useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
 
   useEffect(() => {
     setPets(petData);
@@ -53,12 +58,13 @@ export default function Pets() {
 
   return (
     <View style={styles.container}>
+      <AddPetModal visible={visible} onDismiss={hideModal} />
       <Text>Pets</Text>
       <ScrollView contentContainerStyle={styles.petsArea}>
         {pets.map((p) => (
           <PetCard key={p.id} pet={p} />
         ))}
-        <AddPetFAB />
+        <FAB icon="plus" label="Add Pet" onPress={showModal} />
       </ScrollView>
     </View>
   );
