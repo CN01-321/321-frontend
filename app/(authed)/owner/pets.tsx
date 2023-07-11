@@ -5,46 +5,49 @@ import { Card, FAB, Text } from "react-native-paper";
 import { Review } from "../../../components/ReviewsView";
 import AddPetModal from "../../../components/AddPetModal";
 import { Stack } from "expo-router";
+import axios from "axios";
 
 const icon = require("../../../assets/icon.png");
 
 export interface Pet {
-  id: string;
-  name: string;
-  type: "dog" | "cat" | "bird" | "rabbit";
-  size: "small" | "medium" | "large";
-  icon?: string;
-  reviews?: Array<Review>;
+  _id?: string;
+  name?: string;
+  petType?: "dog" | "cat" | "bird" | "rabbit";
+  petSize?: "small" | "medium" | "large";
+  isVaccinated?: boolean;
+  isFriendly?: boolean;
+  isNeutered?: boolean;
+  profilePicture?: string;
 }
 
-const petData: Array<Pet> = [
-  {
-    id: "0",
-    name: "Pet 1",
-    type: "dog",
-    size: "medium",
-    icon: "icon",
-  },
-  {
-    id: "1",
-    name: "Pet 2",
-    type: "dog",
-    size: "medium",
-  },
-  {
-    id: "2",
-    name: "Pet 3",
-    type: "cat",
-    size: "medium",
-    icon: "icon",
-  },
-  {
-    id: "3",
-    name: "Pet 4",
-    type: "cat",
-    size: "medium",
-  },
-];
+// const petData: Array<Pet> = [
+//   {
+//     id: "0",
+//     name: "Pet 1",
+//     type: "dog",
+//     size: "medium",
+//     icon: "icon",
+//   },
+//   {
+//     id: "1",
+//     name: "Pet 2",
+//     type: "dog",
+//     size: "medium",
+//   },
+//   {
+//     id: "2",
+//     name: "Pet 3",
+//     type: "cat",
+//     size: "medium",
+//     icon: "icon",
+//   },
+//   {
+//     id: "3",
+//     name: "Pet 4",
+//     type: "cat",
+//     size: "medium",
+//   },
+// ];
 
 export default function Pets() {
   const [pets, setPets] = useState<Array<Pet>>([]);
@@ -54,7 +57,7 @@ export default function Pets() {
   const hideModal = () => setVisible(false);
 
   useEffect(() => {
-    setPets(petData);
+    axios.get("/owners/pets").then(response => setPets(response.data));
   }, []);
 
   return (
@@ -67,7 +70,7 @@ export default function Pets() {
       <AddPetModal visible={visible} onDismiss={hideModal} />
       <ScrollView contentContainerStyle={styles.petsArea}>
         {pets.map((p) => (
-          <PetCard key={p.id} pet={p} />
+          <PetCard key={p._id} pet={p} />
         ))}
         <FAB icon="plus" label="Add Pet" onPress={showModal} />
       </ScrollView>
@@ -82,7 +85,7 @@ function PetCard({ pet }: { pet: Pet }) {
     <Card
       style={styles.petCard}
       onPress={() =>
-        router.push({ pathname: `pet/${pet.id}`, params: { ownPet: "true" } })
+        router.push({ pathname: `pet/${pet._id}`, params: { ownPet: "true", petDetails: pet } })
       }
     >
       <Card.Cover source={icon} style={styles.petCardImg} />

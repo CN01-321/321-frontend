@@ -23,14 +23,14 @@ export default function Home() {
   return (
     <>
       <Stack.Screen 
-          options={{
-            headerTitle: "Home",
-            headerRight: () =>
-              <>
-                <IconButton icon="bell" onTouchStart={() => navigation.navigate("notifications")} />
-                <IconButton icon="cog-outline" onTouchStart={() => navigation.navigate("settings")}/>
-              </>
-          }}
+        options={{
+          headerTitle: "Home",
+          headerRight: () =>
+            <>
+              <IconButton icon="bell" onTouchStart={() => navigation.navigate("notifications")} />
+              <IconButton icon="cog-outline" onTouchStart={() => navigation.navigate("settings")}/>
+            </>
+        }}
       />
       <View>
         <Title>Home Page</Title>
