@@ -33,13 +33,13 @@ export default function Notifications() {
       <View>
         {
           exampleNotifications.map((notification, index) => 
-          <>
-            <View key={index} style={styles.notificationContainer}>
+          <View key={index}>
+            <View style={styles.notificationContainer}>
               <Avatar.Text label="P" />
               <Text>{`${notification.name} ${notification.description}`}</Text>
             </View>
             <Divider />
-          </>
+          </View>
           )
         }
       </View>

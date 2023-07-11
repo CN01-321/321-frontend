@@ -4,6 +4,7 @@ import { ScrollView, View, StyleSheet, Pressable } from "react-native";
 import { Card, FAB, Text } from "react-native-paper";
 import { Review } from "../../../components/ReviewsView";
 import AddPetModal from "../../../components/AddPetModal";
+import { Stack } from "expo-router";
 
 const icon = require("../../../assets/icon.png");
 
@@ -58,8 +59,12 @@ export default function Pets() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen 
+        options={{
+          headerTitle: "Pets"
+        }}
+      />
       <AddPetModal visible={visible} onDismiss={hideModal} />
-      <Text>Pets</Text>
       <ScrollView contentContainerStyle={styles.petsArea}>
         {pets.map((p) => (
           <PetCard key={p.id} pet={p} />
