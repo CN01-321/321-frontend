@@ -7,7 +7,6 @@ import {
   Modal,
   Portal,
   TextInput,
-  useTheme,
 } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { DatePickerButton } from "./DatePickerButton";
@@ -21,29 +20,6 @@ interface NewRequestModalProps {
   visible: boolean;
   onDismiss: () => void;
 }
-
-// const petData: Array<Pet> = [
-//   {
-//     id: "0",
-//     name: "Pet 1",
-//     type: "Dog",
-//   },
-//   {
-//     id: "1",
-//     name: "Pet 2",
-//     type: "Dog",
-//   },
-//   {
-//     id: "2",
-//     name: "Pet 3",
-//     type: "Cat",
-//   },
-//   {
-//     id: "3",
-//     name: "Pet 4",
-//     type: "Cat",
-//   },
-// ];
 
 interface NewRequestForm {
   carer?: string;
@@ -87,6 +63,13 @@ export default function NewRequestModal({
 
   const onSubmit: SubmitHandler<NewRequestForm> = async (data) => {
     console.log(data);
+
+    try {
+      await axios.post("/owners/requests", data);
+    } catch (e) {
+      console.error(e);
+    }
+
     reset();
     onDismiss();
   };

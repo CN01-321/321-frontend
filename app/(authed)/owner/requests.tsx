@@ -138,15 +138,17 @@ export default function Requests() {
   const hideModal = () => setVisible(false);
 
   return (
-    <View>
-      <NewRequestModal visible={visible} onDismiss={hideModal} />
-      <FlatList
-        data={requests}
-        renderItem={({ item }) => <RequestCard req={item} />}
-        keyExtractor={(item) => item._id}
-      />
+    <>
       <ShowModalFab icon="plus" showModal={showModal} />
-    </View>
+      <View>
+        <NewRequestModal visible={visible} onDismiss={hideModal} />
+        <FlatList
+          data={requests}
+          renderItem={({ item }) => <RequestCard req={item} />}
+          keyExtractor={(item) => item._id}
+        />
+      </View>
+    </>
   );
 }
 
