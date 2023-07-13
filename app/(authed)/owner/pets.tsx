@@ -4,6 +4,7 @@ import { ScrollView, View, StyleSheet, Pressable } from "react-native";
 import { Card, FAB, Text } from "react-native-paper";
 import { Review } from "../../../components/ReviewsView";
 import AddPetModal from "../../../components/AddPetModal";
+import ShowModalFab from "../../../components/ShowModalFab";
 import { Stack } from "expo-router";
 import axios from "axios";
 
@@ -70,10 +71,12 @@ export default function Pets() {
       <AddPetModal visible={visible} onDismiss={hideModal} />
       <ScrollView contentContainerStyle={styles.petsArea}>
         {pets.map((p) => (
-          <PetCard key={p._id} pet={p} />
+          <View style={styles.petCardContainer}>
+            <PetCard key={p._id} pet={p} />
+          </View>
         ))}
-        <FAB icon="plus" label="Add Pet" onPress={showModal} />
       </ScrollView>
+      <ShowModalFab icon="plus" showModal={showModal} />
     </View>
   );
 }
@@ -101,16 +104,21 @@ function AddPetFAB() {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    height: "100%",
+  },
   petsArea: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
+    justifyContent: "flex-start",
   },
   petCard: {
-    // flex: 3,
-    width: "40%",
-    margin: 10,
+    width: "90%",
+    margin: "2.5%",
+  },
+  petCardContainer: {
+    width: "50%",
+    display: "flex",
   },
   petCardImg: {},
 });
