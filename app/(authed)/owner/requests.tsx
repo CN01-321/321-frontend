@@ -5,83 +5,56 @@ import { StyleSheet, Image } from "react-native";
 import NewRequestModal from "../../../components/NewRequestModal";
 import { useRouter } from "expo-router";
 import ShowModalFab from "../../../components/ShowModalFab";
+import axios from "axios";
 
 const icon = require("../../../assets/icon.png");
 
-interface BroadRequest {
-  id: number;
-  reqDate: Date;
-  carerName?: string;
+type RequestStatus = "pending" | "accepted" | "rejected" | "completed";
+
+interface Request {
+  _id: string;
+  carer?: {
+    _id: string;
+    name: string;
+  };
   location: string;
-  postedDate: Date;
-  pricePerHour: number;
-  complete: boolean;
+  dateRange: {
+    startDate: Date;
+    endDate: Date;
+  };
+  requestedOn: Date;
+  status: RequestStatus;
 }
 
-const broadRequests: Array<BroadRequest> = [
-  {
-    id: 0,
-    reqDate: new Date(),
-    location: "Wollongong, NSW",
-    postedDate: new Date(),
-    pricePerHour: 20.0,
-    complete: false,
-  },
-  {
-    id: 1,
-    reqDate: new Date(),
-    carerName: "Carer Name",
-    location: "Wollongong, NSW",
-    postedDate: new Date(),
-    pricePerHour: 20.0,
-    complete: true,
-  },
-  {
-    id: 2,
-    reqDate: new Date(),
-    location: "Wollongong, NSW",
-    postedDate: new Date(),
-    pricePerHour: 20.0,
-    complete: false,
-  },
-  {
-    id: 3,
-    reqDate: new Date(),
-    carerName: "Carer Name",
-    location: "Wollongong, NSW",
-    postedDate: new Date(),
-    pricePerHour: 20.0,
-    complete: true,
-  },
-  {
-    id: 4,
-    reqDate: new Date(),
-    location: "Wollongong, NSW",
-    postedDate: new Date(),
-    pricePerHour: 20.0,
-    complete: false,
-  },
-  {
-    id: 5,
-    reqDate: new Date(),
-    carerName: "Carer Name",
-    location: "Wollongong, NSW",
-    postedDate: new Date(),
-    pricePerHour: 20.0,
-    complete: true,
-  },
-];
-
-export default function BroadRequests() {
-  const [requests, setRequests] = useState<Array<BroadRequest>>([]);
+export default function Requests() {
+  const [requests, setRequests] = useState<Array<Request>>([]);
   const [visible, setVisible] = useState(false);
 
   useEffect((): (() => void) => {
     let ignore = false;
 
     (async () => {
-      if (!ignore) {
-        setRequests(broadRequests);
+      try {
+        const { data } = await axios.get<Array<Request>>("/owners/requests");
+
+        // turn all date strings into date objects
+        const reqs = data.map((r) => {
+          return {
+            ...r,
+            requestedOn: new Date(r.requestedOn),
+            dateRange: {
+              startDate: new Date(r.dateRange.startDate),
+              endDate: new Date(r.dateRange.endDate),
+            },
+          };
+        });
+
+        if (!ignore) {
+          console.log(reqs);
+          setRequests(reqs);
+        }
+      } catch (e) {
+        console.error(e);
       }
     })();
 
@@ -92,48 +65,54 @@ export default function BroadRequests() {
   const hideModal = () => setVisible(false);
 
   return (
-    <View>
-      <NewRequestModal visible={visible} onDismiss={hideModal} />
-      <FlatList
-        data={requests}
-        renderItem={({ item }) => <BroadRequestCard req={item} />}
-        keyExtractor={(item) => item.id.toString()}
-      />
+    <>
+      <View>
+        <NewRequestModal visible={visible} onDismiss={hideModal} />
+        <FlatList
+          data={requests}
+          renderItem={({ item }) => <RequestCard req={item} />}
+          keyExtractor={(item) => item._id}
+        />
+      </View>
       <ShowModalFab icon="plus" showModal={showModal} />
-    </View>
+    </>
   );
 }
 
-function BroadRequestCard({ req }: { req: BroadRequest }) {
+function RequestCard({ req }: { req: Request }) {
   return (
     <Card>
       <Card.Content style={styles.broadRequestCard}>
         <Avatar.Image source={icon} size={100} />
-        <BroadRequestCardInfo req={req} />
+        <RequestCardInfo req={req} />
       </Card.Content>
     </Card>
   );
 }
 
-function BroadRequestCardInfo({ req }: { req: BroadRequest }) {
+function RequestCardInfo({ req }: { req: Request }) {
   const router = useRouter();
 
   const handleViewRespondents = () => {
     router.push({
       pathname: "/owner/respondents",
-      params: { requestId: req.id },
+      params: { requestId: req._id },
     });
   };
   return (
     <View>
       <Text variant="titleMedium">
-        {req.complete ? req.carerName : req.reqDate.toDateString()}
+        {req.status == "completed"
+          ? req.carer?.name
+          : req.dateRange.startDate.toDateString()}
       </Text>
-      <Text variant="bodySmall">{req.location}</Text>
       <Text variant="bodySmall">
-        {req.complete ? "completed" : `Price: $${req.pricePerHour}/hr`}
+        {req.carer ? `Direct Request to ${req.carer.name}` : "Broad Request"}
       </Text>
-      {!req.complete ? (
+      <Text variant="bodySmall">{req.status}</Text>
+      {/* if request carer is not present and is still pending then is broad 
+      request, should show respondents button */}
+      {!req.carer && req.status == "pending" ? (
         <Button onPress={handleViewRespondents}>View Respondents</Button>
       ) : null}
     </View>

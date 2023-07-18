@@ -1,56 +1,70 @@
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, Image, FlatList, StyleSheet } from "react-native";
 import { Avatar, Button, Card, Modal, Portal, Text } from "react-native-paper";
 import CarerResultsView, {
   CarerResult,
 } from "../../../components/CarerResultsView";
+import axios from "axios";
+import { accessibilityProps } from "react-native-paper/lib/typescript/src/components/MaterialCommunityIcon";
+import { useRoute } from "@react-navigation/native";
 
 const icon = require("../../../assets/icon.png");
 
-const respondentData: Array<CarerResult> = [
-  {
-    id: "0",
-    name: "Carer 1",
-    rating: 4,
-    message: "I am an enthusiastic pet carer",
-    icon: "../../assets/icon.png",
-  },
-  {
-    id: "1",
-    name: "Carer 2",
-    rating: 2,
-    message: "I am an enthusiastic pet carer",
-    icon: "../../assets/icon.png",
-  },
-  {
-    id: "2",
-    name: "Carer 3",
-    rating: 5,
-    message: "I am an enthusiastic pet carer",
-    icon: "../../assets/icon.png",
-  },
-];
-
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();
+  const [respodentId, setRespondentId] = useState("");
   const [respondents, setRespondents] = useState<Array<CarerResult>>([]);
   const [visible, setVisible] = useState(false);
+  const router = useRouter();
 
-  useEffect(() => {
-    setRespondents(respondentData);
+  useEffect((): (() => void) => {
+    let ignore = false;
+
+    (async () => {
+      try {
+        const { data } = await axios.get<Array<CarerResult>>(
+          `/owners/requests/${requestId}/respondents`
+        );
+
+        if (!ignore) {
+          setRespondents(data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+
+    return () => (ignore = true);
   }, []);
+
+  const handleDismiss: (accepted: boolean) => void = (accepted) => {
+    setVisible(false);
+
+    // if the owner has hired the carer, redirect them to the requests page as
+    // there is no need for them in this page any more
+    if (accepted) {
+      console.log("accepted carer");
+      router.replace("/owner/requests");
+    }
+  };
 
   return (
     <View>
-      <PaymentModal visible={visible} onDismiss={() => setVisible(false)} />
+      <PaymentModal
+        visible={visible}
+        onDismiss={handleDismiss}
+        requestId={requestId!}
+        respondentId={respodentId}
+      />
       <Text>Respondents {requestId}</Text>
       <CarerResultsView
         carerResults={respondents}
         handleRequest={(carerResult) => {
+          setRespondentId(carerResult._id);
           setVisible(true);
         }}
-        cardButtonLabel="Request Carer's Services"
+        cardButtonLabel="Hire"
       />
     </View>
   );
@@ -58,19 +72,38 @@ export default function Respondents() {
 
 interface PaymentModalProps {
   visible: boolean;
-  onDismiss: () => void;
+  onDismiss: (accepted: boolean) => void;
+  requestId: string;
+  respondentId: string;
 }
 
-function PaymentModal({ visible, onDismiss }: PaymentModalProps) {
+function PaymentModal({
+  visible,
+  onDismiss,
+  requestId,
+  respondentId,
+}: PaymentModalProps) {
+  const handleAccept = async () => {
+    try {
+      await axios.post(
+        `/owners/requests/${requestId}/respondents/${respondentId}`
+      );
+      onDismiss(true);
+    } catch (e) {
+      console.error(e);
+      onDismiss(false);
+    }
+  };
+
   return (
     <Portal>
       <Modal
         visible={visible}
-        onDismiss={onDismiss}
+        onDismiss={() => onDismiss(false)}
         style={styles.paymentModal}
       >
-        <Button mode="contained" onPress={onDismiss}>
-          Pay for service
+        <Button mode="contained" onPress={handleAccept}>
+          Accept carer
         </Button>
       </Modal>
     </Portal>

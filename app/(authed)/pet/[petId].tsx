@@ -1,10 +1,10 @@
 import { useLocalSearchParams } from "expo-router";
-import { Pet } from "../owner/pets";
 import { Avatar, SegmentedButtons, Text } from "react-native-paper";
 import { View } from "react-native";
 import { useEffect, useState } from "react";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import axios from "axios";
+import { Pet } from "../../../types";
 
 const icon = require("../../../assets/icon.png");
 
@@ -66,10 +66,16 @@ export default function PetView() {
     ownPet?: OwnPet;
   }>();
   const [currentView, setCurrentView] = useState<PetViewType>("pet");
-  const [pet, setPet] = useState<Pet>({});
+  const [pet, setPet] = useState<Pet>({
+    name: "",
+    petType: "dog",
+    petSize: "small",
+  });
 
   useEffect(() => {
-    axios.get(`/owners/pets/${petId}`).then(response => setPet(response.data));
+    axios
+      .get(`/owners/pets/${petId}`)
+      .then((response) => setPet(response.data));
   }, []);
 
   return (
@@ -111,9 +117,15 @@ function PetInfoView({ pet }: { pet: Pet }) {
       <Text variant="titleMedium">{pet.name}</Text>
       <Text variant="bodyMedium">Pet Type: {pet.petType}</Text>
       <Text variant="bodyMedium">Pet Size: {pet.petSize}</Text>
-      <Text variant="bodyMedium">Is Vaccinated: {pet.isVaccinated ? "Yes" : "No"}</Text>
-      <Text variant="bodyMedium">Is Friendly: {pet.isFriendly ? "Yes" : "No"}</Text>
-      <Text variant="bodyMedium">Is Neutered: {pet.isNeutered ? "Yes" : "No"}</Text>
+      <Text variant="bodyMedium">
+        Is Vaccinated: {pet.isVaccinated ? "Yes" : "No"}
+      </Text>
+      <Text variant="bodyMedium">
+        Is Friendly: {pet.isFriendly ? "Yes" : "No"}
+      </Text>
+      <Text variant="bodyMedium">
+        Is Neutered: {pet.isNeutered ? "Yes" : "No"}
+      </Text>
     </View>
   );
 }

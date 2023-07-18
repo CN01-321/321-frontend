@@ -6,11 +6,11 @@ import { StarRating } from "./StarRating";
 const icon = require("../assets/icon.png");
 
 export interface CarerResult {
-  id: string;
+  _id: string;
   name: string;
-  rating: number;
-  message: string;
-  icon: string;
+  rating?: number;
+  bio?: string;
+  icon?: string;
 }
 
 interface CarerResultsViewProps {
@@ -34,7 +34,7 @@ export default function CarerResultsView({
           cardButtonLabel={cardButtonLabel}
         />
       )}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item._id}
     />
   );
 }
@@ -78,8 +78,8 @@ function CarerResultCardInfo({
   return (
     <View>
       <Text variant="titleMedium">{carerResult.name}</Text>
-      <StarRating stars={carerResult.rating} />
-      <Text variant="bodySmall">{carerResult.message}</Text>
+      <StarRating stars={carerResult.rating ?? 0} />
+      <Text variant="bodySmall">{carerResult.bio}</Text>
       <Button mode="contained" onPress={() => handleRequest(carerResult)}>
         {cardButtonLabel}
       </Button>

@@ -7,19 +7,9 @@ import AddPetModal from "../../../components/AddPetModal";
 import ShowModalFab from "../../../components/ShowModalFab";
 import { Stack } from "expo-router";
 import axios from "axios";
+import { Pet } from "../../../types";
 
 const icon = require("../../../assets/icon.png");
-
-export interface Pet {
-  _id?: string;
-  name?: string;
-  petType?: "dog" | "cat" | "bird" | "rabbit";
-  petSize?: "small" | "medium" | "large";
-  isVaccinated?: boolean;
-  isFriendly?: boolean;
-  isNeutered?: boolean;
-  profilePicture?: string;
-}
 
 // const petData: Array<Pet> = [
 //   {
@@ -58,14 +48,14 @@ export default function Pets() {
   const hideModal = () => setVisible(false);
 
   useEffect(() => {
-    axios.get("/owners/pets").then(response => setPets(response.data));
+    axios.get("/owners/pets").then((response) => setPets(response.data));
   }, []);
 
   return (
     <View style={styles.container}>
-      <Stack.Screen 
+      <Stack.Screen
         options={{
-          headerTitle: "Pets"
+          headerTitle: "Pets",
         }}
       />
       <AddPetModal visible={visible} onDismiss={hideModal} />
@@ -88,7 +78,10 @@ function PetCard({ pet }: { pet: Pet }) {
     <Card
       style={styles.petCard}
       onPress={() =>
-        router.push({ pathname: `pet/${pet._id}`, params: { ownPet: "true", petDetails: pet } })
+        router.push({
+          pathname: `pet/${pet._id}`,
+          params: { ownPet: "true", petDetails: pet },
+        })
       }
     >
       <Card.Cover source={icon} style={styles.petCardImg} />
