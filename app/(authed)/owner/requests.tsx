@@ -9,6 +9,8 @@ import axios from "axios";
 
 const icon = require("../../../assets/icon.png");
 
+type RequestStatus = "pending" | "accepted" | "rejected" | "completed";
+
 interface Request {
   _id: string;
   carer?: {
@@ -21,83 +23,8 @@ interface Request {
     endDate: Date;
   };
   requestedOn: Date;
-  isComplete: boolean;
+  status: RequestStatus;
 }
-
-const requestsData: Array<Request> = [
-  {
-    _id: "0",
-    requestedOn: new Date(),
-    location: "Wollongong, NSW",
-    dateRange: {
-      startDate: new Date(),
-      endDate: new Date(Date() + 60 * 60 * 60 * 24),
-    },
-    isComplete: false,
-  },
-  {
-    _id: "1",
-    requestedOn: new Date(),
-    carer: {
-      _id: "0",
-      name: "Carer Name",
-    },
-    location: "Wollongong, NSW",
-    dateRange: {
-      startDate: new Date(),
-      endDate: new Date(Date() + 60 * 60 * 60 * 24),
-    },
-    isComplete: true,
-  },
-  {
-    _id: "2",
-    requestedOn: new Date(),
-    location: "Wollongong, NSW",
-    dateRange: {
-      startDate: new Date(),
-      endDate: new Date(Date() + 60 * 60 * 60 * 24),
-    },
-    isComplete: false,
-  },
-  {
-    _id: "3",
-    requestedOn: new Date(),
-    carer: {
-      _id: "0",
-      name: "Carer Name",
-    },
-    location: "Wollongong, NSW",
-    dateRange: {
-      startDate: new Date(),
-      endDate: new Date(Date() + 60 * 60 * 60 * 24),
-    },
-    isComplete: true,
-  },
-  {
-    _id: "4",
-    requestedOn: new Date(),
-    location: "Wollongong, NSW",
-    dateRange: {
-      startDate: new Date(),
-      endDate: new Date(Date() + 60 * 60 * 60 * 24),
-    },
-    isComplete: false,
-  },
-  {
-    _id: "5",
-    requestedOn: new Date(),
-    carer: {
-      _id: "0",
-      name: "Carer Name",
-    },
-    location: "Wollongong, NSW",
-    dateRange: {
-      startDate: new Date(),
-      endDate: new Date(Date() + 60 * 60 * 60 * 24),
-    },
-    isComplete: true,
-  },
-];
 
 export default function Requests() {
   const [requests, setRequests] = useState<Array<Request>>([]);
@@ -139,7 +66,6 @@ export default function Requests() {
 
   return (
     <>
-      <ShowModalFab icon="plus" showModal={showModal} />
       <View>
         <NewRequestModal visible={visible} onDismiss={hideModal} />
         <FlatList
@@ -148,6 +74,7 @@ export default function Requests() {
           keyExtractor={(item) => item._id}
         />
       </View>
+      <ShowModalFab icon="plus" showModal={showModal} />
     </>
   );
 }
@@ -175,20 +102,18 @@ function RequestCardInfo({ req }: { req: Request }) {
   return (
     <View>
       <Text variant="titleMedium">
-        {req.isComplete
+        {req.status == "completed"
           ? req.carer?.name
           : req.dateRange.startDate.toDateString()}
       </Text>
       <Text variant="bodySmall">
         {req.carer ? `Direct Request to ${req.carer.name}` : "Broad Request"}
       </Text>
-      <Text variant="bodySmall">
-        {req.isComplete ? "Completed" : "Pending"}
-      </Text>
-      {!req.isComplete ? (
-        <Button onPress={handleViewRespondents}>
-          View {req.carer ? "Response" : "Respondents"}
-        </Button>
+      <Text variant="bodySmall">{req.status}</Text>
+      {/* if request carer is not present and is still pending then is broad 
+      request, should show respondents button */}
+      {!req.carer && req.status == "pending" ? (
+        <Button onPress={handleViewRespondents}>View Respondents</Button>
       ) : null}
     </View>
   );
