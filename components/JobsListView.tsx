@@ -6,20 +6,27 @@ import { Avatar, Button, Card, Portal, Text, Modal } from "react-native-paper";
 const icon = require("../assets/icon.png");
 
 export interface Job {
-  jobId: string;
+  _id: string;
   ownerId: string;
   ownerName: string;
   ownerIcon?: string;
   pets: Array<{
-    petId: string;
-    petName: string;
+    _id: string;
+    name: string;
     petType: "dog" | "cat" | "bird" | "rabbit";
   }>;
-  requestedDate: Date;
-  distance: number;
-  startDate: Date;
-  endDate: Date;
-  location: string;
+  requestedOn: Date;
+  dateRange: {
+    startDate: Date;
+    endDate: Date;
+  };
+  location: {
+    state: string;
+    city: string;
+    street: string;
+    lat: number;
+    lng: number;
+  };
   additionalInfo: string;
 }
 
@@ -36,7 +43,7 @@ export default function JobsListView({ jobs, jobType }: JobsListViewProps) {
       <FlatList
         data={jobs}
         renderItem={({ item }) => <JobCard job={item} jobType={jobType} />}
-        keyExtractor={(item) => item.jobId}
+        keyExtractor={(item) => item._id}
       />
     </View>
   );
@@ -55,20 +62,17 @@ function JobCard({ job, jobType }: JobCardProps) {
         <Avatar.Image source={icon} size={40} />
         <View>
           <Text variant="titleMedium">
-            {job.pets.map((p) => p.petName).join(", ")} - {job.ownerName}
+            {job.pets.map((p) => p.name).join(", ")} - {job.ownerName}
           </Text>
           <Text variant="bodyLarge">
             {job.pets.map((p) => p.petType).join(", ")}
           </Text>
           <Text variant="bodySmall">
-            Requested on {job.requestedDate.toISOString()}
+            Requested on {job.requestedOn.toISOString()}
           </Text>
-          <Text variant="bodySmall">Distance {job.distance}km</Text>
+          <Text variant="bodySmall">City {job.location.city}</Text>
           <Link href={{ pathname: "profile", params: { userId: job.ownerId } }}>
             View Owner's Profile
-          </Link>
-          <Link href={{ pathname: "profile", params: { userId: job.ownerId } }}>
-            View Pets's Profile?
           </Link>
           <JobDetailsButton job={job} jobType={jobType} />
         </View>
@@ -123,6 +127,9 @@ function JobDetailsModal({
     onDismiss();
   };
 
+  const location = () =>
+    `${job.location.street}, ${job.location.city}, ${job.location.state}`;
+
   return (
     <Portal>
       <Modal
@@ -132,22 +139,24 @@ function JobDetailsModal({
       >
         <Text variant="titleMedium">View Offer's Details</Text>
         <Text variant="bodyMedium">
-          Start Date: {job.startDate.toISOString()}
+          Start Date: {job.dateRange.startDate.toISOString()}
         </Text>
-        <Text variant="bodyMedium">End Date: {job.endDate.toISOString()}</Text>
-        <Text variant="bodyMedium">Location: {job.location}</Text>
+        <Text variant="bodyMedium">
+          End Date: {job.dateRange.endDate.toISOString()}
+        </Text>
+        <Text variant="bodyMedium">Location: {location()}</Text>
         <Text variant="bodyMedium">
           {/* TODO switch to pets page */}
           Pets:{" "}
           {job.pets.map((p) => (
-            <Text key={p.petId}>
+            <Text key={p._id}>
               <Link
                 href={{
                   pathname: "profile",
                   params: { userId: job.ownerId },
                 }}
               >
-                {p.petName}
+                {p.name}
               </Link>{" "}
             </Text>
           ))}
