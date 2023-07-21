@@ -7,6 +7,7 @@ import CarerResultsView, {
   CarerResult,
 } from "../../../components/CarerResultsView";
 import NewRequestModal from "../../../components/NewRequestModal";
+import axios from "axios";
 
 interface PetTypes {
   dog: boolean;
@@ -22,60 +23,14 @@ interface PetSizes {
 }
 
 interface Filters {
-  startDateTime?: Date;
-  endDateTime?: Date;
   maxPrice?: number;
   minRating?: number;
   petTypes: PetTypes;
   petSizes: PetSizes;
 }
 
-const searchResultData: Array<CarerResult> = [
-  {
-    id: "0",
-    name: "Carer 1",
-    rating: 4,
-    message: "I am an enthusiastic pet carer",
-    icon: "../../assets/icon.png",
-  },
-  {
-    id: "1",
-    name: "Carer 2",
-    rating: 2,
-    message: "I am an enthusiastic pet carer",
-    icon: "../../assets/icon.png",
-  },
-  {
-    id: "2",
-    name: "Carer 3",
-    rating: 5,
-    message: "I am an enthusiastic pet carer",
-    icon: "../../assets/icon.png",
-  },
-  {
-    id: "3",
-    name: "Carer 1",
-    rating: 4,
-    message: "I am an enthusiastic pet carer",
-    icon: "../../assets/icon.png",
-  },
-  {
-    id: "4",
-    name: "Carer 2",
-    rating: 2,
-    message: "I am an enthusiastic pet carer",
-    icon: "../../assets/icon.png",
-  },
-  {
-    id: "5",
-    name: "Carer 3",
-    rating: 5,
-    message: "I am an enthusiastic pet carer",
-    icon: "../../assets/icon.png",
-  },
-];
-export default function Search() {
-  const [filters, setFilters] = useState<Filters>({
+const defaultFilters = () => {
+  return {
     petTypes: {
       dog: false,
       cat: false,
@@ -87,7 +42,11 @@ export default function Search() {
       medium: false,
       large: false,
     },
-  });
+  };
+};
+
+export default function Search() {
+  const [filters, setFilters] = useState<Filters>(defaultFilters());
   const [filterVisible, setFilterVisible] = useState(false);
   const [requestVisible, setRequestVisible] = useState(false);
   const [searchResults, setSearchResults] = useState<Array<CarerResult>>([]);
@@ -97,9 +56,46 @@ export default function Search() {
     setFilters({ ...filter });
   };
 
-  const doSearch = () => {
+  const getQueryString = () => {
+    // construct the query parameters for the api call
+    let query = "?";
+    if (filters.maxPrice) {
+      query += `price=${filters.maxPrice}&`;
+    }
+
+    // filter all chosen pet types and add them as petTypes[]=type to the query string
+    query += Object.entries(filters.petTypes)
+      .filter(([_, selected]) => selected)
+      .reduce(
+        (petTypeQuery, [petType, _]) => petTypeQuery + `petTypes[]=${petType}&`,
+        ""
+      );
+
+    // do the same thing for pet sizes
+    query += Object.entries(filters.petSizes)
+      .filter(([_, selected]) => selected)
+      .reduce(
+        (petSizeQuery, [petSize, _]) => petSizeQuery + `petSizes[]=${petSize}&`,
+        ""
+      );
+
+    return query;
+  };
+
+  const doSearch = async () => {
     console.log("searching with filters", filters);
-    setSearchResults(searchResultData);
+
+    console.log("query string ", getQueryString());
+    try {
+      const { data } = await axios.get<Array<CarerResult>>(
+        `/owners/requests/nearby${getQueryString()}`
+      );
+
+      console.log("search results ", data);
+      setSearchResults(data);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -147,25 +143,25 @@ function FilterModal({
   filters,
   updateFilters,
 }: FilterModalProps) {
-  const updateStartDate = (date: Date) => {
-    filters.startDateTime = date;
-    updateFilters(filters);
-  };
+  // const updateStartDate = (date: Date) => {
+  //   filters.startDateTime = date;
+  //   updateFilters(filters);
+  // };
 
-  const updateEndDate = (date: Date) => {
-    filters.endDateTime = date;
-    updateFilters(filters);
-  };
+  // const updateEndDate = (date: Date) => {
+  //   filters.endDateTime = date;
+  //   updateFilters(filters);
+  // };
 
   const updateMaxPrice = (price: number) => {
     filters.maxPrice = price;
     updateFilters(filters);
   };
 
-  const updateMinRating = (rating: number) => {
-    filters.minRating = rating;
-    updateFilters(filters);
-  };
+  // const updateMinRating = (rating: number) => {
+  //   filters.minRating = rating;
+  //   updateFilters(filters);
+  // };
 
   const updatePetTypes = (pet: PetTypeKey) => {
     filters.petTypes[pet] = !filters.petTypes[pet];
@@ -177,6 +173,10 @@ function FilterModal({
     updateFilters(filters);
   };
 
+  const clearFilters = () => {
+    updateFilters(defaultFilters());
+  };
+
   return (
     <Portal>
       <Modal
@@ -186,7 +186,7 @@ function FilterModal({
       >
         <ScrollView>
           <Text variant="titleMedium">Filters</Text>
-          <DatePickerButton
+          {/* <DatePickerButton
             label="Start Date"
             date={filters.startDateTime}
             updateDate={updateStartDate}
@@ -195,7 +195,7 @@ function FilterModal({
             label="End date"
             date={filters.endDateTime}
             updateDate={updateEndDate}
-          />
+          /> */}
           <Text>Max Price: {filters.maxPrice}</Text>
           <Slider
             minimumValue={0}
@@ -203,13 +203,13 @@ function FilterModal({
             step={25}
             onValueChange={updateMaxPrice}
           />
-          <Text>Min Rating: {filters.minRating}</Text>
+          {/* <Text>Min Rating: {filters.minRating}</Text>
           <Slider
             minimumValue={0}
             maximumValue={5}
             step={1}
             onValueChange={updateMinRating}
-          />
+          /> */}
           <Text>Select Pet Types</Text>
           <FilterSelection<PetTypeKey, PetTypes>
             selections={filters.petTypes}
@@ -222,6 +222,9 @@ function FilterModal({
           />
           <Button mode="contained" onPress={onDismiss}>
             Set Filters
+          </Button>
+          <Button mode="contained" onPress={clearFilters}>
+            Clear Filters
           </Button>
         </ScrollView>
       </Modal>
