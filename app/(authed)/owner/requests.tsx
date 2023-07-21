@@ -49,6 +49,8 @@ export default function Requests() {
           };
         });
 
+        console.log(reqs);
+
         if (!ignore) {
           console.log(reqs);
           setRequests(reqs);

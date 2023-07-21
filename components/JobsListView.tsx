@@ -1,4 +1,5 @@
-import { Link } from "expo-router";
+import axios from "axios";
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { FlatList, View } from "react-native";
 import { Avatar, Button, Card, Portal, Text, Modal } from "react-native-paper";
@@ -117,13 +118,33 @@ function JobDetailsModal({
   visible,
   onDismiss,
 }: JobDetailsModalProps) {
-  const handleAccept = () => {
+  const router = useRouter();
+
+  const handleAccept = async () => {
     console.log("Accepted/applied", job);
+    try {
+      await axios.post(`/carers/${jobType}/${job._id}/accept`);
+    } catch (e) {
+      console.error(e);
+    }
     onDismiss();
+    router.replace({
+      pathname: "/carer/offers",
+      params: { initOfferType: jobType },
+    });
   };
 
-  const handleReject = () => {
+  const handleReject = async () => {
     console.log("Rejected", job);
+    try {
+      await axios.post(`/carers/${jobType}/${job._id}/reject`);
+    } catch (e) {
+      console.error(e);
+    }
+    router.replace({
+      pathname: "/carer/offers",
+      params: { initOfferType: jobType },
+    });
     onDismiss();
   };
 
@@ -163,14 +184,14 @@ function JobDetailsModal({
         </Text>
         <Text variant="bodySmall">{job.additionalInfo}</Text>
         {jobType !== "job" && (
-          <Button mode="contained" onPress={handleAccept}>
-            {jobType === "direct" ? "Accept" : "Apply"}
-          </Button>
-        )}
-        {jobType === "broad" && (
-          <Button mode="contained" onPress={handleReject}>
-            Reject
-          </Button>
+          <>
+            <Button mode="contained" onPress={handleAccept}>
+              {jobType === "direct" ? "Accept" : "Apply"}
+            </Button>
+            <Button mode="contained" onPress={handleReject}>
+              Reject
+            </Button>
+          </>
         )}
       </Modal>
     </Portal>
