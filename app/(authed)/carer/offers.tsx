@@ -1,75 +1,53 @@
-import { Link } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
-import {
-  Avatar,
-  Button,
-  Card,
-  Modal,
-  Portal,
-  SegmentedButtons,
-  Text,
-} from "react-native-paper";
+import { View } from "react-native";
+import { SegmentedButtons } from "react-native-paper";
 import JobsListView, { Job } from "../../../components/JobsListView";
-
-const offersData: Array<Job> = [
-  {
-    jobId: "0",
-    ownerId: "0",
-    ownerName: "Owner Name",
-    ownerIcon: "icon",
-    pets: [
-      { petId: "0", petName: "pet", petType: "dog" },
-      { petId: "1", petName: "pet", petType: "cat" },
-      { petId: "2", petName: "pet", petType: "bird" },
-    ],
-    requestedDate: new Date(),
-    distance: 3,
-    startDate: new Date(),
-    endDate: new Date(),
-    location: "wollongong",
-    additionalInfo: "looking for someone to care for my pets",
-  },
-  {
-    jobId: "1",
-    ownerId: "1",
-    ownerName: "Owner Name",
-    ownerIcon: "icon",
-    pets: [{ petId: "0", petName: "pet", petType: "dog" }],
-    requestedDate: new Date(),
-    distance: 3,
-    startDate: new Date(),
-    endDate: new Date(),
-    location: "wollongong",
-    additionalInfo: "looking for someone to care for my pets",
-  },
-  {
-    jobId: "2",
-    ownerId: "2",
-    ownerName: "Owner Name",
-    ownerIcon: "icon",
-    pets: [
-      { petId: "0", petName: "pet", petType: "dog" },
-      { petId: "1", petName: "pet", petType: "cat" },
-    ],
-    requestedDate: new Date(),
-    distance: 3,
-    startDate: new Date(),
-    endDate: new Date(),
-    location: "wollongong",
-    additionalInfo: "looking for someone to care for my pets",
-  },
-];
+import axios from "axios";
 
 type OfferType = "direct" | "broad";
 
 export default function Offers() {
-  const [offerType, setOfferType] = useState<OfferType>("direct");
+  const { initOfferType } = useLocalSearchParams<{
+    initOfferType?: OfferType;
+  }>();
+  const [offerType, setOfferType] = useState<OfferType>(
+    initOfferType ?? "direct"
+  );
   const [offers, setOffers] = useState<Array<Job>>([]);
 
-  useEffect(() => {
+  useEffect((): (() => void) => {
+    let ignore = false;
+
+    (async () => {
+      try {
+        const { data } = await axios.get<Array<Job>>(`/carers/${offerType}`);
+
+        // map all date strings to date objects
+        const offers = data.map((o) => {
+          return {
+            ...o,
+            requestedOn: new Date(o.requestedOn),
+            dateRange: {
+              startDate: new Date(o.dateRange.startDate),
+              endDate: new Date(o.dateRange.endDate),
+            },
+          };
+        });
+
+        console.log(offers);
+
+        if (!ignore) {
+          setOffers(offers);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+
+    return () => (ignore = true);
     // TODO switch datas depending on current view
-    setOffers(offerType === "direct" ? offersData : offersData);
+    // setOffers(offerType === "direct" ? offersData : offersData);
   }, [offerType]);
 
   return (
