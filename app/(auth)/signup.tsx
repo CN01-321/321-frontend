@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { UserType } from "../contexts/auth";
-import { useRouter } from "expo-router";
+import { UserType } from "../../contexts/auth";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import axios from "axios";
 import { View } from "react-native";
 import { Button, TextInput, Title } from "react-native-paper";
 
-export default function SignUpForm({ userType }: { userType: UserType }) {
+export default function SignUp() {
+  const { userType } = useLocalSearchParams<{ userType: UserType }>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function SignUpForm({ userType }: { userType: UserType }) {
       });
 
       console.log(`created new ${userType} with: ${email} and ${password}`);
-      router.replace("/login");
+      router.replace({ pathname: "/login", params: { userType } });
     } catch (error) {
       console.error(error);
     }
@@ -28,6 +29,11 @@ export default function SignUpForm({ userType }: { userType: UserType }) {
 
   return (
     <View>
+      <Stack.Screen
+        options={{
+          title: "Sign Up",
+        }}
+      />
       <Title>Sign up as {userType}</Title>
       <TextInput
         label="Email"

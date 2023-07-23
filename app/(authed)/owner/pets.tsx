@@ -1,8 +1,7 @@
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, View, StyleSheet, Pressable } from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 import { Card, FAB, Text } from "react-native-paper";
-import { Review } from "../../../components/ReviewsView";
 import AddPetModal from "../../../components/AddPetModal";
 import ShowModalFab from "../../../components/ShowModalFab";
 import { Stack } from "expo-router";
@@ -10,35 +9,6 @@ import axios from "axios";
 import { Pet } from "../../../types";
 
 const icon = require("../../../assets/icon.png");
-
-// const petData: Array<Pet> = [
-//   {
-//     id: "0",
-//     name: "Pet 1",
-//     type: "dog",
-//     size: "medium",
-//     icon: "icon",
-//   },
-//   {
-//     id: "1",
-//     name: "Pet 2",
-//     type: "dog",
-//     size: "medium",
-//   },
-//   {
-//     id: "2",
-//     name: "Pet 3",
-//     type: "cat",
-//     size: "medium",
-//     icon: "icon",
-//   },
-//   {
-//     id: "3",
-//     name: "Pet 4",
-//     type: "cat",
-//     size: "medium",
-//   },
-// ];
 
 export default function Pets() {
   const [pets, setPets] = useState<Array<Pet>>([]);
@@ -61,8 +31,8 @@ export default function Pets() {
       <AddPetModal visible={visible} onDismiss={hideModal} />
       <ScrollView contentContainerStyle={styles.petsArea}>
         {pets.map((p) => (
-          <View style={styles.petCardContainer}>
-            <PetCard key={p._id} pet={p} />
+          <View key={p._id} style={styles.petCardContainer}>
+            <PetCard pet={p} />
           </View>
         ))}
       </ScrollView>
@@ -90,10 +60,6 @@ function PetCard({ pet }: { pet: Pet }) {
       </Card.Content>
     </Card>
   );
-}
-
-function AddPetFAB() {
-  return <FAB icon="plus" label="Add Pet" />;
 }
 
 const styles = StyleSheet.create({

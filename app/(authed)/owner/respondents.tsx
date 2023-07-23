@@ -1,13 +1,11 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { View, Image, FlatList, StyleSheet } from "react-native";
-import { Avatar, Button, Card, Modal, Portal, Text } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
+import { Button, Modal, Portal, Text } from "react-native-paper";
 import CarerResultsView, {
   CarerResult,
 } from "../../../components/CarerResultsView";
 import axios from "axios";
-import { accessibilityProps } from "react-native-paper/lib/typescript/src/components/MaterialCommunityIcon";
-import { useRoute } from "@react-navigation/native";
 
 const icon = require("../../../assets/icon.png");
 

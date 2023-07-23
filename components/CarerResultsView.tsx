@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { FlatList, View, StyleSheet } from "react-native";
 import { Avatar, Button, Card, Text } from "react-native-paper";
 import { StarRating } from "./StarRating";

@@ -1,9 +1,10 @@
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
-import JobsListView, { Job } from "../../../components/JobsListView";
+import JobsListView from "../../../components/JobsListView";
 import axios from "axios";
+import { Job } from "../../../types";
 
 type OfferType = "direct" | "broad";
 
@@ -35,8 +36,6 @@ export default function Offers() {
           };
         });
 
-        console.log(offers);
-
         if (!ignore) {
           setOffers(offers);
         }
@@ -46,12 +45,15 @@ export default function Offers() {
     })();
 
     return () => (ignore = true);
-    // TODO switch datas depending on current view
-    // setOffers(offerType === "direct" ? offersData : offersData);
   }, [offerType]);
 
   return (
     <View>
+      <Stack.Screen
+        options={{
+          title: "Offers",
+        }}
+      />
       <SegmentedButtons
         value={offerType}
         onValueChange={(value) => setOfferType(value as OfferType)}

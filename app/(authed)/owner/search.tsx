@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import Slider from "@react-native-community/slider";
 import { Button, Checkbox, Modal, Portal, Text } from "react-native-paper";
-import { DatePickerButton } from "../../../components/DatePickerButton";
 import CarerResultsView, {
   CarerResult,
 } from "../../../components/CarerResultsView";

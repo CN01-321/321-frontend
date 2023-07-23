@@ -5,8 +5,7 @@ import JWT from "expo-jwt";
 import * as SecureStore from "expo-secure-store";
 import { JWT_SECRET } from "@env";
 import axios from "axios";
-
-export type UserType = "owner" | "carer";
+import { UserType } from "../types";
 
 interface User {
   email: string;
