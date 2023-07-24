@@ -7,6 +7,7 @@ import ShowModalFab from "../../../components/ShowModalFab";
 import { Stack } from "expo-router";
 import axios from "axios";
 import { Pet } from "../../../types";
+import Header from "../../../components/Header";
 
 const icon = require("../../../assets/icon.png");
 
@@ -23,11 +24,7 @@ export default function Pets() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          headerTitle: "Pets",
-        }}
-      />
+      <Header title="Pets" />
       <AddPetModal visible={visible} onDismiss={hideModal} />
       <ScrollView contentContainerStyle={styles.petsArea}>
         {pets.map((p) => (

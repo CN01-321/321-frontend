@@ -1,17 +1,14 @@
 import { View } from "react-native";
 import { Title, Button } from "react-native-paper";
 import { Stack, useRouter } from "expo-router";
+import Header from "../../components/Header";
 
 export default function Landing() {
   const router = useRouter();
 
   return (
     <View>
-      <Stack.Screen
-        options={{
-          title: "Welcome",
-        }}
-      />
+      <Header title="Welcome" />
       <Title>Landing page</Title>
 
       <Button

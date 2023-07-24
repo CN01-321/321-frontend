@@ -7,7 +7,8 @@ import { JWT_SECRET } from "@env";
 import axios from "axios";
 import { UserType } from "../types";
 
-interface User {
+interface TokenUser {
+  _id: string;
   email: string;
   type: UserType;
 }
@@ -15,14 +16,10 @@ interface User {
 export type AuthContextType = {
   logIn: (token: string) => void;
   logOut: () => void;
-  getUser: () => User | null;
+  getTokenUser: () => TokenUser | null;
 };
 
-const AuthContext = createContext<AuthContextType>({
-  logIn: () => {},
-  logOut: () => {},
-  getUser: () => null,
-});
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -30,7 +27,7 @@ export function useAuth() {
 
 // will ensure that the user is only in pages that they are allowed in
 // by looking at what route they are in and redirecting if needed
-function useProtectedRoute(user: User | null) {
+function useProtectedRoute(user: TokenUser | null) {
   const segments = useSegments();
   const router = useRouter();
 
@@ -66,7 +63,7 @@ function useProtectedRoute(user: User | null) {
 }
 
 export function AuthProvider(props: any) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<TokenUser | null>(null);
   const [token, setToken] = useState("");
 
   const storeToken = async () => {
@@ -86,7 +83,7 @@ export function AuthProvider(props: any) {
     // set this token to be sent with every axios call
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-    const newUser: User = decode["user"] as User;
+    const newUser: TokenUser = decode["user"] as TokenUser;
 
     console.log("new user", newUser);
 
@@ -116,19 +113,20 @@ export function AuthProvider(props: any) {
     let ignore = false;
 
     (async () => {
-      // if (ignore) return;
       console.log(
         "token is currently",
         await SecureStore.getItemAsync("token")
       );
 
-      if (token === "") {
+      if (token === "" && !ignore) {
         await deleteToken();
         return;
       }
 
-      await storeToken();
-      console.log("token is now", await SecureStore.getItemAsync("token"));
+      if (!ignore) {
+        await storeToken();
+        console.log("token is now", await SecureStore.getItemAsync("token"));
+      }
     })();
 
     return () => (ignore = true);
@@ -157,7 +155,7 @@ export function AuthProvider(props: any) {
   const logIn = async (token: string) => {
     try {
       // verify the JWT is valid
-      JWT.decode<User>(token, JWT_SECRET, { iss: "pet-carer.com" });
+      JWT.decode<TokenUser>(token, JWT_SECRET, { iss: "pet-carer.com" });
       setToken(token);
       console.log("token is valid and set token");
     } catch (e) {
@@ -174,7 +172,7 @@ export function AuthProvider(props: any) {
   useProtectedRoute(user);
 
   return (
-    <AuthContext.Provider value={{ logIn, logOut, getUser }}>
+    <AuthContext.Provider value={{ logIn, logOut, getTokenUser: getUser }}>
       {props.children}
     </AuthContext.Provider>
   );

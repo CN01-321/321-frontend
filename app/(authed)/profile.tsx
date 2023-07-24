@@ -1,102 +1,105 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
-import {
-  Avatar,
-  Button,
-  Card,
-  IconButton,
-  Modal,
-  Portal,
-  SegmentedButtons,
-  Text,
-  TextInput,
-} from "react-native-paper";
-import { StarRating } from "../../components/StarRating";
-import ShowModalFab from "../../components/ShowModalFab";
+import { View } from "react-native";
+import { Avatar, SegmentedButtons, Text, TextInput } from "react-native-paper";
 import ReviewsView, { Review } from "../../components/ReviewsView";
+import { useAuth } from "../../contexts/auth";
+import axios from "axios";
+import Header from "../../components/Header";
 
 interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   phone: string;
   pfp?: string;
-  reviews: Array<Review>;
 }
-
-const userData: User = {
-  id: "0",
-  name: "Firstname Lastname",
-  email: "email@email.com",
-  phone: "0412345678",
-  reviews: [
-    {
-      reviewId: "0",
-      reviewerId: "0",
-      reviewerIcon: "iconPath",
-      reviewerName: "Reviewer 1",
-      date: new Date(),
-      message: "nice pets",
-      image: "imagePath",
-      likes: 0,
-      comments: [],
-    },
-    {
-      reviewId: "1",
-      reviewerId: "1",
-      reviewerName: "Reviewer 2",
-      date: new Date(),
-      rating: 2,
-      message: "bad pets",
-      likes: 5,
-      comments: [
-        {
-          commentId: "0",
-          commenterId: "0",
-          commenterName: "Commenter 1",
-          date: new Date(),
-          message: "hot take",
-          comments: [],
-        },
-        {
-          commentId: "1",
-          commenterId: "1",
-          commenterName: "Commenter 2",
-          date: new Date(),
-          message: "i agree",
-          comments: [],
-        },
-      ],
-    },
-  ],
-};
 
 type ProfileViewType = "profile" | "reviews";
 
 export default function Profile() {
   const { userId } = useLocalSearchParams<{ userId?: string }>();
-  // TODO update this to true if the user
-  const [isSelf, setIsSelf] = useState(false);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [currentView, setCurrentView] = useState<ProfileViewType>("profile");
   const [user, setUser] = useState<User>({
-    id: "",
+    _id: "",
     name: "",
     email: "",
     phone: "",
-    reviews: [],
   });
+  const [reviews, setReviews] = useState<Array<Review>>([]);
+  const { getTokenUser } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    if (userId) {
-      setIsSelf(false);
+  const getProfile = async (profileId: string): Promise<User> => {
+    return {
+      _id: profileId,
+      name: "Profile Name",
+      email: "profile@email.com",
+      phone: "123",
+    };
+  };
+
+  const getUserReviews = async (profileId: string): Promise<Array<Review>> => {
+    console.log(profileId);
+    const { data } = await axios.get<Array<Review>>(
+      `/users/${profileId}/feedback`
+    );
+
+    console.log(data);
+    // map all date strings to dates
+    const reviews = data.map((r) => {
+      return {
+        ...r,
+        postedOn: new Date(r.postedOn),
+        comments: r.comments.map((c) => {
+          return {
+            ...c,
+            postedOn: new Date(c.postedOn),
+          };
+        }),
+      };
+    });
+
+    return reviews;
+  };
+
+  useEffect((): (() => void) => {
+    let ignore = false;
+
+    const profileId = userId ?? getTokenUser()?._id ?? "";
+
+    // if userId is undefined then the user is visiting their own page
+    if (!userId) {
+      // setIsOwnProfile(true);
     }
-    setUser(userData);
+
+    (async () => {
+      // get both profile info and reviews at the same time
+      try {
+        const [user, reviews] = await Promise.all([
+          getProfile(profileId),
+          getUserReviews(profileId),
+        ]);
+
+        console.log(user, reviews);
+        if (!ignore) {
+          setUser(user);
+          setReviews(reviews);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+
+    return () => (ignore = true);
   }, []);
 
   return (
     <View>
+      <Header
+        title={user.name + (currentView === "reviews" ? " Reviews" : "")}
+      />
       <SegmentedButtons
         value={currentView}
         onValueChange={(value) => {
@@ -119,7 +122,7 @@ export default function Profile() {
       {currentView === "profile" ? (
         <ProfileInfoView user={user} />
       ) : (
-        <ReviewsView profile={user} isSelf={isSelf} reviews={user.reviews} />
+        <ReviewsView profile={user} isSelf={isOwnProfile} reviews={reviews} />
       )}
     </View>
   );

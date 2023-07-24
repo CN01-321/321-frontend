@@ -4,7 +4,7 @@ export type PetSize = "small" | "medium" | "large";
 export type UserType = "owner" | "carer";
 
 export interface Pet {
-  _id?: string;
+  _id: string;
   name: string;
   petType: PetType;
   petSize: PetSize;

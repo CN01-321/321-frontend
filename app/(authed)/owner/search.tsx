@@ -7,6 +7,7 @@ import CarerResultsView, {
 } from "../../../components/CarerResultsView";
 import NewRequestModal from "../../../components/NewRequestModal";
 import axios from "axios";
+import Header from "../../../components/Header";
 
 interface PetTypes {
   dog: boolean;
@@ -99,6 +100,7 @@ export default function Search() {
 
   return (
     <View>
+      <Header title="Search" />
       <Text>Search</Text>
       <Button mode="contained" onPress={() => setFilterVisible(true)}>
         Filters

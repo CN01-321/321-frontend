@@ -72,7 +72,7 @@ const ownerRoutes = [
 ];
 
 export default function UserLayout() {
-  const { getUser } = useAuth();
+  const { getTokenUser: getUser } = useAuth();
   const [index, setIndex] = useState(0);
   const router = useRouter();
   const segments = useSegments();

@@ -5,6 +5,7 @@ import { SegmentedButtons } from "react-native-paper";
 import JobsListView from "../../../components/JobsListView";
 import axios from "axios";
 import { Job } from "../../../types";
+import Header from "../../../components/Header";
 
 type OfferType = "direct" | "broad";
 
@@ -49,11 +50,7 @@ export default function Offers() {
 
   return (
     <View>
-      <Stack.Screen
-        options={{
-          title: "Offers",
-        }}
-      />
+      <Header title="Offers" />
       <SegmentedButtons
         value={offerType}
         onValueChange={(value) => setOfferType(value as OfferType)}

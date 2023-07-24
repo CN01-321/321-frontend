@@ -17,16 +17,16 @@ const icon = require("../assets/icon.png");
 const image = require("../assets/splash.png");
 
 export interface Profile {
-  id: string;
+  _id: string;
   name: string;
 }
 
 export interface Review {
-  reviewId: string;
-  reviewerId: string;
-  reviewerName: string;
-  reviewerIcon?: string;
-  date: Date;
+  _id: string;
+  authorId: string;
+  authorName: string;
+  authorIcon?: string;
+  postedOn: Date;
   rating?: number;
   message: string;
   image?: string;
@@ -35,13 +35,11 @@ export interface Review {
 }
 
 export interface Comment {
-  commentId: string;
-  commenterId: string;
-  commenterName: string;
-  commenterIcon?: string;
-  date: Date;
+  authorId: string;
+  authorName: string;
+  authorIcon?: string;
   message: string;
-  comments: Array<Comment>;
+  postedOn: Date;
 }
 
 interface ProfileReviewsViewProps {
@@ -62,7 +60,7 @@ export default function ReviewsView({
       <FlatList
         data={reviews}
         renderItem={({ item }) => <ReviewCard review={item} />}
-        keyExtractor={(item) => item.reviewerId}
+        keyExtractor={(item) => item._id}
       />
 
       {isSelf ? null : (
@@ -88,21 +86,21 @@ function ReviewCard({ review }: ReviewCardProps) {
   const [showComments, setShowComments] = useState(false);
 
   const handleLike = () => {
-    console.log(`liked comment by ${review.reviewerName}`);
+    console.log(`liked comment by ${review.authorName}`);
   };
 
   return (
     <Card>
       {review.image ? <Card.Cover source={image} /> : null}
       <Card.Content>
-        {review.reviewerIcon ? (
+        {review.authorIcon ? (
           // TODO change to getting avatar from backend
           <Avatar.Image size={24} source={icon} />
         ) : (
           <Avatar.Image size={24} source={icon} />
         )}
         <View>
-          <Text variant="titleSmall">{review.reviewerName}</Text>
+          <Text variant="titleSmall">{review.authorName}</Text>
           {review.rating ? <StarRating stars={review.rating} /> : null}
           <Text variant="bodySmall">{review.message}</Text>
           <View style={{ flexDirection: "row" }}>
@@ -147,7 +145,8 @@ function CommentsModal({ comments, visible, onDismiss }: CommentsModalProps) {
           <FlatList
             data={comments}
             renderItem={({ item }) => <CommentCard comment={item} />}
-            keyExtractor={(item) => item.commentId}
+            // using index is fine here as arrays are always ordered the same way
+            keyExtractor={(_, index) => String(index)}
           />
         </View>
       </Modal>
@@ -163,15 +162,17 @@ function CommentCard({ comment }: CommentCardProps) {
   return (
     <Card>
       <Card.Content>
-        {comment.commenterIcon ? (
+        {comment.authorIcon ? (
           // TODO change to getting avatar from backend
           <Avatar.Image size={24} source={icon} />
         ) : (
           <Avatar.Image size={24} source={icon} />
         )}
         <View>
-          <Text variant="titleSmall">{comment.commenterName}</Text>
-          <Text variant="bodySmall">Posted: {comment.date.toUTCString()}</Text>
+          <Text variant="titleSmall">{comment.authorIcon}</Text>
+          <Text variant="bodySmall">
+            Posted: {comment.postedOn.toUTCString()}
+          </Text>
           <Text variant="bodySmall">{comment.message}</Text>
         </View>
       </Card.Content>
@@ -191,7 +192,7 @@ function NewReviewModal({ profile, visible, onDismiss }: NewReviewModalProps) {
 
   const handleSubmit = () => {
     console.log(
-      `submitting rating to ${profile.id} with rating: ${rating} and message "${message}"`
+      `submitting rating to ${profile.name} with rating: ${rating} and message "${message}"`
     );
     onDismiss();
   };

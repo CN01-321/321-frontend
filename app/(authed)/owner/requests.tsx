@@ -9,6 +9,7 @@ import { Request } from "../../../types";
 import axios from "axios";
 import RequestInfoModal from "../../../components/RequestInfoModal";
 import RequestCard from "../../../components/RequestCard";
+import Header from "../../../components/Header";
 
 const icon = require("../../../assets/icon.png");
 
@@ -51,7 +52,7 @@ export default function Requests() {
 
   return (
     <>
-      <Stack.Screen options={{ title: "Requests" }} />
+      <Header title="Requests" />
       <View>
         <NewRequestModal visible={visible} onDismiss={hideModal} />
         <FlatList

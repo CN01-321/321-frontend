@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { UserType } from "../../contexts/auth";
+import { UserType } from "../../types";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import axios from "axios";
 import { View } from "react-native";
 import { Button, TextInput, Title } from "react-native-paper";
+import Header from "../../components/Header";
 
 export default function SignUp() {
   const { userType } = useLocalSearchParams<{ userType: UserType }>();
@@ -29,11 +30,7 @@ export default function SignUp() {
 
   return (
     <View>
-      <Stack.Screen
-        options={{
-          title: "Sign Up",
-        }}
-      />
+      <Header title="Sign Up" />
       <Title>Sign up as {userType}</Title>
       <TextInput
         label="Email"
