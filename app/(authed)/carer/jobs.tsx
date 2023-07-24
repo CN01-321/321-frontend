@@ -1,8 +1,9 @@
 import { View } from "react-native";
-import { Text } from "react-native-paper";
-import JobsListView, { Job } from "../../../components/JobsListView";
+import JobsListView from "../../../components/JobsListView";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Stack } from "expo-router";
+import { Job } from "../../../types";
 
 export default function Jobs() {
   const [jobs, setJobs] = useState<Array<Job>>([]);
@@ -26,8 +27,6 @@ export default function Jobs() {
           };
         });
 
-        console.log(jobs);
-
         if (!ignore) {
           setJobs(jobs);
         }
@@ -41,6 +40,7 @@ export default function Jobs() {
 
   return (
     <View>
+      <Stack.Screen options={{ title: "Jobs" }} />
       <JobsListView jobs={jobs} jobType="job" />
     </View>
   );

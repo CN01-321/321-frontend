@@ -1,32 +1,43 @@
 import { View } from "react-native";
-import { Title, Text, Button } from "react-native-paper";
-import { Link, useRouter } from "expo-router";
+import { Title, Button } from "react-native-paper";
+import { Stack, useRouter } from "expo-router";
 
 export default function Landing() {
   const router = useRouter();
 
   return (
     <View>
+      <Stack.Screen
+        options={{
+          title: "Welcome",
+        }}
+      />
       <Title>Landing page</Title>
 
       <Button
         mode="contained"
         theme={{ colors: { primary: "brown" } }}
-        onPress={() => router.push("/(auth)/owner/get-started")}
+        onPress={() =>
+          router.push({
+            pathname: "/(auth)/get-started",
+            params: { userType: "owner" },
+          })
+        }
       >
         Pet Owner
       </Button>
       <Button
         mode="contained"
         theme={{ colors: { primary: "yellow" } }}
-        onPress={() => router.push("/(auth)/carer/get-started")}
+        onPress={() =>
+          router.push({
+            pathname: "/(auth)/get-started",
+            params: { userType: "carer" },
+          })
+        }
       >
         Pet Carer
       </Button>
-
-      <Text>
-        Already registered? <Link href="/login">Tap here to login</Link>
-      </Text>
     </View>
   );
 }

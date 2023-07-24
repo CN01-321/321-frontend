@@ -1,17 +1,21 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { Button, TextInput, Title } from "react-native-paper";
-import { useAuth } from "../../contexts/auth";
+import { UserType, useAuth } from "../../contexts/auth";
 import axios from "axios";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 type GetToken = {
   token: string;
 };
 
 export default function Login() {
+  const { userType } = useLocalSearchParams<{ userType: UserType }>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { logIn } = useAuth();
+
+  const colour = userType === "owner" ? "brown" : "yellow";
 
   const login = async () => {
     try {
@@ -29,6 +33,11 @@ export default function Login() {
 
   return (
     <View>
+      <Stack.Screen
+        options={{
+          title: "Log In",
+        }}
+      />
       <Title>Log In</Title>
       <TextInput
         label="Email"
@@ -42,7 +51,11 @@ export default function Login() {
         onChangeText={(text) => setPassword(text)}
       />
 
-      <Button mode="contained" onPress={login}>
+      <Button
+        mode="contained"
+        onPress={login}
+        theme={{ colors: { primary: colour } }}
+      >
         Login
       </Button>
     </View>

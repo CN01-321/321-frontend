@@ -1,30 +1,16 @@
 import { useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, GestureResponderEvent, View } from "react-native";
 import { Avatar, Button, Card, FAB, Text } from "react-native-paper";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet } from "react-native";
 import NewRequestModal from "../../../components/NewRequestModal";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import ShowModalFab from "../../../components/ShowModalFab";
+import { Request } from "../../../types";
 import axios from "axios";
+import RequestInfoModal from "../../../components/RequestInfoModal";
+import RequestCard from "../../../components/RequestCard";
 
 const icon = require("../../../assets/icon.png");
-
-type RequestStatus = "pending" | "accepted" | "rejected" | "completed";
-
-interface Request {
-  _id: string;
-  carer?: {
-    _id: string;
-    name: string;
-  };
-  location: string;
-  dateRange: {
-    startDate: Date;
-    endDate: Date;
-  };
-  requestedOn: Date;
-  status: RequestStatus;
-}
 
 export default function Requests() {
   const [requests, setRequests] = useState<Array<Request>>([]);
@@ -49,10 +35,7 @@ export default function Requests() {
           };
         });
 
-        console.log(reqs);
-
         if (!ignore) {
-          console.log(reqs);
           setRequests(reqs);
         }
       } catch (e) {
@@ -68,6 +51,7 @@ export default function Requests() {
 
   return (
     <>
+      <Stack.Screen options={{ title: "Requests" }} />
       <View>
         <NewRequestModal visible={visible} onDismiss={hideModal} />
         <FlatList
@@ -80,50 +64,3 @@ export default function Requests() {
     </>
   );
 }
-
-function RequestCard({ req }: { req: Request }) {
-  return (
-    <Card>
-      <Card.Content style={styles.broadRequestCard}>
-        <Avatar.Image source={icon} size={100} />
-        <RequestCardInfo req={req} />
-      </Card.Content>
-    </Card>
-  );
-}
-
-function RequestCardInfo({ req }: { req: Request }) {
-  const router = useRouter();
-
-  const handleViewRespondents = () => {
-    router.push({
-      pathname: "/owner/respondents",
-      params: { requestId: req._id },
-    });
-  };
-  return (
-    <View>
-      <Text variant="titleMedium">
-        {req.status == "completed"
-          ? req.carer?.name
-          : req.dateRange.startDate.toDateString()}
-      </Text>
-      <Text variant="bodySmall">
-        {req.carer ? `Direct Request to ${req.carer.name}` : "Broad Request"}
-      </Text>
-      <Text variant="bodySmall">{req.status}</Text>
-      {/* if request carer is not present and is still pending then is broad 
-      request, should show respondents button */}
-      {!req.carer && req.status == "pending" ? (
-        <Button onPress={handleViewRespondents}>View Respondents</Button>
-      ) : null}
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  broadRequestCard: {
-    flexDirection: "row",
-    padding: 5,
-  },
-});
