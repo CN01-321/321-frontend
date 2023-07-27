@@ -1,6 +1,7 @@
 import { FlatList, View, StyleSheet } from "react-native";
 import { Avatar, Button, Card, Text } from "react-native-paper";
 import { StarRating } from "./StarRating";
+import { Link } from "expo-router";
 
 const icon = require("../assets/icon.png");
 
@@ -51,14 +52,21 @@ function CarerResultCard({
 }: CarerResultCardProps) {
   return (
     <Card>
-      <Card.Content style={styles.carerResultCard}>
-        <Avatar.Image source={icon} />
-        <CarerResultCardInfo
-          carerResult={carerResult}
-          handleRequest={handleRequest}
-          cardButtonLabel={cardButtonLabel}
-        />
-      </Card.Content>
+      <Link
+        href={{
+          pathname: "/profile/[profileId]",
+          params: { profileId: carerResult._id },
+        }}
+      >
+        <Card.Content style={styles.carerResultCard}>
+          <Avatar.Image source={icon} />
+          <CarerResultCardInfo
+            carerResult={carerResult}
+            handleRequest={handleRequest}
+            cardButtonLabel={cardButtonLabel}
+          />
+        </Card.Content>
+      </Link>
     </Card>
   );
 }

@@ -1,8 +1,9 @@
 import { Stack, useRouter, useSegments } from "expo-router";
-import { UserType, useAuth } from "../../contexts/auth";
+import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
 import { BottomNavigation, IconButton } from "react-native-paper";
 import { View } from "react-native";
+import { Href } from "expo-router/build/link/href";
 
 export interface Route {
   key: string;
@@ -72,12 +73,12 @@ const ownerRoutes = [
 ];
 
 export default function UserLayout() {
-  const { getTokenUser: getUser } = useAuth();
+  const { getTokenUser } = useAuth();
   const [index, setIndex] = useState(0);
   const router = useRouter();
   const segments = useSegments();
 
-  const routes = getUser()?.type === "owner" ? ownerRoutes : carerRoutes;
+  const routes = getTokenUser()?.type === "owner" ? ownerRoutes : carerRoutes;
 
   useEffect(() => {
     const path = segments.filter((s) => s.match(/\(/) === null).join("/");
@@ -95,7 +96,16 @@ export default function UserLayout() {
         index={index}
         onChange={(route: Route) => {
           setIndex(routes.findIndex((r) => r.key === route.key));
-          router.push(route.key);
+
+          let href: Href =
+            route.key === "profile"
+              ? {
+                  pathname: `/profile/[profileId]`,
+                  params: { profileId: getTokenUser()?._id, isSelf: "true" },
+                }
+              : route.key;
+
+          router.push(href);
         }}
       />
     </>

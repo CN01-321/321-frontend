@@ -2,42 +2,48 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Avatar, SegmentedButtons, Text, TextInput } from "react-native-paper";
-import ReviewsView, { Review } from "../../components/ReviewsView";
-import { useAuth } from "../../contexts/auth";
+import ReviewsView, { Review } from "../../../components/ReviewsView";
+import { useAuth } from "../../../contexts/auth";
 import axios from "axios";
-import Header from "../../components/Header";
+import Header from "../../../components/Header";
+import { UserType } from "../../../types";
 
 interface User {
   _id: string;
   name: string;
   email: string;
+  userType: UserType;
+  bio: string;
   phone: string;
+  preferredTravelDistance?: number;
+  hourlyRate?: number;
   pfp?: string;
 }
 
 type ProfileViewType = "profile" | "reviews";
 
 export default function Profile() {
-  const { userId } = useLocalSearchParams<{ userId?: string }>();
-  const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const { profileId, isSelf } = useLocalSearchParams<{
+    profileId: string;
+    isSelf?: string;
+  }>();
+  const { getTokenUser } = useAuth();
   const [currentView, setCurrentView] = useState<ProfileViewType>("profile");
   const [user, setUser] = useState<User>({
     _id: "",
     name: "",
-    email: "",
+    email: getTokenUser()!.email,
+    userType: getTokenUser()!.type,
+    bio: "",
     phone: "",
   });
   const [reviews, setReviews] = useState<Array<Review>>([]);
-  const { getTokenUser } = useAuth();
-  const router = useRouter();
 
   const getProfile = async (profileId: string): Promise<User> => {
-    return {
-      _id: profileId,
-      name: "Profile Name",
-      email: "profile@email.com",
-      phone: "123",
-    };
+    console.log("profile id is ", profileId);
+    const { data } = await axios.get<User>(`/users/${profileId}`);
+    console.log("user is ", data);
+    return data;
   };
 
   const getUserReviews = async (profileId: string): Promise<Array<Review>> => {
@@ -67,19 +73,12 @@ export default function Profile() {
   useEffect((): (() => void) => {
     let ignore = false;
 
-    const profileId = userId ?? getTokenUser()?._id ?? "";
-
-    // if userId is undefined then the user is visiting their own page
-    if (!userId) {
-      // setIsOwnProfile(true);
-    }
-
     (async () => {
       // get both profile info and reviews at the same time
       try {
         const [user, reviews] = await Promise.all([
-          getProfile(profileId),
-          getUserReviews(profileId),
+          getProfile(profileId!),
+          getUserReviews(profileId!),
         ]);
 
         console.log(user, reviews);
@@ -122,7 +121,11 @@ export default function Profile() {
       {currentView === "profile" ? (
         <ProfileInfoView user={user} />
       ) : (
-        <ReviewsView profile={user} isSelf={isOwnProfile} reviews={reviews} />
+        <ReviewsView
+          profile={user}
+          isSelf={isSelf === "true"}
+          reviews={reviews}
+        />
       )}
     </View>
   );

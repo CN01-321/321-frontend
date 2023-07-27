@@ -97,6 +97,7 @@ export default function PetView() {
           profile={pet}
           isSelf={ownPet !== undefined}
           reviews={reviews}
+          isPet={true}
         />
       )}
     </View>
