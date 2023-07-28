@@ -7,6 +7,7 @@ import ShowModalFab from "../../../components/ShowModalFab";
 import { Stack } from "expo-router";
 import axios from "axios";
 import { Pet } from "../../../types";
+import PetsView from "../../../components/PetsView";
 
 const icon = require("../../../assets/icon.png");
 
@@ -29,36 +30,9 @@ export default function Pets() {
         }}
       />
       <AddPetModal visible={visible} onDismiss={hideModal} />
-      <ScrollView contentContainerStyle={styles.petsArea}>
-        {pets.map((p) => (
-          <View key={p._id} style={styles.petCardContainer}>
-            <PetCard pet={p} />
-          </View>
-        ))}
-      </ScrollView>
+      <PetsView pets={pets} />
       <ShowModalFab icon="plus" showModal={showModal} />
     </View>
-  );
-}
-
-function PetCard({ pet }: { pet: Pet }) {
-  const router = useRouter();
-
-  return (
-    <Card
-      style={styles.petCard}
-      onPress={() =>
-        router.push({
-          pathname: `pet/${pet._id}`,
-          params: { ownPet: "true", petDetails: pet },
-        })
-      }
-    >
-      <Card.Cover source={icon} style={styles.petCardImg} />
-      <Card.Content>
-        <Text variant="titleSmall">{pet.name}</Text>
-      </Card.Content>
-    </Card>
   );
 }
 
