@@ -1,7 +1,8 @@
 import { useLocalSearchParams, useRouter, Link, Stack } from "expo-router";
-import { UserType } from "../../contexts/auth";
+import { UserType } from "../../types";
 import { Text, Button } from "react-native-paper";
 import { View } from "react-native";
+import Header from "../../components/Header";
 
 export default function GetStarted() {
   const { userType } = useLocalSearchParams<{ userType: UserType }>();
@@ -11,11 +12,7 @@ export default function GetStarted() {
 
   return (
     <View>
-      <Stack.Screen
-        options={{
-          title: "Getting Started",
-        }}
-      />
+      <Header title="Get Started" />
       <Button
         mode="contained"
         onPress={() =>

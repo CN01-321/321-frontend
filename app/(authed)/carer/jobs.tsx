@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Stack } from "expo-router";
 import { Job } from "../../../types";
+import Header from "../../../components/Header";
 
 export default function Jobs() {
   const [jobs, setJobs] = useState<Array<Job>>([]);
@@ -40,7 +41,7 @@ export default function Jobs() {
 
   return (
     <View>
-      <Stack.Screen options={{ title: "Jobs" }} />
+      <Header title="Jobs" />
       <JobsListView jobs={jobs} jobType="job" />
     </View>
   );

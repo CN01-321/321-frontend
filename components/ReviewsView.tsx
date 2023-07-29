@@ -12,21 +12,23 @@ import {
   TextInput,
 } from "react-native-paper";
 import { StarRating } from "./StarRating";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import axios from "axios";
 
 const icon = require("../assets/icon.png");
 const image = require("../assets/splash.png");
 
 export interface Profile {
-  id: string;
+  _id: string;
   name: string;
 }
 
 export interface Review {
-  reviewId: string;
-  reviewerId: string;
-  reviewerName: string;
-  reviewerIcon?: string;
-  date: Date;
+  _id: string;
+  authorId: string;
+  authorName: string;
+  authorIcon?: string;
+  postedOn: Date;
   rating?: number;
   message: string;
   image?: string;
@@ -35,74 +37,99 @@ export interface Review {
 }
 
 export interface Comment {
-  commentId: string;
-  commenterId: string;
-  commenterName: string;
-  commenterIcon?: string;
-  date: Date;
+  authorId: string;
+  authorName: string;
+  authorIcon?: string;
   message: string;
-  comments: Array<Comment>;
+  postedOn: Date;
 }
 
 interface ProfileReviewsViewProps {
   profile: Profile;
   isSelf?: boolean;
+  isPet?: boolean;
   reviews: Array<Review>;
 }
 
 export default function ReviewsView({
   profile,
   isSelf,
+  isPet,
   reviews,
 }: ProfileReviewsViewProps) {
   const [newReviewVisible, setNewReviewVisible] = useState(false);
 
   return (
-    <View>
-      <FlatList
-        data={reviews}
-        renderItem={({ item }) => <ReviewCard review={item} />}
-        keyExtractor={(item) => item.reviewerId}
-      />
+    <>
+      <View>
+        <FlatList
+          data={reviews}
+          renderItem={({ item }) => (
+            <ReviewCard
+              review={item}
+              profile={profile}
+              isPet={isPet ?? false}
+            />
+          )}
+          keyExtractor={(item) => item._id}
+          contentContainerStyle={{ paddingBottom: 70 }}
+        />
 
+        <NewReviewModal
+          profile={profile}
+          visible={newReviewVisible}
+          onDismiss={() => setNewReviewVisible(false)}
+          isPet={isPet ?? false}
+        />
+      </View>
       {isSelf ? null : (
         <ShowModalFab
           icon="lead-pencil"
           showModal={() => setNewReviewVisible(true)}
+          // TODO replace this with safe area values
+          style={{ bottom: 50 }}
         />
       )}
-      <NewReviewModal
-        profile={profile}
-        visible={newReviewVisible}
-        onDismiss={() => setNewReviewVisible(false)}
-      />
-    </View>
+    </>
   );
 }
 
 interface ReviewCardProps {
   review: Review;
+  profile: Profile;
+  isPet: boolean;
 }
 
-function ReviewCard({ review }: ReviewCardProps) {
+function ReviewCard({ review, profile, isPet }: ReviewCardProps) {
   const [showComments, setShowComments] = useState(false);
 
-  const handleLike = () => {
-    console.log(`liked comment by ${review.reviewerName}`);
+  const handleLike = async () => {
+    const prefix = `/${isPet ? "pets" : "users"}`;
+    const url = `${prefix}/${profile._id}/feedback/${review._id}/likes`;
+    console.log(url);
+    try {
+      const { data } = await axios.post(
+        `${prefix}/${profile._id}/feedback/${review._id}/likes`
+      );
+
+      console.log(url, `liked comment by ${review.authorName}, got `, data);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
     <Card>
       {review.image ? <Card.Cover source={image} /> : null}
       <Card.Content>
-        {review.reviewerIcon ? (
+        {review.authorIcon ? (
           // TODO change to getting avatar from backend
           <Avatar.Image size={24} source={icon} />
         ) : (
           <Avatar.Image size={24} source={icon} />
         )}
         <View>
-          <Text variant="titleSmall">{review.reviewerName}</Text>
+          <Text variant="titleSmall">{review.authorName}</Text>
           {review.rating ? <StarRating stars={review.rating} /> : null}
           <Text variant="bodySmall">{review.message}</Text>
           <View style={{ flexDirection: "row" }}>
@@ -121,25 +148,54 @@ function ReviewCard({ review }: ReviewCardProps) {
           </View>
         </View>
         {/* prevent an empty modal from showing up if there are no comments */}
-        {review.comments.length > 0 && (
-          <CommentsModal
-            comments={review.comments}
-            visible={showComments}
-            onDismiss={() => setShowComments(false)}
-          />
-        )}
+        {/* {review.comments.length > 0 && ( */}
+        <CommentsModal
+          profile={profile}
+          review={review}
+          comments={review.comments}
+          visible={showComments}
+          onDismiss={() => setShowComments(false)}
+          isPet={isPet}
+        />
+        {/* )} */}
       </Card.Content>
     </Card>
   );
 }
 
 interface CommentsModalProps {
+  profile: Profile;
+  review: Review;
   comments: Array<Comment>;
   visible: boolean;
   onDismiss: () => void;
+  isPet: boolean;
 }
 
-function CommentsModal({ comments, visible, onDismiss }: CommentsModalProps) {
+function CommentsModal({
+  profile,
+  review,
+  comments,
+  visible,
+  onDismiss,
+  isPet,
+}: CommentsModalProps) {
+  const [comment, setComment] = useState<string | undefined>();
+
+  const handleComment = async () => {
+    console.log("adding comment ", comment);
+    try {
+      const prefix = `/${isPet ? "pets" : "users"}`;
+      await axios.post(
+        `${prefix}/${profile._id}/feedback/${review._id}/comments`
+      );
+    } catch (e) {
+      console.error(e);
+    }
+    setComment(undefined);
+    onDismiss();
+  };
+
   return (
     <Portal>
       <Modal visible={visible} onDismiss={onDismiss}>
@@ -147,9 +203,22 @@ function CommentsModal({ comments, visible, onDismiss }: CommentsModalProps) {
           <FlatList
             data={comments}
             renderItem={({ item }) => <CommentCard comment={item} />}
-            keyExtractor={(item) => item.commentId}
+            // using index is fine here as arrays are always ordered the same way
+            keyExtractor={(_, index) => String(index)}
           />
         </View>
+        <TextInput
+          mode="flat"
+          label="Comment"
+          value={comment}
+          onChangeText={(text) => setComment(text)}
+          left={<Avatar.Image source={icon} />}
+          right={
+            comment && (
+              <TextInput.Icon icon="send-outline" onPress={handleComment} />
+            )
+          }
+        />
       </Modal>
     </Portal>
   );
@@ -163,15 +232,17 @@ function CommentCard({ comment }: CommentCardProps) {
   return (
     <Card>
       <Card.Content>
-        {comment.commenterIcon ? (
+        {comment.authorIcon ? (
           // TODO change to getting avatar from backend
           <Avatar.Image size={24} source={icon} />
         ) : (
           <Avatar.Image size={24} source={icon} />
         )}
         <View>
-          <Text variant="titleSmall">{comment.commenterName}</Text>
-          <Text variant="bodySmall">Posted: {comment.date.toUTCString()}</Text>
+          <Text variant="titleSmall">{comment.authorIcon}</Text>
+          <Text variant="bodySmall">
+            Posted: {comment.postedOn.toUTCString()}
+          </Text>
           <Text variant="bodySmall">{comment.message}</Text>
         </View>
       </Card.Content>
@@ -183,16 +254,41 @@ interface NewReviewModalProps {
   profile: Profile;
   visible: boolean;
   onDismiss: () => void;
+  isPet: boolean;
 }
 
-function NewReviewModal({ profile, visible, onDismiss }: NewReviewModalProps) {
-  const [rating, setRating] = useState(0);
-  const [message, setMessage] = useState("");
+interface NewReviewForm {
+  rating: number;
+  message: string;
+}
 
-  const handleSubmit = () => {
-    console.log(
-      `submitting rating to ${profile.id} with rating: ${rating} and message "${message}"`
-    );
+function NewReviewModal({
+  profile,
+  visible,
+  onDismiss,
+  isPet,
+}: NewReviewModalProps) {
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<NewReviewForm>();
+
+  const onSubmit: SubmitHandler<NewReviewForm> = async (data) => {
+    console.log(data);
+
+    try {
+      const prefix = `/${isPet ? "pets" : "users"}`;
+      await axios.post(`${prefix}/${profile._id}/feedback`, data);
+      console.log(
+        `submitting rating to ${profile.name} with rating: ${data.rating} and message "${data.message}"`
+      );
+    } catch (e) {
+      console.error(e);
+    }
+
+    reset();
     onDismiss();
   };
 
@@ -206,14 +302,29 @@ function NewReviewModal({ profile, visible, onDismiss }: NewReviewModalProps) {
         <Text variant="titleMedium">Rate & Review</Text>
         <Avatar.Image source={icon} size={24} />
         <Text>{profile.name}</Text>
-        <RatingPicker rating={rating} onRatingChange={(r) => setRating(r)} />
-        <TextInput
-          mode="outlined"
-          value={message}
-          label="Write Message"
-          onChangeText={(text) => setMessage(text)}
+        <Controller
+          control={control}
+          rules={{ max: 5, min: 0 }}
+          render={({ field: { onChange, value } }) => (
+            <RatingPicker rating={value} onRatingChange={onChange} />
+          )}
+          name="rating"
         />
-        <Button mode="contained" onPress={handleSubmit}>
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              mode="outlined"
+              value={value}
+              onBlur={onBlur}
+              label="Write Message"
+              onChangeText={onChange}
+            />
+          )}
+          name="message"
+        />
+        <Button mode="contained" onPress={handleSubmit(onSubmit)}>
           Submit
         </Button>
       </Modal>

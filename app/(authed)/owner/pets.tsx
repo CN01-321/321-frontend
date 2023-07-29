@@ -8,6 +8,7 @@ import { Stack } from "expo-router";
 import axios from "axios";
 import { Pet } from "../../../types";
 import PetsView from "../../../components/PetsView";
+import Header from "../../../components/Header";
 
 const icon = require("../../../assets/icon.png");
 
@@ -24,11 +25,7 @@ export default function Pets() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          headerTitle: "Pets",
-        }}
-      />
+      <Header title="Pets" />
       <AddPetModal visible={visible} onDismiss={hideModal} />
       <PetsView pets={pets} />
       <ShowModalFab icon="plus" showModal={showModal} />

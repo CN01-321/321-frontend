@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { Button, TextInput, Title } from "react-native-paper";
-import { UserType, useAuth } from "../../contexts/auth";
+import { useAuth } from "../../contexts/auth";
+import { UserType } from "../../types";
 import axios from "axios";
 import { Stack, useLocalSearchParams } from "expo-router";
+import Header from "../../components/Header";
 
 type GetToken = {
   token: string;
@@ -33,11 +35,7 @@ export default function Login() {
 
   return (
     <View>
-      <Stack.Screen
-        options={{
-          title: "Log In",
-        }}
-      />
+      <Header title="Log In" />
       <Title>Log In</Title>
       <TextInput
         label="Email"
