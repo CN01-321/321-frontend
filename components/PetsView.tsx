@@ -3,7 +3,7 @@ import { Pet } from "../types";
 import { useRouter } from "expo-router";
 import { Card, Text } from "react-native-paper";
 
-const icon = require("../../../assets/icon.png");
+const icon = require("../assets/icon.png");
 
 type PetsViewProp = {
   pets: Pet[];

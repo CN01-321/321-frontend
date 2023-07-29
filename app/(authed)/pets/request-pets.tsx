@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Pet } from "../../../types";
@@ -20,11 +20,18 @@ const RequestPets = () => {
 
   return (
     <View>
-      { 
-        pets.length > 0
-        ? <PetsView pets={pets} />
-        : <></>
-      }
+      <Stack.Screen 
+            options={{
+              headerTitle: "Pets in Request"
+            }}
+      />
+      <View>
+        { 
+          pets.length > 0
+          ? <PetsView pets={pets} />
+          : <></>
+        }
+      </View>
     </View>
   );
 }

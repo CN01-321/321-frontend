@@ -46,6 +46,15 @@ function RequestCardInfo({ req }: { req: Request }) {
       params: { requestId: req._id },
     });
   };
+
+  const handleViewPets = (e: GestureResponderEvent) => {
+    e.stopPropagation();
+    router.push({
+      pathname: "/pets/request-pets",
+      params: { requestId: req._id },
+    });
+  };
+
   return (
     <View>
       <Text variant="titleMedium">
@@ -62,6 +71,7 @@ function RequestCardInfo({ req }: { req: Request }) {
       {!req.carer && req.status == "pending" ? (
         <Button onPress={handleViewRespondents}>View Respondents</Button>
       ) : null}
+      <Button onPress={handleViewPets}>View Pets</Button>
     </View>
   );
 }

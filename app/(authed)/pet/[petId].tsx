@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Avatar, SegmentedButtons, Text } from "react-native-paper";
 import { View } from "react-native";
 import { useEffect, useState } from "react";
@@ -31,32 +31,39 @@ export default function PetView() {
 
   return (
     <View>
-      <SegmentedButtons
-        value={currentView}
-        onValueChange={(value) => setCurrentView(value as PetViewType)}
-        buttons={[
-          {
-            value: "pet",
-            icon: "dog-side",
-            label: "Pet",
-          },
-          {
-            value: "reviews",
-            icon: "comment-outline",
-            label: "Reviews",
-          },
-        ]}
-      />
-      {currentView === "pet" ? (
-        <PetInfoView pet={pet} />
-      ) : (
-        // <ReviewsView
-        //   profile={pet}
-        //   isSelf={ownPet !== undefined}
-        //   reviews={pet.reviews ?? []}
-        // />
-        <></>
-      )}
+      <Stack.Screen 
+              options={{
+                headerTitle: `${pet.name}`
+              }}
+        />
+      <View>
+        <SegmentedButtons
+          value={currentView}
+          onValueChange={(value) => setCurrentView(value as PetViewType)}
+          buttons={[
+            {
+              value: "pet",
+              icon: "dog-side",
+              label: "Pet",
+            },
+            {
+              value: "reviews",
+              icon: "comment-outline",
+              label: "Reviews",
+            },
+          ]}
+        />
+        {currentView === "pet" ? (
+          <PetInfoView pet={pet} />
+        ) : (
+          // <ReviewsView
+          //   profile={pet}
+          //   isSelf={ownPet !== undefined}
+          //   reviews={pet.reviews ?? []}
+          // />
+          <></>
+        )}
+      </View>
     </View>
   );
 }
