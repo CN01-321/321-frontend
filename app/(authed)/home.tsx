@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/auth";
 import { useState } from "react";
 import axios from "axios";
 import { Stack, useNavigation } from "expo-router";
+import Header from "../../components/Header";
 
 export default function Home() {
   const [message, setMessage] = useState("No message");
@@ -22,16 +23,7 @@ export default function Home() {
 
   return (
     <>
-      <Stack.Screen 
-        options={{
-          headerTitle: "Home",
-          headerRight: () =>
-            <>
-              <IconButton icon="bell" onTouchStart={() => navigation.navigate("notifications")} />
-              <IconButton icon="cog-outline" onTouchStart={() => navigation.navigate("settings")}/>
-            </>
-        }}
-      />
+      <Header title="Home" showButtons={true} />
       <View>
         <Title>Home Page</Title>
         <Button onPress={logOut}>Log out</Button>

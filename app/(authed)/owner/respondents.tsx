@@ -6,6 +6,7 @@ import CarerResultsView, {
   CarerResult,
 } from "../../../components/CarerResultsView";
 import axios from "axios";
+import Header from "../../../components/Header";
 
 const icon = require("../../../assets/icon.png");
 
@@ -49,13 +50,13 @@ export default function Respondents() {
 
   return (
     <View>
+      <Header title="Request Respondents" />
       <PaymentModal
         visible={visible}
         onDismiss={handleDismiss}
         requestId={requestId!}
         respondentId={respodentId}
       />
-      <Text>Respondents {requestId}</Text>
       <CarerResultsView
         carerResults={respondents}
         handleRequest={(carerResult) => {
