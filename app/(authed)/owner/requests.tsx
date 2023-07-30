@@ -10,6 +10,7 @@ import axios from "axios";
 import RequestInfoModal from "../../../components/RequestInfoModal";
 import RequestCard from "../../../components/RequestCard";
 import Header from "../../../components/Header";
+import { useIsFocused } from "@react-navigation/native";
 
 const icon = require("../../../assets/icon.png");
 
@@ -17,7 +18,14 @@ export default function Requests() {
   const [requests, setRequests] = useState<Array<Request>>([]);
   const [visible, setVisible] = useState(false);
 
+  // isFocused is used to reload the requests in case a new request has been
+  // made from the search page
+  const isFocused = useIsFocused();
+
   useEffect((): (() => void) => {
+    // do nothing if not focused
+    if (!isFocused) return () => {};
+
     let ignore = false;
 
     (async () => {
@@ -45,7 +53,7 @@ export default function Requests() {
     })();
 
     return () => (ignore = true);
-  }, []);
+  }, [isFocused]);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);

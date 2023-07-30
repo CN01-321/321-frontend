@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import Slider from "@react-native-community/slider";
-import { Button, Checkbox, Modal, Portal, Text } from "react-native-paper";
+import {
+  Button,
+  Checkbox,
+  Modal,
+  Portal,
+  Searchbar,
+  Text,
+} from "react-native-paper";
 import CarerResultsView, {
   CarerResult,
 } from "../../../components/CarerResultsView";
@@ -52,6 +59,32 @@ export default function Search() {
   const [searchResults, setSearchResults] = useState<Array<CarerResult>>([]);
   const [selectedCarer, setSelectedCarer] = useState<CarerResult | null>();
 
+  useEffect((): (() => void) => {
+    let ignore = false;
+
+    (async () => {
+      await doSearch();
+
+      console.log("searching with filters", filters);
+
+      console.log("query string ", getQueryString());
+      try {
+        const { data } = await axios.get<Array<CarerResult>>(
+          `/owners/requests/nearby${getQueryString()}`
+        );
+
+        console.log("search results ", data);
+        if (!ignore) {
+          setSearchResults(data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+
+    return () => (ignore = true);
+  }, [filters]);
+
   const updateFilters = (filter: Filters) => {
     setFilters({ ...filter });
   };
@@ -82,31 +115,13 @@ export default function Search() {
     return query;
   };
 
-  const doSearch = async () => {
-    console.log("searching with filters", filters);
-
-    console.log("query string ", getQueryString());
-    try {
-      const { data } = await axios.get<Array<CarerResult>>(
-        `/owners/requests/nearby${getQueryString()}`
-      );
-
-      console.log("search results ", data);
-      setSearchResults(data);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const doSearch = async () => {};
 
   return (
     <View>
       <Header title="Search" />
-      <Text>Search</Text>
-      <Button mode="contained" onPress={() => setFilterVisible(true)}>
+      <Button mode="outlined" onPress={() => setFilterVisible(true)}>
         Filters
-      </Button>
-      <Button mode="contained" onPress={doSearch}>
-        Search
       </Button>
       <FilterModal
         visible={filterVisible}

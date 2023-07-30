@@ -14,7 +14,12 @@ export interface Pet {
   profilePicture?: string;
 }
 
-type RequestStatus = "pending" | "accepted" | "rejected" | "completed";
+type RequestStatus =
+  | "pending"
+  | "applied"
+  | "accepted"
+  | "rejected"
+  | "completed";
 
 export interface RequestInfo {
   _id: string;
