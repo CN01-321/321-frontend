@@ -15,44 +15,42 @@ import { useIsFocused } from "@react-navigation/native";
 const icon = require("../../../assets/icon.png");
 
 export default function Requests() {
-  const [requests, setRequests] = useState<Array<Request>>([]);
+  const [requests, setRequests] = useState<Request[]>([]);
   const [visible, setVisible] = useState(false);
 
   // isFocused is used to reload the requests in case a new request has been
   // made from the search page
   const isFocused = useIsFocused();
 
-  useEffect((): (() => void) => {
+  const updateRequests = async () => {
+    try {
+      const { data } = await axios.get<Request[]>("/owners/requests");
+
+      // turn all date strings into date objects
+      const reqs = data.map((r) => {
+        return {
+          ...r,
+          requestedOn: new Date(r.requestedOn),
+          dateRange: {
+            startDate: new Date(r.dateRange.startDate),
+            endDate: new Date(r.dateRange.endDate),
+          },
+        };
+      });
+
+      setRequests(reqs);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    console.log(`is focused: ${isFocused}`);
+
     // do nothing if not focused
     if (!isFocused) return () => {};
 
-    let ignore = false;
-
-    (async () => {
-      try {
-        const { data } = await axios.get<Array<Request>>("/owners/requests");
-
-        // turn all date strings into date objects
-        const reqs = data.map((r) => {
-          return {
-            ...r,
-            requestedOn: new Date(r.requestedOn),
-            dateRange: {
-              startDate: new Date(r.dateRange.startDate),
-              endDate: new Date(r.dateRange.endDate),
-            },
-          };
-        });
-
-        if (!ignore) {
-          setRequests(reqs);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-
-    return () => (ignore = true);
+    updateRequests();
   }, [isFocused]);
 
   const showModal = () => setVisible(true);
@@ -62,7 +60,11 @@ export default function Requests() {
     <>
       <Header title="Requests" />
       <View>
-        <NewRequestModal visible={visible} onDismiss={hideModal} />
+        <NewRequestModal
+          visible={visible}
+          onDismiss={hideModal}
+          updateRequests={updateRequests}
+        />
         <FlatList
           data={requests}
           renderItem={({ item }) => <RequestCard req={item} />}

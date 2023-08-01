@@ -18,6 +18,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 interface NewRequestModalProps {
   carerResult?: CarerResult | null;
   visible: boolean;
+  updateRequests: () => void;
   onDismiss: () => void;
 }
 
@@ -34,6 +35,7 @@ interface NewRequestForm {
 export default function NewRequestModal({
   carerResult,
   visible,
+  updateRequests,
   onDismiss,
 }: NewRequestModalProps) {
   const [pets, setPets] = useState<Array<Pet>>([]);
@@ -66,6 +68,9 @@ export default function NewRequestModal({
 
     try {
       await axios.post("/owners/requests", data);
+
+      // update the new list
+      updateRequests();
     } catch (e) {
       console.error(e);
     }
