@@ -15,8 +15,6 @@ export default function RequestInfoModal({
   const location = () =>
     `${info.location.street}, ${info.location.city}, ${info.location.state}`;
 
-  console.log(info);
-
   return (
     <Portal>
       <Modal

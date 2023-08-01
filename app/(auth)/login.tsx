@@ -4,7 +4,7 @@ import { Button, TextInput, Title } from "react-native-paper";
 import { useAuth } from "../../contexts/auth";
 import { UserType } from "../../types";
 import axios from "axios";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import Header from "../../components/Header";
 
 type GetToken = {
@@ -16,6 +16,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { logIn } = useAuth();
+  const router = useRouter();
 
   const colour = userType === "owner" ? "brown" : "yellow";
 
@@ -28,6 +29,7 @@ export default function Login() {
       console.log("new token in login.tsx", data.token);
       await logIn(data.token);
       console.log(`logged in with: ${email} and ${password}`);
+      router.replace("/home");
     } catch (error) {
       console.error(error);
     }

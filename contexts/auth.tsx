@@ -65,34 +65,23 @@ function useProtectedRoute(user: TokenUser | null) {
 
 export function AuthProvider(props: any) {
   const [user, setUser] = useState<TokenUser | null>(null);
-  const [token, setToken] = useState("");
 
-  const storeToken = async () => {
-    // if token user is verified, store the token in secure store
+  // stores and sets the token
+  const updateTokenUser = async (token: string) => {
     try {
-      await SecureStore.setItemAsync("token", token);
+      const decode = JWT.decode<TokenUser>(token, JWT_SECRET);
+      setUser(decode.user);
     } catch (e) {
-      console.error(e);
-      return;
+      throw new Error(`unable to decode token: ${token}`);
     }
 
-    // no need for try as this token has already been tested
-    const decode = JWT.decode(token, JWT_SECRET);
-
-    // set this token to be sent with every axios call
+    await SecureStore.setItemAsync("token", token);
+    // set the Authorization header to send in axios calls
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-    const newUser: TokenUser = decode["user"] as TokenUser;
-    setUser(newUser);
   };
 
-  const deleteToken = async () => {
-    try {
-      await SecureStore.deleteItemAsync("token");
-    } catch (e) {
-      console.error(e);
-    }
-
+  const deleteTokenUser = async () => {
+    await SecureStore.deleteItemAsync("token");
     // remove the Authorization header from sending in axios http calls
     delete axios.defaults.headers.common["Authorization"];
     setUser(null);
@@ -101,64 +90,43 @@ export function AuthProvider(props: any) {
   // set the user whenever the token is reset or changed
   // and store/remove token from secure storage
   useEffect((): (() => void) => {
-    console.log("token has changed", token);
-
-    // prevent race conditions see "note on fetching data inside useeffect"
-    // https://devtrium.com/posts/async-functions-useeffect
     let ignore = false;
 
     (async () => {
-      if (token === "" && !ignore) {
-        await deleteToken();
+      let token = await SecureStore.getItemAsync("token");
+
+      // do not set token if no token is present
+      if (!token) {
         return;
       }
 
-      if (!ignore) {
-        await storeToken();
-      }
-    })();
-
-    return () => (ignore = true);
-  }, [token]);
-
-  // load the token when page/app loads, if there is one
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    (async () => {
-      try {
-        let token = await SecureStore.getItemAsync("token");
-        if (token && !ignore) {
-          // calling set token will trigger the other useeffect which
-          // will update the user
-          setToken(token);
+      if (token && !ignore) {
+        try {
+          await updateTokenUser(token);
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        console.error(e);
       }
     })();
 
     return () => (ignore = true);
   }, []);
 
+  useProtectedRoute(user);
+
   const logIn = async (token: string) => {
     try {
-      // verify the JWT is valid
-      JWT.decode<TokenUser>(token, JWT_SECRET, { iss: "pet-carer.com" });
-      setToken(token);
-      console.log("token is valid and set token");
+      await updateTokenUser(token);
     } catch (e) {
       console.error(e);
     }
   };
 
   const logOut = async () => {
-    setToken("");
+    await deleteTokenUser();
   };
 
   const getUser = () => user;
-
-  useProtectedRoute(user);
 
   return (
     <AuthContext.Provider value={{ logIn, logOut, getTokenUser: getUser }}>

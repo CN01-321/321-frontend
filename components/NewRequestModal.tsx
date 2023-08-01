@@ -24,7 +24,7 @@ interface NewRequestModalProps {
 
 interface NewRequestForm {
   carer?: string;
-  pets: Array<string>;
+  pets: string[];
   message?: string;
   dateRange: {
     startDate: Date;
@@ -38,7 +38,7 @@ export default function NewRequestModal({
   updateRequests,
   onDismiss,
 }: NewRequestModalProps) {
-  const [pets, setPets] = useState<Array<Pet>>([]);
+  const [pets, setPets] = useState<Pet[]>([]);
   const {
     control,
     handleSubmit,
@@ -51,7 +51,7 @@ export default function NewRequestModal({
 
     (async () => {
       try {
-        const { data } = await axios.get<Array<Pet>>("/owners/pets");
+        const { data } = await axios.get<Pet[]>("/owners/pets");
         if (!ignore) {
           setPets(data);
         }
@@ -64,7 +64,7 @@ export default function NewRequestModal({
   }, []);
 
   const onSubmit: SubmitHandler<NewRequestForm> = async (data) => {
-    console.log(data);
+    console.log("request data is ", data);
 
     try {
       await axios.post("/owners/requests", data);
@@ -149,9 +149,9 @@ export default function NewRequestModal({
 }
 
 interface SelectPetsAreaProps {
-  pets: Array<Pet>;
-  value: Array<string> | undefined;
-  onChange: (event: Array<string>) => void;
+  pets: Pet[];
+  value: string[] | undefined;
+  onChange: (event: string[]) => void;
 }
 
 function SelectPetsArea({ pets, value, onChange }: SelectPetsAreaProps) {
