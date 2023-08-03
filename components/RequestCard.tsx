@@ -5,36 +5,63 @@ import RequestInfoModal from "./RequestInfoModal";
 import { GestureResponderEvent, View, StyleSheet, Image } from "react-native";
 import { Link, useRouter } from "expo-router";
 import axios from "axios";
+import { Profile } from "./ReviewsView";
 
 const icon = require("../assets/icon.png");
 
-interface RequestCardProps {
-  req: Request | Job;
-  jobType?: JobType;
+interface OwnerRequestCardProps {
+  req: Request;
 }
+
+interface CarerRequestCardProps {
+  job: Job;
+  jobType: JobType;
+  updateOffers: () => Promise<void>;
+}
+
+type RequestCardProps = OwnerRequestCardProps | CarerRequestCardProps;
 
 // if jobType is not presesnt the is assumed to be Request, otherwise if it is
 // then the req is a Job
-export default function RequestCard({ req, jobType }: RequestCardProps) {
+export default function RequestCard(props: RequestCardProps) {
   const [visible, setVisible] = useState(false);
 
   const showMoreInfo = () => setVisible(true);
   const hideMoreInfo = () => setVisible(false);
+
+  const isOwnerProps = (p: RequestCardProps): p is OwnerRequestCardProps => {
+    return "req" in p;
+  };
+
+  const cardInfo = () => {
+    if (isOwnerProps(props)) {
+      return <RequestCardInfo req={props.req} />;
+    }
+    // else is carer card props
+    const { job, jobType, updateOffers } = props;
+    return (
+      <JobCardInfo job={job} jobType={jobType} updateOffers={updateOffers} />
+    );
+  };
+
+  const reqInfo = () => {
+    return isOwnerProps(props) ? props.req : props.job;
+  };
 
   return (
     <Card onPress={showMoreInfo} style={styles.requestCard}>
       <View style={styles.requestCardContainer}>
         <Image
           style={styles.requestImage}
-          source={req.pfp ? { uri: req.pfp } : icon}
+          source={reqInfo().pfp ? { uri: reqInfo().pfp } : icon}
         />
-        {jobType ? (
-          <JobCardInfo job={req as Job} jobType={jobType!} />
-        ) : (
-          <RequestCardInfo req={req as Request} />
-        )}
+        {cardInfo()}
       </View>
-      <RequestInfoModal info={req} visible={visible} onDismiss={hideMoreInfo} />
+      <RequestInfoModal
+        info={reqInfo()}
+        visible={visible}
+        onDismiss={hideMoreInfo}
+      />
     </Card>
   );
 }
@@ -55,7 +82,8 @@ function RequestCardInfo({ req }: { req: Request }) {
 
     // if diff less than a minute ago show "now"
     const mins = Math.floor(diff / (1000 * 60));
-    if (mins === 0) {
+    // <= 0 to catch minor time variations between backend on new requests
+    if (mins <= 0) {
       return "now";
     }
 
@@ -93,22 +121,23 @@ function RequestCardInfo({ req }: { req: Request }) {
   );
 }
 
-function JobCardInfo({ job, jobType }: { job: Job; jobType: JobType }) {
-  const router = useRouter();
+interface JobCardInfoProps {
+  job: Job;
+  jobType: JobType;
+  updateOffers: () => Promise<void>;
+}
 
+function JobCardInfo({ job, jobType, updateOffers }: JobCardInfoProps) {
   const handleAccept = async (e: GestureResponderEvent) => {
     // prevent tapping the accept button from also opening more info
     e.stopPropagation();
     console.log("Accepted/applied", job);
     try {
       await axios.post(`/carers/${jobType}/${job._id}/accept`);
+      await updateOffers();
     } catch (e) {
       console.error(e);
     }
-    router.replace({
-      pathname: "/carer/offers",
-      params: { initOfferType: jobType },
-    });
   };
 
   const handleReject = async (e: GestureResponderEvent) => {
@@ -117,13 +146,10 @@ function JobCardInfo({ job, jobType }: { job: Job; jobType: JobType }) {
     console.log("Rejected", job);
     try {
       await axios.post(`/carers/${jobType}/${job._id}/reject`);
+      await updateOffers();
     } catch (e) {
       console.error(e);
     }
-    router.replace({
-      pathname: "/carer/offers",
-      params: { initOfferType: jobType },
-    });
   };
 
   return (
@@ -141,7 +167,7 @@ function JobCardInfo({ job, jobType }: { job: Job; jobType: JobType }) {
       <Link href={{ pathname: "profile", params: { userId: job.ownerId } }}>
         View Owner's Profile
       </Link>
-      {jobType !== "job" && (
+      {jobType !== "job" && job.status !== "applied" && (
         <>
           <Button mode="contained" onPress={handleAccept}>
             {jobType === "direct" ? "Accept" : "Apply"}

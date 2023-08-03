@@ -18,7 +18,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 interface NewRequestModalProps {
   carerResult?: CarerResult | null;
   visible: boolean;
-  updateRequests: () => void;
+  updateRequests?: () => void;
   onDismiss: () => void;
 }
 
@@ -69,8 +69,8 @@ export default function NewRequestModal({
     try {
       await axios.post("/owners/requests", data);
 
-      // update the new list
-      updateRequests();
+      // update the new list if updateRequests is not undefined
+      updateRequests && updateRequests();
     } catch (e) {
       console.error(e);
     }

@@ -1,54 +1,65 @@
 import { Slot } from "expo-router";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
-import { AuthProvider } from "../contexts/auth";
+import { AuthProvider, useAuth } from "../contexts/auth";
+import { CARER_COLOUR, OWNER_COLOUR } from "../types";
 
-const theme = {
-  ...MD3LightTheme,
-  colors: {
-    ...MD3LightTheme.colors,
-    // colours of primary objects and containers
-    primary: "#a87351",
-    primaryContainer: "#a87351",
-    // colours of text on primary objects and containers
-    onPrimary: "#ffffff",
-    onPrimaryContainer: "#ffffff",
+function LayoutWithTheme() {
+  const { getTokenUser } = useAuth();
 
-    secondary: "#a87351",
-    secondaryContainer: "#a87351",
-    onSecondary: "#ffffff",
-    onSecondaryContainer: "#ffffff",
+  const colour = getTokenUser()?.type === "owner" ? OWNER_COLOUR : CARER_COLOUR;
 
-    tertiary: "#a87351",
-    tertiaryContainer: "#a87351",
-    onTertiary: "#ffffff",
-    onTertiaryContainer: "#311300",
+  const theme = {
+    ...MD3LightTheme,
+    colors: {
+      ...MD3LightTheme.colors,
+      // colours of primary objects and containers
+      primary: colour,
+      primaryContainer: colour,
+      // colours of text on primary objects and containers
+      onPrimary: "#ffffff",
+      onPrimaryContainer: "#ffffff",
 
-    error: "#eb2c2c",
-    errorContainer: "#eb2c2c",
-    onError: "#ffffff",
-    onErrorContainer: "#410002",
+      secondary: colour,
+      secondaryContainer: colour,
+      onSecondary: "#ffffff",
+      onSecondaryContainer: "#ffffff",
 
-    background: "#fcfcfc",
-    onBackground: "#777777",
+      tertiary: colour,
+      tertiaryContainer: colour,
+      onTertiary: "#ffffff",
+      onTertiaryContainer: "#311300",
 
-    elevation: {
-      ...MD3LightTheme.colors.elevation,
-      level0: "transparent",
-      level1: "#ffffff",
-      level2: "#fcfcfc",
-      level3: "transparent",
-      level4: "transparent",
-      level5: "transparent",
+      error: "#eb2c2c",
+      errorContainer: "#eb2c2c",
+      onError: "#ffffff",
+      onErrorContainer: "#410002",
+
+      background: "#fcfcfc",
+      onBackground: "#777777",
+
+      elevation: {
+        ...MD3LightTheme.colors.elevation,
+        level0: "transparent",
+        level1: "#ffffff",
+        level2: "#fcfcfc",
+        level3: "transparent",
+        level4: "transparent",
+        level5: "transparent",
+      },
     },
-  },
-};
+  };
+
+  return (
+    <PaperProvider theme={theme}>
+      <Slot />
+    </PaperProvider>
+  );
+}
 
 export default function Layout() {
   return (
-    <PaperProvider theme={theme}>
-      <AuthProvider>
-        <Slot />
-      </AuthProvider>
-    </PaperProvider>
+    <AuthProvider>
+      <LayoutWithTheme />
+    </AuthProvider>
   );
 }

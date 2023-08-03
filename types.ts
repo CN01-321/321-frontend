@@ -1,3 +1,6 @@
+export const CARER_COLOUR = "#a87351";
+export const OWNER_COLOUR = "#e2ac54";
+
 export type PetType = "dog" | "cat" | "bird" | "rabbit";
 export type PetSize = "small" | "medium" | "large";
 

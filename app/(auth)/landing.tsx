@@ -2,6 +2,7 @@ import { View } from "react-native";
 import { Title, Button } from "react-native-paper";
 import { Stack, useRouter } from "expo-router";
 import Header from "../../components/Header";
+import { CARER_COLOUR, OWNER_COLOUR } from "../../types";
 
 export default function Landing() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function Landing() {
 
       <Button
         mode="contained"
-        theme={{ colors: { primary: "brown" } }}
+        theme={{ colors: { primary: OWNER_COLOUR } }}
         onPress={() =>
           router.push({
             pathname: "/(auth)/get-started",
@@ -25,7 +26,7 @@ export default function Landing() {
       </Button>
       <Button
         mode="contained"
-        theme={{ colors: { primary: "yellow" } }}
+        theme={{ colors: { primary: CARER_COLOUR } }}
         onPress={() =>
           router.push({
             pathname: "/(auth)/get-started",
