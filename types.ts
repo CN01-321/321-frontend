@@ -1,5 +1,8 @@
 export const CARER_COLOUR = "#a87351";
 export const OWNER_COLOUR = "#e2ac54";
+export const ERROR_COLOUR = "#eb2c2c";
+export const SUCCESS_COLOUR = "#527c3f";
+export const COMPLETED_COLOUR = "#3b5998";
 
 export type PetType = "dog" | "cat" | "bird" | "rabbit";
 export type PetSize = "small" | "medium" | "large";
@@ -17,7 +20,7 @@ export interface Pet {
   profilePicture?: string;
 }
 
-type RequestStatus =
+export type RequestStatus =
   | "pending"
   | "applied"
   | "accepted"

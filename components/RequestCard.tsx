@@ -1,5 +1,22 @@
-import { Avatar, Button, Card, Text } from "react-native-paper";
-import { Job, JobType, Request, RequestInfo, UserType } from "../types";
+import {
+  Avatar,
+  Button,
+  Card,
+  Text,
+  useTheme,
+  withTheme,
+} from "react-native-paper";
+import {
+  COMPLETED_COLOUR,
+  ERROR_COLOUR,
+  Job,
+  JobType,
+  Request,
+  RequestInfo,
+  RequestStatus,
+  SUCCESS_COLOUR,
+  UserType,
+} from "../types";
 import { useState } from "react";
 import RequestInfoModal from "./RequestInfoModal";
 import { GestureResponderEvent, View, StyleSheet, Image } from "react-native";
@@ -20,6 +37,31 @@ interface CarerRequestCardProps {
 }
 
 type RequestCardProps = OwnerRequestCardProps | CarerRequestCardProps;
+
+function sinceRequested(date: Date) {
+  const diff = new Date().getTime() - date.getTime();
+
+  // if diff less than a minute ago show "now"
+  const mins = Math.floor(diff / (1000 * 60));
+  // <= 0 to catch minor time variations between backend on new requests
+  if (mins <= 0) {
+    return "now";
+  }
+
+  // if the diff less than an hour ago show "mins ago"
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  if (Math.floor(diff / (1000 * 60 * 60)) === 0) {
+    return `${mins} min${mins === 1 ? "" : "s"} ago`;
+  }
+
+  // if less than a day show "hours ago"
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  if (days === 0) {
+    return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  }
+
+  return `${days} day${days === 1 ? "" : "s"} ago`;
+}
 
 // if jobType is not presesnt the is assumed to be Request, otherwise if it is
 // then the req is a Job
@@ -77,31 +119,6 @@ function RequestCardInfo({ req }: { req: Request }) {
     });
   };
 
-  const sinceRequested = () => {
-    const diff = new Date().getTime() - req.requestedOn.getTime();
-
-    // if diff less than a minute ago show "now"
-    const mins = Math.floor(diff / (1000 * 60));
-    // <= 0 to catch minor time variations between backend on new requests
-    if (mins <= 0) {
-      return "now";
-    }
-
-    // if the diff less than an hour ago show "mins ago"
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    if (Math.floor(diff / (1000 * 60 * 60)) === 0) {
-      return `${mins} min${mins === 1 ? "" : "s"} ago`;
-    }
-
-    // if less than a day show "hours ago"
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    if (days === 0) {
-      return `${hours} hour${hours === 1 ? "" : "s"} ago`;
-    }
-
-    return `${days} day${days === 1 ? "" : "s"} ago`;
-  };
-
   const isPendingBroadRequest = !req.carer && req.status === "pending";
   const viewRespondents = (
     <Button mode="contained" onPress={handleViewRespondents}>
@@ -109,14 +126,18 @@ function RequestCardInfo({ req }: { req: Request }) {
     </Button>
   );
 
-  const requestStatus = <Button mode="outlined">{req.status}</Button>;
-
   return (
     <View style={styles.requestInfo}>
       <Text variant="titleLarge">{req.pets.map((p) => p.name).join(", ")}</Text>
       <Text>{req.carer ? req.carer?.name : "Pending"}</Text>
-      <Text variant="bodySmall">{`Requested ${sinceRequested()}`}</Text>
-      {isPendingBroadRequest ? viewRespondents : requestStatus}
+      <Text variant="bodySmall">{`Requested ${sinceRequested(
+        req.requestedOn
+      )}`}</Text>
+      {isPendingBroadRequest ? (
+        viewRespondents
+      ) : (
+        <RequestStatusButton statusType={req.status} />
+      )}
     </View>
   );
 }
@@ -152,49 +173,113 @@ function JobCardInfo({ job, jobType, updateOffers }: JobCardInfoProps) {
     }
   };
 
-  return (
-    <View style={styles.requestInfo}>
-      <Text variant="titleLarge">
-        {job.pets.map((p) => p.name).join(", ")} - {job.ownerName}
-      </Text>
-      <Text variant="bodyLarge">
-        {job.pets.map((p) => p.petType).join(", ")}
-      </Text>
-      <Text variant="bodySmall">
-        Requested on {job.requestedOn.toISOString()}
-      </Text>
-      <Text variant="bodySmall">City {job.location.city}</Text>
-      <Link href={{ pathname: "profile", params: { userId: job.ownerId } }}>
-        View Owner's Profile
-      </Link>
-      {jobType !== "job" && job.status !== "applied" && (
+  const showStatusButtons = () => {
+    if (jobType === "broad" && job.status !== "applied") {
+      return (
+        <Button mode="contained" onPress={handleAccept}>
+          Apply
+        </Button>
+      );
+    }
+
+    if (jobType === "direct") {
+      return (
         <>
           <Button mode="contained" onPress={handleAccept}>
-            {jobType === "direct" ? "Accept" : "Apply"}
+            Accept
           </Button>
-          <Button mode="contained" onPress={handleReject}>
+          <Button mode="outlined" onPress={handleReject}>
             Reject
           </Button>
         </>
-      )}
+      );
+    }
+
+    return <RequestStatusButton statusType={job.status} />;
+  };
+
+  return (
+    // <View style={styles.requestInfo}>
+    //   <Text variant="titleLarge">
+    //     {job.pets.map((p) => p.name).join(", ")} - {job.ownerName}
+    //   </Text>
+    //   <Text variant="bodyLarge">
+    //     {job.pets.map((p) => p.petType).join(", ")}
+    //   </Text>
+    //   <Text variant="bodySmall">
+    //     Requested on {job.requestedOn.toISOString()}
+    //   </Text>
+    //   <Text variant="bodySmall">City {job.location.city}</Text>
+    //   <Link href={{ pathname: "profile", params: { userId: job.ownerId } }}>
+    //     View Owner's Profile
+    //   </Link>
+    //   {jobType !== "job" && job.status !== "applied" && (
+    //     <>
+    //       <Button mode="contained" onPress={handleAccept}>
+    //         {jobType === "direct" ? "Accept" : "Apply"}
+    //       </Button>
+    //       <Button mode="contained" onPress={handleReject}>
+    //         Reject
+    //       </Button>
+    //     </>
+    //   )}
+    // </View>
+    <View style={styles.requestInfo}>
+      <Text variant="titleLarge">{job.pets.map((p) => p.name).join(", ")}</Text>
+      <Text>{job.ownerName}</Text>
+      <Text variant="bodySmall">{`Requested ${sinceRequested(
+        job.requestedOn
+      )}`}</Text>
+      {showStatusButtons()}
     </View>
+  );
+}
+
+function RequestStatusButton({ statusType }: { statusType: RequestStatus }) {
+  const theme = useTheme();
+
+  const getStatus = () => {
+    switch (statusType) {
+      case "pending":
+        return { name: "Pending", colour: theme.colors.primary };
+      case "applied":
+        return { name: "Applied", colour: theme.colors.primary };
+      case "accepted":
+        return { name: "Accepted", colour: SUCCESS_COLOUR };
+      case "rejected":
+        return { name: "Rejected", colour: ERROR_COLOUR };
+      case "completed":
+        return { name: "Rejected", colour: COMPLETED_COLOUR };
+    }
+  };
+
+  const status = getStatus();
+
+  return (
+    <Button
+      mode="outlined"
+      style={{ borderColor: status.colour }}
+      textColor={status.colour}
+    >
+      {status.name}
+    </Button>
   );
 }
 
 const styles = StyleSheet.create({
   requestCard: {
     overflow: "hidden",
-    marginHorizontal: 25,
+    marginHorizontal: 15,
     marginVertical: 15,
   },
   requestCardContainer: {
     display: "flex",
     flex: 1,
     flexDirection: "row",
-    flexWrap: "nowrap",
+    // flexWrap: "nowrap",
     // alignItems: "flex-start",
     // paddingBottom: 30,
-    height: 200,
+    minheight: 200,
     // textAlign: "center",
     // padding: 15,
     // marginLeft: 300,
@@ -207,5 +292,7 @@ const styles = StyleSheet.create({
   },
   requestInfo: {
     paddingLeft: 10,
+    paddingBottom: 10,
+    width: "65%",
   },
 });

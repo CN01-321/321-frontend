@@ -1,7 +1,7 @@
 import { Slot } from "expo-router";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import { AuthProvider, useAuth } from "../contexts/auth";
-import { CARER_COLOUR, OWNER_COLOUR } from "../types";
+import { CARER_COLOUR, ERROR_COLOUR, OWNER_COLOUR } from "../types";
 
 function LayoutWithTheme() {
   const { getTokenUser } = useAuth();
@@ -29,8 +29,8 @@ function LayoutWithTheme() {
       onTertiary: "#ffffff",
       onTertiaryContainer: "#311300",
 
-      error: "#eb2c2c",
-      errorContainer: "#eb2c2c",
+      error: ERROR_COLOUR,
+      errorContainer: ERROR_COLOUR,
       onError: "#ffffff",
       onErrorContainer: "#410002",
 

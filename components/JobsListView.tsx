@@ -17,6 +17,7 @@ export default function JobsListView(
   props: OffersListViewProps | JobsListViewProps
 ) {
   const getPropUpdateOffers = () => {
+    // do nothing if job as there is no updating needed for this page
     if (props.jobType === "job") {
       return async () => {};
     }
@@ -36,6 +37,7 @@ export default function JobsListView(
           />
         )}
         keyExtractor={(item) => item._id}
+        contentContainerStyle={{ paddingBottom: 100 }}
       />
     </View>
   );
