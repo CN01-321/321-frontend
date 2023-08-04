@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UserType } from "../../types";
+import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import axios from "axios";
 import { View } from "react-native";
@@ -26,7 +26,7 @@ export default function SignUp() {
     }
   };
 
-  const colour = userType === "owner" ? "brown" : "yellow";
+  const colour = userType === "owner" ? OWNER_COLOUR : CARER_COLOUR;
 
   return (
     <View>

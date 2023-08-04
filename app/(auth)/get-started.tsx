@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter, Link, Stack } from "expo-router";
-import { UserType } from "../../types";
+import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types";
 import { Text, Button } from "react-native-paper";
 import { View } from "react-native";
 import Header from "../../components/Header";
@@ -8,7 +8,7 @@ export default function GetStarted() {
   const { userType } = useLocalSearchParams<{ userType: UserType }>();
   const router = useRouter();
 
-  const colour = userType === "owner" ? "brown" : "yellow";
+  const colour = userType === "owner" ? OWNER_COLOUR : CARER_COLOUR;
 
   return (
     <View>
