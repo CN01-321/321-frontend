@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import {
   Avatar,
   Text,
@@ -14,6 +14,7 @@ import { CarerResult } from "./CarerResultsView";
 import axios from "axios";
 import { Pet } from "../types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { resolveScheme } from "expo-linking";
 
 interface NewRequestModalProps {
   carerResult?: CarerResult | null;
@@ -63,6 +64,13 @@ export default function NewRequestModal({
     return () => (ignore = true);
   }, []);
 
+  // reset the form whenever the form gets dissmissed
+  useEffect(() => {
+    if (!visible) {
+      reset();
+    }
+  }, [visible]);
+
   const onSubmit: SubmitHandler<NewRequestForm> = async (data) => {
     console.log("request data is ", data);
 
@@ -81,12 +89,8 @@ export default function NewRequestModal({
 
   return (
     <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        style={{ backgroundColor: "white" }}
-      >
-        <ScrollView>
+      <Modal visible={visible} onDismiss={onDismiss}>
+        <ScrollView style={styles.container}>
           <Text variant="titleMedium">
             {carerResult ? `Request to ${carerResult.name}` : "New Request"}
           </Text>
@@ -123,6 +127,7 @@ export default function NewRequestModal({
             render={({ field: { onChange, value } }) => (
               <TextInput
                 label="Additional information"
+                mode="outlined"
                 value={value}
                 onChangeText={onChange}
                 multiline={true}
@@ -209,3 +214,11 @@ function PetCheckBox({ pet, checked, onPress }: PetCheckBoxProps) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    padding: 30,
+    borderRadius: 5,
+  },
+});
