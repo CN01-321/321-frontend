@@ -70,6 +70,10 @@ export default function Profile() {
     return reviews;
   };
 
+  const updateReviews = async () => {
+    setReviews(await getUserReviews(profileId!));
+  }
+
   useEffect((): (() => void) => {
     let ignore = false;
 
@@ -93,6 +97,13 @@ export default function Profile() {
 
     return () => (ignore = true);
   }, []);
+
+  useEffect(() => {
+    const updateFeedback = async () => {
+      await updateReviews();
+    }
+    updateFeedback();
+  }, [currentView])
 
   return (
     <View>
@@ -125,6 +136,7 @@ export default function Profile() {
           profile={user}
           isSelf={isSelf === "true"}
           reviews={reviews}
+          updateReviews={updateReviews}
         />
       )}
     </View>

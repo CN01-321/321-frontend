@@ -49,6 +49,7 @@ interface ProfileReviewsViewProps {
   isSelf?: boolean;
   isPet?: boolean;
   reviews: Array<Review>;
+  updateReviews: () => Promise<void>;
 }
 
 export default function ReviewsView({
@@ -56,6 +57,7 @@ export default function ReviewsView({
   isSelf,
   isPet,
   reviews,
+  updateReviews,
 }: ProfileReviewsViewProps) {
   const [newReviewVisible, setNewReviewVisible] = useState(false);
 
@@ -69,6 +71,7 @@ export default function ReviewsView({
               review={item}
               profile={profile}
               isPet={isPet ?? false}
+              updateReviews={updateReviews}
             />
           )}
           keyExtractor={(item) => item._id}
@@ -98,9 +101,10 @@ interface ReviewCardProps {
   review: Review;
   profile: Profile;
   isPet: boolean;
+  updateReviews: () => Promise<void>;
 }
 
-function ReviewCard({ review, profile, isPet }: ReviewCardProps) {
+function ReviewCard({ review, profile, isPet, updateReviews }: ReviewCardProps) {
   const [showComments, setShowComments] = useState(false);
 
   const handleLike = async () => {
@@ -154,7 +158,8 @@ function ReviewCard({ review, profile, isPet }: ReviewCardProps) {
           review={review}
           comments={review.comments}
           visible={showComments}
-          onDismiss={() => setShowComments(false)}
+          onDismiss={async () => setShowComments(false)}
+          updateReviews={updateReviews}
           isPet={isPet}
         />
         {/* )} */}
@@ -170,6 +175,7 @@ interface CommentsModalProps {
   visible: boolean;
   onDismiss: () => void;
   isPet: boolean;
+  updateReviews: () => Promise<void>;
 }
 
 function CommentsModal({
@@ -179,6 +185,7 @@ function CommentsModal({
   visible,
   onDismiss,
   isPet,
+  updateReviews,
 }: CommentsModalProps) {
   const [comment, setComment] = useState<string | undefined>();
 
@@ -187,8 +194,9 @@ function CommentsModal({
     try {
       const prefix = `/${isPet ? "pets" : "users"}`;
       await axios.post(
-        `${prefix}/${profile._id}/feedback/${review._id}/comments`
+        `${prefix}/${profile._id}/feedback/${review._id}/comments`, { message: comment }
       );
+      await updateReviews();
     } catch (e) {
       console.error(e);
     }
