@@ -126,6 +126,8 @@ function RequestCardInfo({ req }: { req: Request }) {
     </Button>
   );
 
+  console.log("request is ", req);
+
   return (
     <View style={styles.requestInfo}>
       <Text variant="titleLarge">{req.pets.map((p) => p.name).join(", ")}</Text>
@@ -239,6 +241,8 @@ function RequestStatusButton({ statusType }: { statusType: RequestStatus }) {
   const theme = useTheme();
 
   const getStatus = () => {
+    console.log(statusType);
+
     switch (statusType) {
       case "pending":
         return { name: "Pending", colour: theme.colors.primary };
@@ -253,15 +257,13 @@ function RequestStatusButton({ statusType }: { statusType: RequestStatus }) {
     }
   };
 
-  const status = getStatus();
-
   return (
     <Button
       mode="outlined"
-      style={{ borderColor: status.colour }}
-      textColor={status.colour}
+      style={{ borderColor: getStatus().colour }}
+      textColor={getStatus().colour}
     >
-      {status.name}
+      {getStatus().name}
     </Button>
   );
 }

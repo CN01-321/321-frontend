@@ -9,6 +9,15 @@ export type PetSize = "small" | "medium" | "large";
 
 export type UserType = "owner" | "carer";
 
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  userType: UserType;
+  bio?: string;
+  phone?: string;
+}
+
 export interface Pet {
   _id: string;
   name: string;

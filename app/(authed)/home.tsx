@@ -1,32 +1,56 @@
 import { Button, Text } from "react-native-paper";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useAuth } from "../../contexts/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../../components/Header";
+import { User } from "../../types";
 
 export default function Home() {
-  const [message, setMessage] = useState("No message");
-  const { logOut } = useAuth();
+  const { getTokenUser, logOut } = useAuth();
 
-  const getMessage = async () => {
-    try {
-      const { data } = await axios.get<string>("/needs-token");
-      setMessage(data);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const [user, setUser] = useState<User>();
+
+  useEffect((): (() => void) => {
+    let ignore = false;
+
+    (async () => {
+      try {
+        const { data } = await axios.get(`/users/${getTokenUser()?._id}`);
+        setUser(data);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+
+    return () => (ignore = true);
+  }, []);
 
   return (
-    <>
+    <View style={styles.container}>
       <Header title="Home" showButtons={true} />
       <View>
-        <Text variant="titleLarge">Welcome</Text>
-        <Button onPress={logOut}>Log out</Button>
-        <Button onPress={getMessage}>Get Message</Button>
-        <Text>{message}</Text>
+        <Text variant="titleLarge" style={styles.title}>
+          Hi, {user?.name}
+        </Text>
+        <Button style={styles.logout} onPress={logOut}>
+          Log out
+        </Button>
       </View>
-    </>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 40,
+    textAlign: "center",
+    padding: 40,
+  },
+  logout: {
+    paddingTop: "100%",
+  },
+});

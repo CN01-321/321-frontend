@@ -70,14 +70,17 @@ export function AuthProvider(props: any) {
   const updateTokenUser = async (token: string) => {
     try {
       const decode = JWT.decode<TokenUser>(token, JWT_SECRET);
+      // set the Authorization header to send in axios calls if decode is
+      // successful
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      await SecureStore.setItemAsync("token", token);
+
+      // set user must be after axios and secure store so that protected route
+      // does not redirect before they have been set correctly
       setUser(decode.user);
     } catch (e) {
       throw new Error(`unable to decode token: ${token}`);
     }
-
-    await SecureStore.setItemAsync("token", token);
-    // set the Authorization header to send in axios calls
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   };
 
   const deleteTokenUser = async () => {
@@ -101,6 +104,7 @@ export function AuthProvider(props: any) {
       }
 
       if (token && !ignore) {
+        console.log("updating token in useEffect");
         try {
           await updateTokenUser(token);
         } catch (e) {
@@ -116,6 +120,7 @@ export function AuthProvider(props: any) {
 
   const logIn = async (token: string) => {
     try {
+      console.log("updating token in logIn");
       await updateTokenUser(token);
     } catch (e) {
       console.error(e);
