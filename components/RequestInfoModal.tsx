@@ -1,4 +1,5 @@
 import { Modal, Portal, Text } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
 import { RequestInfo } from "../types";
 
 interface RequestInfoModalProps {
@@ -15,42 +16,65 @@ export default function RequestInfoModal({
   const location = () =>
     `${info.location.street}, ${info.location.city}, ${info.location.state}`;
 
-  console.log(info);
-
   return (
     <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        style={{ backgroundColor: "white" }}
-      >
-        <Text variant="titleMedium">Details</Text>
-        <Text variant="bodyMedium">
-          Start Date: {info.dateRange.startDate.toISOString()}
-        </Text>
-        <Text variant="bodyMedium">
-          End Date: {info.dateRange.endDate.toISOString()}
-        </Text>
-        <Text variant="bodyMedium">Location: {location()}</Text>
-        <Text variant="bodyMedium">
-          {/* TODO switch to pets page */}
-          Pets:{" "}
-          {info.pets.map((p) => (
-            <Text key={p._id}>
-              {/* <Link
-                href={{
-                  pathname: "profile",
-                  params: { userId: job.ownerId },
-                }}
-              >
-                {p.name}
-              </Link>{" "} */}
-              {p.name}
+      <Modal visible={visible} onDismiss={onDismiss}>
+        <View style={styles.container}>
+          <Text variant="titleMedium" style={styles.details}>
+            Details
+          </Text>
+          <View style={styles.textBlock}>
+            <Text variant="bodyMedium">
+              Start Date: {info.dateRange.startDate.toDateString()}
             </Text>
-          ))}
-        </Text>
-        <Text variant="bodySmall">{info.additionalInfo}</Text>
+            <Text variant="bodyMedium">
+              Start Time: {info.dateRange.startDate.toTimeString()}
+            </Text>
+          </View>
+
+          <View style={styles.textBlock}>
+            <Text variant="bodyMedium">
+              End Date: {info.dateRange.endDate.toDateString()}
+            </Text>
+            <Text variant="bodyMedium">
+              End Time: {info.dateRange.endDate.toTimeString()}
+            </Text>
+          </View>
+
+          <View style={styles.textBlock}>
+            <Text variant="bodyMedium">Location: {location()}</Text>
+          </View>
+
+          <View style={styles.textBlock}>
+            <Text variant="bodyMedium">
+              {/* TODO switch to pets page */}
+              Pets: {info.pets.map((p) => p.name).join(", ")}
+            </Text>
+          </View>
+
+          <View style={styles.textBlock}>
+            <Text variant="bodyMedium">
+              Additional Info: {info.additionalInfo}
+            </Text>
+          </View>
+        </View>
       </Modal>
     </Portal>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    padding: 30,
+    borderRadius: 5,
+  },
+  details: {
+    padding: 10,
+    fontSize: 30,
+    textAlign: "center",
+  },
+  textBlock: {
+    padding: 10,
+  },
+});

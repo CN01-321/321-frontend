@@ -18,32 +18,32 @@ export default function Offers() {
   );
   const [offers, setOffers] = useState<Array<Job>>([]);
 
+  const updateOffers = async () => {
+    try {
+      const { data } = await axios.get<Array<Job>>(`/carers/${offerType}`);
+
+      // map all date strings to date objects
+      const offers = data.map((o) => {
+        return {
+          ...o,
+          requestedOn: new Date(o.requestedOn),
+          dateRange: {
+            startDate: new Date(o.dateRange.startDate),
+            endDate: new Date(o.dateRange.endDate),
+          },
+        };
+      });
+
+      setOffers(offers);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   useEffect((): (() => void) => {
     let ignore = false;
 
-    (async () => {
-      try {
-        const { data } = await axios.get<Array<Job>>(`/carers/${offerType}`);
-
-        // map all date strings to date objects
-        const offers = data.map((o) => {
-          return {
-            ...o,
-            requestedOn: new Date(o.requestedOn),
-            dateRange: {
-              startDate: new Date(o.dateRange.startDate),
-              endDate: new Date(o.dateRange.endDate),
-            },
-          };
-        });
-
-        if (!ignore) {
-          setOffers(offers);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    })();
+    updateOffers();
 
     return () => (ignore = true);
   }, [offerType]);
@@ -65,7 +65,11 @@ export default function Offers() {
           },
         ]}
       />
-      <JobsListView jobs={offers} jobType={offerType} />
+      <JobsListView
+        jobs={offers}
+        jobType={offerType}
+        updateOffers={updateOffers}
+      />
     </View>
   );
 }

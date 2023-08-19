@@ -1,7 +1,14 @@
-import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ScrollView, View, StyleSheet } from "react-native";
 import Slider from "@react-native-community/slider";
-import { Button, Checkbox, Modal, Portal, Text } from "react-native-paper";
+import {
+  Button,
+  Checkbox,
+  Modal,
+  Portal,
+  Searchbar,
+  Text,
+} from "react-native-paper";
 import CarerResultsView, {
   CarerResult,
 } from "../../../components/CarerResultsView";
@@ -52,6 +59,32 @@ export default function Search() {
   const [searchResults, setSearchResults] = useState<Array<CarerResult>>([]);
   const [selectedCarer, setSelectedCarer] = useState<CarerResult | null>();
 
+  useEffect((): (() => void) => {
+    let ignore = false;
+
+    (async () => {
+      await doSearch();
+
+      console.log("searching with filters", filters);
+
+      console.log("query string ", getQueryString());
+      try {
+        const { data } = await axios.get<Array<CarerResult>>(
+          `/owners/requests/nearby${getQueryString()}`
+        );
+
+        console.log("search results ", data);
+        if (!ignore) {
+          setSearchResults(data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+
+    return () => (ignore = true);
+  }, [filters]);
+
   const updateFilters = (filter: Filters) => {
     setFilters({ ...filter });
   };
@@ -82,31 +115,13 @@ export default function Search() {
     return query;
   };
 
-  const doSearch = async () => {
-    console.log("searching with filters", filters);
-
-    console.log("query string ", getQueryString());
-    try {
-      const { data } = await axios.get<Array<CarerResult>>(
-        `/owners/requests/nearby${getQueryString()}`
-      );
-
-      console.log("search results ", data);
-      setSearchResults(data);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const doSearch = async () => {};
 
   return (
     <View>
       <Header title="Search" />
-      <Text>Search</Text>
-      <Button mode="contained" onPress={() => setFilterVisible(true)}>
+      <Button mode="outlined" onPress={() => setFilterVisible(true)}>
         Filters
-      </Button>
-      <Button mode="contained" onPress={doSearch}>
-        Search
       </Button>
       <FilterModal
         visible={filterVisible}
@@ -144,25 +159,11 @@ function FilterModal({
   filters,
   updateFilters,
 }: FilterModalProps) {
-  // const updateStartDate = (date: Date) => {
-  //   filters.startDateTime = date;
-  //   updateFilters(filters);
-  // };
-
-  // const updateEndDate = (date: Date) => {
-  //   filters.endDateTime = date;
-  //   updateFilters(filters);
-  // };
-
+  // TODO implement rating and availiability filters, conver to react-hook form
   const updateMaxPrice = (price: number) => {
     filters.maxPrice = price;
     updateFilters(filters);
   };
-
-  // const updateMinRating = (rating: number) => {
-  //   filters.minRating = rating;
-  //   updateFilters(filters);
-  // };
 
   const updatePetTypes = (pet: PetTypeKey) => {
     filters.petTypes[pet] = !filters.petTypes[pet];
@@ -180,23 +181,9 @@ function FilterModal({
 
   return (
     <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        style={{ backgroundColor: "white" }}
-      >
-        <ScrollView>
+      <Modal visible={visible} onDismiss={onDismiss}>
+        <ScrollView style={styles.container}>
           <Text variant="titleMedium">Filters</Text>
-          {/* <DatePickerButton
-            label="Start Date"
-            date={filters.startDateTime}
-            updateDate={updateStartDate}
-          />
-          <DatePickerButton
-            label="End date"
-            date={filters.endDateTime}
-            updateDate={updateEndDate}
-          /> */}
           <Text>Max Price: {filters.maxPrice}</Text>
           <Slider
             minimumValue={0}
@@ -204,23 +191,21 @@ function FilterModal({
             step={25}
             onValueChange={updateMaxPrice}
           />
-          {/* <Text>Min Rating: {filters.minRating}</Text>
-          <Slider
-            minimumValue={0}
-            maximumValue={5}
-            step={1}
-            onValueChange={updateMinRating}
-          /> */}
           <Text>Select Pet Types</Text>
-          <FilterSelection<PetTypeKey, PetTypes>
-            selections={filters.petTypes}
-            onSelection={updatePetTypes}
-          />
+          <View style={styles.checkboxArea}>
+            <FilterSelection<PetTypeKey, PetTypes>
+              selections={filters.petTypes}
+              onSelection={updatePetTypes}
+            />
+          </View>
+
           <Text>Select Pet Sizes</Text>
-          <FilterSelection<PetSizeKey, PetSizes>
-            selections={filters.petSizes}
-            onSelection={updatePetSizes}
-          />
+          <View style={styles.checkboxArea}>
+            <FilterSelection<PetSizeKey, PetSizes>
+              selections={filters.petSizes}
+              onSelection={updatePetSizes}
+            />
+          </View>
           <Button mode="contained" onPress={onDismiss}>
             Set Filters
           </Button>
@@ -249,7 +234,7 @@ function FilterSelection<K extends FilterTypeKey, T extends FilterType>({
   onSelection,
 }: FilterSelectionProps<K, T>) {
   return (
-    <View>
+    <View style={styles.checkboxArea}>
       {Object.entries(selections).map(([selection, checked]) => (
         <FilterSelectionCheckbox
           key={selection}
@@ -276,9 +261,26 @@ function FilterSelectionCheckbox<K extends FilterTypeKey>({
   onCheck,
 }: FilterSelectionCheckboxProps<K>) {
   return (
-    <View style={{ flexDirection: "row", padding: 20 }}>
+    <View style={styles.checkbox}>
       <Checkbox status={checked ? "checked" : "unchecked"} onPress={onCheck} />
       <Text>{name ? name : selection}</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    padding: 30,
+    borderRadius: 5,
+  },
+  checkboxArea: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  checkbox: {
+    flexDirection: "row",
+    paddingLeft: 10,
+  },
+});

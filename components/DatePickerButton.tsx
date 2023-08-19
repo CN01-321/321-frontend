@@ -18,8 +18,11 @@ export function DatePickerButton({
   return (
     <>
       {label && <Text>{label}</Text>}
-      <Button mode="contained" onPress={() => setVisible(true)}>
-        {date ? date.toISOString() : "Set Date"}
+      <Button
+        mode={date ? "contained" : "outlined"}
+        onPress={() => setVisible(true)}
+      >
+        {date ? date.toDateString() : "Set Date"}
       </Button>
       <DateTimePickerModal
         isVisible={visible}

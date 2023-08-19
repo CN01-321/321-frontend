@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import {
   Avatar,
   Text,
@@ -14,16 +14,18 @@ import { CarerResult } from "./CarerResultsView";
 import axios from "axios";
 import { Pet } from "../types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { resolveScheme } from "expo-linking";
 
 interface NewRequestModalProps {
   carerResult?: CarerResult | null;
   visible: boolean;
+  updateRequests?: () => void;
   onDismiss: () => void;
 }
 
 interface NewRequestForm {
   carer?: string;
-  pets: Array<string>;
+  pets: string[];
   message?: string;
   dateRange: {
     startDate: Date;
@@ -34,9 +36,10 @@ interface NewRequestForm {
 export default function NewRequestModal({
   carerResult,
   visible,
+  updateRequests,
   onDismiss,
 }: NewRequestModalProps) {
-  const [pets, setPets] = useState<Array<Pet>>([]);
+  const [pets, setPets] = useState<Pet[]>([]);
   const {
     control,
     handleSubmit,
@@ -49,7 +52,7 @@ export default function NewRequestModal({
 
     (async () => {
       try {
-        const { data } = await axios.get<Array<Pet>>("/owners/pets");
+        const { data } = await axios.get<Pet[]>("/owners/pets");
         if (!ignore) {
           setPets(data);
         }
@@ -61,11 +64,21 @@ export default function NewRequestModal({
     return () => (ignore = true);
   }, []);
 
+  // reset the form whenever the form gets dissmissed
+  useEffect(() => {
+    if (!visible) {
+      reset();
+    }
+  }, [visible]);
+
   const onSubmit: SubmitHandler<NewRequestForm> = async (data) => {
-    console.log(data);
+    console.log("request data is ", data);
 
     try {
       await axios.post("/owners/requests", data);
+
+      // update the new list if updateRequests is not undefined
+      updateRequests && updateRequests();
     } catch (e) {
       console.error(e);
     }
@@ -76,12 +89,8 @@ export default function NewRequestModal({
 
   return (
     <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        style={{ backgroundColor: "white" }}
-      >
-        <ScrollView>
+      <Modal visible={visible} onDismiss={onDismiss}>
+        <ScrollView style={styles.container}>
           <Text variant="titleMedium">
             {carerResult ? `Request to ${carerResult.name}` : "New Request"}
           </Text>
@@ -118,6 +127,7 @@ export default function NewRequestModal({
             render={({ field: { onChange, value } }) => (
               <TextInput
                 label="Additional information"
+                mode="outlined"
                 value={value}
                 onChangeText={onChange}
                 multiline={true}
@@ -144,9 +154,9 @@ export default function NewRequestModal({
 }
 
 interface SelectPetsAreaProps {
-  pets: Array<Pet>;
-  value: Array<string> | undefined;
-  onChange: (event: Array<string>) => void;
+  pets: Pet[];
+  value: string[] | undefined;
+  onChange: (event: string[]) => void;
 }
 
 function SelectPetsArea({ pets, value, onChange }: SelectPetsAreaProps) {
@@ -204,3 +214,11 @@ function PetCheckBox({ pet, checked, onPress }: PetCheckBoxProps) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    padding: 30,
+    borderRadius: 5,
+  },
+});
