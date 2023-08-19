@@ -139,10 +139,12 @@ function RequestCardInfo({ req }: { req: Request }) {
         req.requestedOn
       )}`}</Text>
       {isPendingBroadRequest ? (
-        <Button mode="contained" onPress={handleViewRespondents}>
-          View Respondents
-        </Button>
-        <Button onPress={handleViewPets}>View Pets</Button>
+        <>
+          <Button mode="contained" onPress={handleViewRespondents}>
+            View Respondents
+          </Button>
+          <Button mode="contained" onPress={handleViewPets}>View Pets</Button>
+        </>
       ) : (
         <RequestStatusButton statusType={req.status} />
       )}
