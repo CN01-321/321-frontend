@@ -2,6 +2,7 @@ import { Slot } from "expo-router";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import { AuthProvider, useAuth } from "../contexts/auth";
 import { CARER_COLOUR, ERROR_COLOUR, OWNER_COLOUR } from "../types";
+import { useFonts } from "expo-font";
 
 function LayoutWithTheme() {
   const { getTokenUser } = useAuth();
@@ -48,6 +49,13 @@ function LayoutWithTheme() {
       },
     },
   };
+
+  const [fontsLoaded] = useFonts({
+    "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
+    "Montserrat-Medium": require("../assets/fonts/Montserrat-Medium.ttf"),
+    "Montserrat-SemiBold": require("../assets/fonts/Montserrat-SemiBold.ttf"),
+    "Montserrat-Bold": require("../assets/fonts/Montserrat-Bold.ttf")
+  });
 
   return (
     <PaperProvider theme={theme}>

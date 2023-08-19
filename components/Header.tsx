@@ -28,6 +28,13 @@ export default function Header({ title, showButtons }: HeaderProps) {
       options={{
         headerTitle: title,
         headerRight: buttons,
+        headerStyle: {
+          backgroundColor: "#ffffff"
+        },
+        headerTitleStyle: {
+          fontFamily: "Montserrat-Bold",
+          fontSize: 24,
+        }
       }}
     />
   );
