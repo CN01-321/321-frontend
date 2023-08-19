@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Avatar, SegmentedButtons, Text } from "react-native-paper";
 import { View } from "react-native";
 import { useEffect, useState } from "react";

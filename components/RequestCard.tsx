@@ -119,12 +119,15 @@ function RequestCardInfo({ req }: { req: Request }) {
     });
   };
 
+  const handleViewPets = (e: GestureResponderEvent) => {
+    e.stopPropagation();
+    router.push({
+      pathname: "/pets/request-pets",
+      params: { requestId: req._id },
+    });
+  };
+
   const isPendingBroadRequest = !req.carer && req.status === "pending";
-  const viewRespondents = (
-    <Button mode="contained" onPress={handleViewRespondents}>
-      View Respondents
-    </Button>
-  );
 
   console.log("request is ", req);
 
@@ -136,7 +139,10 @@ function RequestCardInfo({ req }: { req: Request }) {
         req.requestedOn
       )}`}</Text>
       {isPendingBroadRequest ? (
-        viewRespondents
+        <Button mode="contained" onPress={handleViewRespondents}>
+          View Respondents
+        </Button>
+        <Button onPress={handleViewPets}>View Pets</Button>
       ) : (
         <RequestStatusButton statusType={req.status} />
       )}
