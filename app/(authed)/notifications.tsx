@@ -8,7 +8,7 @@ type Notification = {
   description: string;
 };
 
-const exampleNotifications: Array<Notification> = [
+const exampleNotifications: Notification[] = [
   {
     name: "Person 1",
     description: "has accepted your hiring request.",

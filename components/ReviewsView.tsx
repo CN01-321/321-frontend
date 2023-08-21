@@ -33,7 +33,7 @@ export interface Review {
   message: string;
   image?: string;
   likes: number;
-  comments: Array<Comment>;
+  comments: Comment[];
 }
 
 export interface Comment {
@@ -48,7 +48,7 @@ interface ProfileReviewsViewProps {
   profile: Profile;
   isSelf?: boolean;
   isPet?: boolean;
-  reviews: Array<Review>;
+  reviews: Review[];
   updateReviews: () => Promise<void>;
 }
 
@@ -104,7 +104,12 @@ interface ReviewCardProps {
   updateReviews: () => Promise<void>;
 }
 
-function ReviewCard({ review, profile, isPet, updateReviews }: ReviewCardProps) {
+function ReviewCard({
+  review,
+  profile,
+  isPet,
+  updateReviews,
+}: ReviewCardProps) {
   const [showComments, setShowComments] = useState(false);
 
   const handleLike = async () => {
@@ -171,7 +176,7 @@ function ReviewCard({ review, profile, isPet, updateReviews }: ReviewCardProps) 
 interface CommentsModalProps {
   profile: Profile;
   review: Review;
-  comments: Array<Comment>;
+  comments: Comment[];
   visible: boolean;
   onDismiss: () => void;
   isPet: boolean;
@@ -194,7 +199,8 @@ function CommentsModal({
     try {
       const prefix = `/${isPet ? "pets" : "users"}`;
       await axios.post(
-        `${prefix}/${profile._id}/feedback/${review._id}/comments`, { message: comment }
+        `${prefix}/${profile._id}/feedback/${review._id}/comments`,
+        { message: comment }
       );
       await updateReviews();
     } catch (e) {

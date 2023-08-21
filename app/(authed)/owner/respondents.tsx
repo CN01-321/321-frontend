@@ -13,7 +13,7 @@ const icon = require("../../../assets/icon.png");
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();
   const [respodentId, setRespondentId] = useState("");
-  const [respondents, setRespondents] = useState<Array<CarerResult>>([]);
+  const [respondents, setRespondents] = useState<CarerResult[]>([]);
   const [visible, setVisible] = useState(false);
   const router = useRouter();
 
@@ -22,7 +22,7 @@ export default function Respondents() {
 
     (async () => {
       try {
-        const { data } = await axios.get<Array<CarerResult>>(
+        const { data } = await axios.get<CarerResult[]>(
           `/owners/requests/${requestId}/respondents`
         );
 

@@ -9,7 +9,7 @@ interface OffersListViewProps {
 }
 
 interface JobsListViewProps {
-  jobs: Array<Job>;
+  jobs: Job[];
   jobType: "job";
 }
 

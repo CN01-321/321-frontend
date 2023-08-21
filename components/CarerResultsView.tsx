@@ -1,7 +1,8 @@
-import { FlatList, View, StyleSheet } from "react-native";
+import { FlatList, View, StyleSheet, ImageSourcePropType } from "react-native";
 import { Avatar, Button, Card, Text } from "react-native-paper";
 import { StarRating } from "./StarRating";
 import { Link } from "expo-router";
+import { getPfpUrl } from "../utils";
 
 const icon = require("../assets/icon.png");
 
@@ -10,11 +11,11 @@ export interface CarerResult {
   name: string;
   rating?: number;
   bio?: string;
-  icon?: string;
+  pfp?: string;
 }
 
 interface CarerResultsViewProps {
-  carerResults: Array<CarerResult>;
+  carerResults: CarerResult[];
   handleRequest: (carerResult: CarerResult) => void;
   cardButtonLabel: string;
 }
@@ -50,6 +51,10 @@ function CarerResultCard({
   handleRequest,
   cardButtonLabel,
 }: CarerResultCardProps) {
+  const carerIcon: ImageSourcePropType = carerResult.pfp
+    ? { uri: getPfpUrl(carerResult.pfp) }
+    : icon;
+
   return (
     <Card>
       <Link
@@ -59,7 +64,7 @@ function CarerResultCard({
         }}
       >
         <Card.Content style={styles.carerResultCard}>
-          <Avatar.Image source={icon} />
+          <Avatar.Image source={carerIcon} />
           <CarerResultCardInfo
             carerResult={carerResult}
             handleRequest={handleRequest}

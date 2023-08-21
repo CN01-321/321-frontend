@@ -113,7 +113,7 @@ export default function UserLayout() {
 }
 
 interface UserBottomNavProps {
-  routes: Array<Route>;
+  routes: Route[];
   index: number;
   onChange: (route: Route) => void;
 }

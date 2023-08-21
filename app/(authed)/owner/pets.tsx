@@ -1,6 +1,12 @@
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, View, StyleSheet } from "react-native";
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  ImageSourcePropType,
+  Image,
+} from "react-native";
 import { Card, FAB, Text } from "react-native-paper";
 import AddPetModal from "../../../components/AddPetModal";
 import ShowModalFab from "../../../components/ShowModalFab";
@@ -8,18 +14,30 @@ import { Stack } from "expo-router";
 import axios from "axios";
 import { Pet } from "../../../types";
 import Header from "../../../components/Header";
+import { AXIOS_BASE_URL } from "@env";
+import { getPfpUrl } from "../../../utils";
 
 const icon = require("../../../assets/icon.png");
 
 export default function Pets() {
-  const [pets, setPets] = useState<Array<Pet>>([]);
+  const [pets, setPets] = useState<Pet[]>([]);
   const [visible, setVisible] = useState(false);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
-  useEffect(() => {
-    axios.get("/owners/pets").then((response) => setPets(response.data));
+  useEffect((): (() => void) => {
+    let ignore = false;
+
+    (async () => {
+      const { data } = await axios.get<Pet[]>("/owners/pets");
+
+      console.log("pets are: ", data);
+
+      setPets(data);
+    })();
+
+    return () => (ignore = true);
   }, []);
 
   return (
@@ -41,6 +59,12 @@ export default function Pets() {
 function PetCard({ pet }: { pet: Pet }) {
   const router = useRouter();
 
+  const petIcon: ImageSourcePropType = pet.pfp
+    ? { uri: getPfpUrl(pet.pfp) }
+    : icon;
+
+  console.log(petIcon);
+
   return (
     <Card
       style={styles.petCard}
@@ -51,7 +75,10 @@ function PetCard({ pet }: { pet: Pet }) {
         })
       }
     >
-      <Card.Cover source={icon} style={styles.petCardImg} />
+      <Card.Cover
+        source={petIcon}
+        // style={{ width: 200, height: 200 }}
+      />
       <Card.Content>
         <Text variant="titleSmall">{pet.name}</Text>
       </Card.Content>
@@ -76,5 +103,5 @@ const styles = StyleSheet.create({
     width: "50%",
     display: "flex",
   },
-  petCardImg: {},
+  petCardImg: { width: 300, height: 300 },
 });

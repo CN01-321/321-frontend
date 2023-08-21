@@ -201,31 +201,6 @@ function JobCardInfo({ job, jobType, updateOffers }: JobCardInfoProps) {
   };
 
   return (
-    // <View style={styles.requestInfo}>
-    //   <Text variant="titleLarge">
-    //     {job.pets.map((p) => p.name).join(", ")} - {job.ownerName}
-    //   </Text>
-    //   <Text variant="bodyLarge">
-    //     {job.pets.map((p) => p.petType).join(", ")}
-    //   </Text>
-    //   <Text variant="bodySmall">
-    //     Requested on {job.requestedOn.toISOString()}
-    //   </Text>
-    //   <Text variant="bodySmall">City {job.location.city}</Text>
-    //   <Link href={{ pathname: "profile", params: { userId: job.ownerId } }}>
-    //     View Owner's Profile
-    //   </Link>
-    //   {jobType !== "job" && job.status !== "applied" && (
-    //     <>
-    //       <Button mode="contained" onPress={handleAccept}>
-    //         {jobType === "direct" ? "Accept" : "Apply"}
-    //       </Button>
-    //       <Button mode="contained" onPress={handleReject}>
-    //         Reject
-    //       </Button>
-    //     </>
-    //   )}
-    // </View>
     <View style={styles.requestInfo}>
       <Text variant="titleLarge">{job.pets.map((p) => p.name).join(", ")}</Text>
       <Text>{job.ownerName}</Text>

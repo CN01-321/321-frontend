@@ -1,4 +1,9 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ImageSourcePropType,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import {
   Avatar,
   Text,
@@ -15,6 +20,9 @@ import axios from "axios";
 import { Pet } from "../types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { resolveScheme } from "expo-linking";
+import { getPfpUrl } from "../utils";
+
+const icon = require("../assets/icon.png");
 
 interface NewRequestModalProps {
   carerResult?: CarerResult | null;
@@ -163,8 +171,8 @@ function SelectPetsArea({ pets, value, onChange }: SelectPetsAreaProps) {
   const [selected] = useState<Map<string, boolean>>(
     new Map(
       pets.map((p) => [
-        p._id!,
-        (value ?? []).find((id) => id === p._id!) != undefined,
+        p._id,
+        (value ?? []).find((id) => id === p._id) != undefined,
       ])
     )
   );
@@ -201,6 +209,10 @@ interface PetCheckBoxProps {
 }
 
 function PetCheckBox({ pet, checked, onPress }: PetCheckBoxProps) {
+  const petPfp: ImageSourcePropType = pet.pfp
+    ? { uri: getPfpUrl(pet.pfp) }
+    : icon;
+
   return (
     <View style={{ flexDirection: "row", padding: 20 }}>
       <Checkbox
@@ -208,7 +220,7 @@ function PetCheckBox({ pet, checked, onPress }: PetCheckBoxProps) {
         status={checked ? "checked" : "unchecked"}
         onPress={onPress}
       />
-      <Avatar.Icon icon={"dog"} size={40} style={{ padding: 10 }} />
+      <Avatar.Image source={petPfp} size={40} />
       <Text style={{ padding: 10 }}>{pet.name}</Text>
       <Text style={{ padding: 10 }}>{pet.petType}</Text>
     </View>

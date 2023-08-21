@@ -56,7 +56,7 @@ export default function Search() {
   const [filters, setFilters] = useState<Filters>(defaultFilters());
   const [filterVisible, setFilterVisible] = useState(false);
   const [requestVisible, setRequestVisible] = useState(false);
-  const [searchResults, setSearchResults] = useState<Array<CarerResult>>([]);
+  const [searchResults, setSearchResults] = useState<CarerResult[]>([]);
   const [selectedCarer, setSelectedCarer] = useState<CarerResult | null>();
 
   useEffect((): (() => void) => {
@@ -69,7 +69,7 @@ export default function Search() {
 
       console.log("query string ", getQueryString());
       try {
-        const { data } = await axios.get<Array<CarerResult>>(
+        const { data } = await axios.get<CarerResult[]>(
           `/owners/requests/nearby${getQueryString()}`
         );
 
