@@ -1,41 +1,49 @@
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
-import { BottomNavigation, IconButton } from "react-native-paper";
-import { View } from "react-native";
+import { Text, BottomNavigation, IconButton } from "react-native-paper";
+import { StyleSheet } from "react-native";
 import { Href } from "expo-router/build/link/href";
+import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
+
+import HomeIcon from "../../assets/icons/navbar/home.svg";
+import RequestsIcon from "../../assets/icons/navbar/requests.svg";
+import JobsIcon from "../../assets/icons/navbar/jobs.svg";
+import FindCarersIcon from "../../assets/icons/navbar/findcarers.svg";
+import PetsIcon from "../../assets/icons/navbar/pets.svg";
+import ProfileIcon from "../../assets/icons/navbar/profile.svg";
 
 export interface Route {
   key: string;
   title: string;
-  focusedIcon: string;
-  unfocusedIcon: string;
+  focusedIcon: IconSource;
+  unfocusedIcon: IconSource;
 }
 
 const carerRoutes = [
   {
     key: "home",
     title: "Home",
-    focusedIcon: "home-circle",
-    unfocusedIcon: "home-circle-outline",
+    focusedIcon: () => <HomeIcon height={25} fill={"#FFFFFF"} />,
+    unfocusedIcon: () => <HomeIcon height={25} fill={"#49454F"}/>,
   },
   {
     key: "carer/offers",
-    title: "Offers",
-    focusedIcon: "pencil-box-multiple",
-    unfocusedIcon: "pencil-box-multiple-outline",
+    title: "Requests",
+    focusedIcon: () => <RequestsIcon height={25} fill={"#FFFFFF"} />,
+    unfocusedIcon: () => <RequestsIcon height={25} fill={"#49454F"} />,
   },
   {
     key: "carer/jobs",
     title: "Jobs",
-    focusedIcon: "briefcase",
-    unfocusedIcon: "briefcase-outline",
+    focusedIcon: () => <JobsIcon height={25} fill={"#FFFFFF"} />,
+    unfocusedIcon: () => <JobsIcon height={25} fill={"#49454F"} />,
   },
   {
     key: "profile",
     title: "Profile",
-    focusedIcon: "account",
-    unfocusedIcon: "account-outline",
+    focusedIcon: () => <ProfileIcon height={25} fill={"#FFFFFF"} />,
+    unfocusedIcon: () => <ProfileIcon height={25} fill={"#49454F"} />,
   },
 ];
 
@@ -43,32 +51,32 @@ const ownerRoutes = [
   {
     key: "home",
     title: "Home",
-    focusedIcon: "home-circle",
-    unfocusedIcon: "home-circle-outline",
+    focusedIcon: () => <HomeIcon height={25} fill={"#FFFFFF"} />,
+    unfocusedIcon: () => <HomeIcon height={25} fill={"#49454F"}/>,
   },
   {
     key: "owner/requests",
     title: "Requests",
-    focusedIcon: "pencil-box-multiple",
-    unfocusedIcon: "pencil-box-multiple-outline",
+    focusedIcon: () => <RequestsIcon height={25} fill={"#FFFFFF"} />,
+    unfocusedIcon: () => <RequestsIcon height={25} fill={"#49454F"} />,
   },
   {
     key: "owner/search",
     title: "Find Carers",
-    focusedIcon: "magnify-plus",
-    unfocusedIcon: "magnify-plus-outline",
+    focusedIcon: () => <FindCarersIcon height={25} fill={"#FFFFFF"} />,
+    unfocusedIcon: () => <FindCarersIcon height={25} fill={"#49454F"} />,
   },
   {
     key: "owner/pets",
     title: "Pets",
-    focusedIcon: "food-hot-dog",
-    unfocusedIcon: "dog",
+    focusedIcon: () => <PetsIcon height={25} fill={"#FFFFFF"} />,
+    unfocusedIcon: () => <PetsIcon height={25} fill={"#49454F"} />,
   },
   {
     key: "profile",
     title: "Profile",
-    focusedIcon: "account",
-    unfocusedIcon: "account-outline",
+    focusedIcon: () => <ProfileIcon height={25} fill={"#FFFFFF"} />,
+    unfocusedIcon: () => <ProfileIcon height={25} fill={"#49454F"} />,
   },
 ];
 
@@ -123,6 +131,21 @@ function UserBottomNav({ routes, index, onChange }: UserBottomNavProps) {
     <BottomNavigation.Bar
       navigationState={{ index, routes }}
       onTabPress={({ route }) => onChange(route)}
+      renderLabel={(props: {
+        route: any;
+      }): React.ReactNode => (
+        <Text style={styles.navbarLabel}>
+          {props.route.title}
+        </Text>
+      )}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  navbarLabel: {
+    fontFamily: "Montserrat-Medium",
+    textAlign: "center",
+    fontSize: 12
+  }
+});
