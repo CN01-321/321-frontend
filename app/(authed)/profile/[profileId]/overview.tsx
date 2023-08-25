@@ -2,11 +2,11 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Avatar, SegmentedButtons, Text, TextInput } from "react-native-paper";
-import ReviewsView, { Review } from "../../../components/ReviewsView";
-import { useAuth } from "../../../contexts/auth";
+import ReviewsView, { Review } from "../../../../components/ReviewsView";
+import { useAuth } from "../../../../contexts/auth";
 import axios from "axios";
-import Header from "../../../components/Header";
-import { UserType } from "../../../types";
+import Header from "../../../../components/Header";
+import { UserType } from "../../../../types";
 
 interface User {
   _id: string;

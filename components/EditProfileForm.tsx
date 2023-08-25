@@ -1,4 +1,4 @@
-import { ScrollView } from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
 import { Avatar, Button, TextInput } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { User } from "../types";
@@ -32,14 +32,27 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
     },
   });
 
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    // const geocodedLocation = await Location.geocodeAsync(`${data.street} ${data.city} ${data.state} ${data.postcode}`);
+    // data.coords = [geocodedLocation[0].latitude,  geocodedLocation[0].longitude];
+    // try {
+    //   await axios.post("/owners/pets", data);
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    // reset();
+  }
+
   
   return (
     <ScrollView>
-      {user.pfp ? (
-        <Avatar.Icon icon="account-circle" size={100} />
-      ) : (
-        <Avatar.Icon icon="account-circle" size={100} />
-      )}
+      <View>
+        {user.pfp ? (
+          <Avatar.Icon icon="account-circle" size={100} />
+        ) : (
+          <Avatar.Icon icon="account-circle" size={100} />
+        )}
+      </View>
       <Controller
         control={control}
         name="name"
@@ -133,11 +146,19 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
+            multiline={true}
           />
         )}
       />
+      <Button mode="contained">
+        Save Changes
+      </Button>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+
+});
  
 export default EditProfileForm;

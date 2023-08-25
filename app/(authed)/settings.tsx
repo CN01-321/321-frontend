@@ -1,23 +1,25 @@
 import { StyleSheet, View } from "react-native";
 import { List, useTheme } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
+import { useRouter } from "expo-router";
 
 import { useAuth } from "../../contexts/auth";
 import Header from "../../components/Header";
 
-import EditProfileIcon from "../../assets/editprofile.svg";
-import EditLocationIcon from "../../assets/editlocation.svg";
-import ResetPasswordIcon from "../../assets/resetpassword.svg";
-import DeleteAccountIcon from "../../assets/deleteaccount.svg";
-import LogOutIcon from "../../assets/logout.svg";
-import ContactUsIcon from "../../assets/contactus.svg";
-import AboutUsIcon from "../../assets/aboutus.svg";
-import TermsOfServiceIcon from "../../assets/termsofservice.svg";
-import PrivacyPolicyIcon from "../../assets/privacypolicy.svg";
+import EditProfileIcon from "../../assets/icons/settings/editprofile.svg";
+import EditLocationIcon from "../../assets/icons/settings/editlocation.svg";
+import ResetPasswordIcon from "../../assets/icons/settings/resetpassword.svg";
+import DeleteAccountIcon from "../../assets/icons/settings/deleteaccount.svg";
+import LogOutIcon from "../../assets/icons/settings/logout.svg";
+import ContactUsIcon from "../../assets/icons/settings/contactus.svg";
+import AboutUsIcon from "../../assets/icons/settings/aboutus.svg";
+import TermsOfServiceIcon from "../../assets/icons/settings/termsofservice.svg";
+import PrivacyPolicyIcon from "../../assets/icons/settings/privacypolicy.svg";
 
 export default function Settings() {
   const theme = useTheme();
-  const { logOut } = useAuth();
+  const router = useRouter();
+  const { getTokenUser, logOut } = useAuth();
 
   return (
     <View>
@@ -30,6 +32,7 @@ export default function Settings() {
           <SettingsOption 
             name="Edit Profile"
             icon={() => <EditProfileIcon fill={theme.colors.primary} />} 
+            onPress={() => router.push(`/profile/${getTokenUser()?._id}/edit`)}
           />
           <SettingsOption 
             name="Edit Location" 

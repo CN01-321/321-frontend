@@ -108,7 +108,7 @@ export default function UserLayout() {
           let href: Href =
             route.key === "profile"
               ? {
-                  pathname: `/profile/[profileId]`,
+                  pathname: `/profile/[profileId]/overview`,
                   params: { profileId: getTokenUser()?._id, isSelf: "true" },
                 }
               : route.key;
