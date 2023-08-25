@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { Title, Button } from "react-native-paper";
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import Header from "../../components/Header";
 import { CARER_COLOUR, OWNER_COLOUR } from "../../types";
 

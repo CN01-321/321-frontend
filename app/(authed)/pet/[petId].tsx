@@ -62,8 +62,11 @@ export default function PetView() {
           getPetProfile(),
           getPetReviews(),
         ]);
-        setPet(pet);
-        setReviews(reviews);
+
+        if (!ignore) {
+          setPet(pet);
+          setReviews(reviews);
+        }
       } catch (e) {
         console.error(e);
       }

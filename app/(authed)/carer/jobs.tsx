@@ -2,7 +2,6 @@ import { View } from "react-native";
 import JobsListView from "../../../components/JobsListView";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Stack } from "expo-router";
 import { Job } from "../../../types";
 import Header from "../../../components/Header";
 

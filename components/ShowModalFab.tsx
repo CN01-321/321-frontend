@@ -20,7 +20,7 @@ export default function ShowModalFab({
         margin: 16,
         right: 0,
         bottom: 0,
-        ...(style as any), // cast as any to avoid Typescript generics error
+        ...{ style },
       }}
       onPress={showModal}
     />

@@ -1,11 +1,5 @@
-import {
-  ImageSourcePropType,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
-import { Avatar, Card, Divider, Text } from "react-native-paper";
-import { Stack } from "expo-router";
+import { ImageSourcePropType, ScrollView, StyleSheet } from "react-native";
+import { Avatar, Card, Text } from "react-native-paper";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -39,13 +33,16 @@ export default function Notifications() {
         );
 
         // set notifications as decending in time
-        setNotifications(
-          data
-            .map((n) => {
-              return { ...n, notifiedOn: new Date(n.notifiedOn) };
-            })
-            .sort((n1, n2) => n2.notifiedOn.getTime() - n1.notifiedOn.getTime())
-        );
+        if (!ignore)
+          setNotifications(
+            data
+              .map((n) => {
+                return { ...n, notifiedOn: new Date(n.notifiedOn) };
+              })
+              .sort(
+                (n1, n2) => n2.notifiedOn.getTime() - n1.notifiedOn.getTime()
+              )
+          );
       } catch (err) {
         console.error(err);
       }

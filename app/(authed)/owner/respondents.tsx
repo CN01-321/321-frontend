@@ -1,14 +1,12 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Button, Modal, Portal, Text } from "react-native-paper";
+import { Button, Modal, Portal } from "react-native-paper";
 import CarerResultsView, {
   CarerResult,
 } from "../../../components/CarerResultsView";
 import axios from "axios";
 import Header from "../../../components/Header";
-
-const icon = require("../../../assets/icon.png");
 
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();

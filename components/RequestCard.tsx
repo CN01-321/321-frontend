@@ -1,28 +1,18 @@
-import {
-  Avatar,
-  Button,
-  Card,
-  Text,
-  useTheme,
-  withTheme,
-} from "react-native-paper";
+import { Button, Card, Text, useTheme } from "react-native-paper";
 import {
   COMPLETED_COLOUR,
   ERROR_COLOUR,
   Job,
   JobType,
   Request,
-  RequestInfo,
   RequestStatus,
   SUCCESS_COLOUR,
-  UserType,
 } from "../types";
 import { useState } from "react";
 import RequestInfoModal from "./RequestInfoModal";
 import { GestureResponderEvent, View, StyleSheet, Image } from "react-native";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import axios from "axios";
-import { Profile } from "./ReviewsView";
 
 const icon = require("../assets/icon.png");
 

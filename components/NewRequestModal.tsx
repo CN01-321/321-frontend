@@ -19,7 +19,6 @@ import { CarerResult } from "./CarerResultsView";
 import axios from "axios";
 import { Pet } from "../types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { resolveScheme } from "expo-linking";
 import { getPfpUrl } from "../utils";
 
 const icon = require("../assets/icon.png");
@@ -182,9 +181,7 @@ function SelectPetsArea({ pets, value, onChange }: SelectPetsAreaProps) {
     selected.set(id, !(selected.get(id) ?? false));
     // create an array of all the pets ids that have been selected,
     // onChange will re-render this component so no need for setSelected in useState
-    onChange(
-      [...selected].filter(([_, checked]) => checked).map(([id, _]) => id)
-    );
+    onChange([...selected].filter(([, checked]) => checked).map(([id]) => id));
   };
 
   return (

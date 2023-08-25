@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FlatList, View } from "react-native";
 import ShowModalFab from "./ShowModalFab";
 import {
@@ -271,7 +271,7 @@ interface NewReviewModalProps {
   isPet: boolean;
 }
 
-interface NewReviewForm {
+interface NewReviewFormData {
   rating: number;
   message: string;
 }
@@ -282,14 +282,9 @@ function NewReviewModal({
   onDismiss,
   isPet,
 }: NewReviewModalProps) {
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<NewReviewForm>();
+  const { control, handleSubmit, reset } = useForm<NewReviewFormData>();
 
-  const onSubmit: SubmitHandler<NewReviewForm> = async (data) => {
+  const onSubmit: SubmitHandler<NewReviewFormData> = async (data) => {
     console.log(data);
 
     try {
@@ -353,7 +348,7 @@ interface RatingPickerProps {
 
 function RatingPicker({ rating, onRatingChange }: RatingPickerProps) {
   const renderStars = () => {
-    let stars = [];
+    const stars = [];
     for (let i = 0; i < 5; i++) {
       stars.push(
         <IconButton

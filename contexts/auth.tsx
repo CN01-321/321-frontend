@@ -1,6 +1,12 @@
 // based off of https://expo.github.io/router/docs/guides/auth/
 import { useRouter, useSegments } from "expo-router";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import JWT from "expo-jwt";
 import * as SecureStore from "expo-secure-store";
 import { JWT_SECRET } from "@env";
@@ -63,7 +69,7 @@ function useProtectedRoute(user: TokenUser | null) {
   }, [user, segments]);
 }
 
-export function AuthProvider(props: any) {
+export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<TokenUser | null>(null);
 
   // stores and sets the token
@@ -96,7 +102,7 @@ export function AuthProvider(props: any) {
     let ignore = false;
 
     (async () => {
-      let token = await SecureStore.getItemAsync("token");
+      const token = await SecureStore.getItemAsync("token");
 
       // do not set token if no token is present
       if (!token) {
@@ -135,7 +141,7 @@ export function AuthProvider(props: any) {
 
   return (
     <AuthContext.Provider value={{ logIn, logOut, getTokenUser: getUser }}>
-      {props.children}
+      {children}
     </AuthContext.Provider>
   );
 }

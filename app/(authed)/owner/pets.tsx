@@ -5,16 +5,13 @@ import {
   View,
   StyleSheet,
   ImageSourcePropType,
-  Image,
 } from "react-native";
-import { Card, FAB, Text } from "react-native-paper";
+import { Card, Text } from "react-native-paper";
 import AddPetModal from "../../../components/AddPetModal";
 import ShowModalFab from "../../../components/ShowModalFab";
-import { Stack } from "expo-router";
 import axios from "axios";
 import { Pet } from "../../../types";
 import Header from "../../../components/Header";
-import { AXIOS_BASE_URL } from "@env";
 import { getPfpUrl } from "../../../utils";
 
 const icon = require("../../../assets/icon.png");
@@ -34,7 +31,7 @@ export default function Pets() {
 
       console.log("pets are: ", data);
 
-      setPets(data);
+      if (!ignore) setPets(data);
     })();
 
     return () => (ignore = true);

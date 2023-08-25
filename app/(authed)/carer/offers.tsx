@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
@@ -43,7 +43,7 @@ export default function Offers() {
   useEffect((): (() => void) => {
     let ignore = false;
 
-    updateOffers();
+    if (!ignore) updateOffers();
 
     return () => (ignore = true);
   }, [offerType]);

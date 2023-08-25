@@ -1,5 +1,5 @@
 import { FlatList, View } from "react-native";
-import { Job, JobType } from "../types";
+import { Job } from "../types";
 import RequestCard from "./RequestCard";
 
 interface OffersListViewProps {
