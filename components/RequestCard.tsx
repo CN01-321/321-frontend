@@ -1,83 +1,32 @@
-import { Button, Card, Text, useTheme } from "react-native-paper";
-import {
-  COMPLETED_COLOUR,
-  ERROR_COLOUR,
-  Job,
-  JobType,
-  Request,
-  RequestStatus,
-  SUCCESS_COLOUR,
-} from "../types";
+import { Button, Card, Text } from "react-native-paper";
+import { Request } from "../types";
 import { useState } from "react";
 import RequestInfoModal from "./RequestInfoModal";
 import { GestureResponderEvent, View, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import axios from "axios";
 import { sinceRequested } from "../utils";
 import DynamicCardCover from "./DynamicCardCover";
+import RequestStatusButton from "./RequestStatusButton";
 
 const icon = require("../assets/icon.png");
 
-interface OwnerRequestCardProps {
+interface RequestCardProps {
   req: Request;
 }
 
-interface CarerRequestCardProps {
-  job: Job;
-  jobType: JobType;
-  updateOffers: () => Promise<void>;
-}
-
-type RequestCardProps = OwnerRequestCardProps | CarerRequestCardProps;
-
 // if jobType is not presesnt the is assumed to be Request, otherwise if it is
 // then the req is a Job
-export default function RequestCard(props: RequestCardProps) {
+export default function RequestCard({ req }: RequestCardProps) {
+  const router = useRouter();
   const [visible, setVisible] = useState(false);
 
   const showMoreInfo = () => setVisible(true);
   const hideMoreInfo = () => setVisible(false);
 
-  const isOwnerProps = (p: RequestCardProps): p is OwnerRequestCardProps => {
-    return "req" in p;
+  const randPetPfp = () => {
+    const pfps = req.pets.filter((p) => p.pfp).map((p) => p.pfp);
+    return pfps[0];
   };
-
-  const cardInfo = () => {
-    if (isOwnerProps(props)) {
-      return <RequestCardInfo req={props.req} />;
-    }
-    // else is carer card props
-    const { job, jobType, updateOffers } = props;
-    return (
-      <JobCardInfo job={job} jobType={jobType} updateOffers={updateOffers} />
-    );
-  };
-
-  const reqInfo = () => {
-    return isOwnerProps(props) ? props.req : props.job;
-  };
-
-  return (
-    <Card onPress={showMoreInfo} style={styles.requestCard}>
-      <View style={styles.requestCardContainer}>
-        <DynamicCardCover
-          imageId={reqInfo().pfp}
-          defaultImage={icon}
-          style={{ width: "30%" }}
-        />
-        {cardInfo()}
-      </View>
-      <RequestInfoModal
-        info={reqInfo()}
-        visible={visible}
-        onDismiss={hideMoreInfo}
-      />
-    </Card>
-  );
-}
-
-function RequestCardInfo({ req }: { req: Request }) {
-  const router = useRouter();
 
   const handleViewRespondents = (e: GestureResponderEvent) => {
     e.stopPropagation();
@@ -87,127 +36,36 @@ function RequestCardInfo({ req }: { req: Request }) {
     });
   };
 
-  const isPendingBroadRequest = !req.carer && req.status === "pending";
-  const viewRespondents = (
-    <Button mode="contained" onPress={handleViewRespondents}>
-      View Respondents
-    </Button>
-  );
+  const statusButton =
+    !req.carer && req.status === "pending" ? (
+      <Button mode="contained" onPress={handleViewRespondents}>
+        View Respondents
+      </Button>
+    ) : (
+      <RequestStatusButton statusType={req.status} />
+    );
 
-  console.log("request is ", req);
-
-  return (
-    <View style={styles.requestInfo}>
-      <Text variant="titleLarge">{req.pets.map((p) => p.name).join(", ")}</Text>
-      <Text>{req.carer ? req.carer?.name : "Pending"}</Text>
-      <Text variant="bodySmall">{`Requested ${sinceRequested(
-        req.requestedOn
-      )}`}</Text>
-      {isPendingBroadRequest ? (
-        viewRespondents
-      ) : (
-        <RequestStatusButton statusType={req.status} />
-      )}
-    </View>
-  );
-}
-
-interface JobCardInfoProps {
-  job: Job;
-  jobType: JobType;
-  updateOffers: () => Promise<void>;
-}
-
-function JobCardInfo({ job, jobType, updateOffers }: JobCardInfoProps) {
-  const handleAccept = async (e: GestureResponderEvent) => {
-    // prevent tapping the accept button from also opening more info
-    e.stopPropagation();
-    console.log("Accepted/applied", job);
-    try {
-      await axios.post(`/carers/${jobType}/${job._id}/accept`);
-      await updateOffers();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleReject = async (e: GestureResponderEvent) => {
-    // prevent tapping the reject button from also opening more info
-    e.stopPropagation();
-    console.log("Rejected", job);
-    try {
-      await axios.post(`/carers/${jobType}/${job._id}/reject`);
-      await updateOffers();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const showStatusButtons = () => {
-    if (jobType === "broad" && job.status !== "applied") {
-      return (
-        <Button mode="contained" onPress={handleAccept}>
-          Apply
-        </Button>
-      );
-    }
-
-    if (jobType === "direct") {
-      return (
-        <>
-          <Button mode="contained" onPress={handleAccept}>
-            Accept
-          </Button>
-          <Button mode="outlined" onPress={handleReject}>
-            Reject
-          </Button>
-        </>
-      );
-    }
-
-    return <RequestStatusButton statusType={job.status} />;
-  };
+  const requestedOn = `Requested ${sinceRequested(req.requestedOn)}`;
 
   return (
-    <View style={styles.requestInfo}>
-      <Text variant="titleLarge">{job.pets.map((p) => p.name).join(", ")}</Text>
-      <Text>{job.ownerName}</Text>
-      <Text variant="bodySmall">{`Requested ${sinceRequested(
-        job.requestedOn
-      )}`}</Text>
-      {showStatusButtons()}
-    </View>
-  );
-}
-
-function RequestStatusButton({ statusType }: { statusType: RequestStatus }) {
-  const theme = useTheme();
-
-  const getStatus = () => {
-    console.log(statusType);
-
-    switch (statusType) {
-      case "pending":
-        return { name: "Pending", colour: theme.colors.primary };
-      case "applied":
-        return { name: "Applied", colour: theme.colors.primary };
-      case "accepted":
-        return { name: "Accepted", colour: SUCCESS_COLOUR };
-      case "rejected":
-        return { name: "Rejected", colour: ERROR_COLOUR };
-      case "completed":
-        return { name: "Rejected", colour: COMPLETED_COLOUR };
-    }
-  };
-
-  return (
-    <Button
-      mode="outlined"
-      style={{ borderColor: getStatus().colour }}
-      textColor={getStatus().colour}
-    >
-      {getStatus().name}
-    </Button>
+    <Card onPress={showMoreInfo} style={styles.requestCard}>
+      <View style={styles.requestCardContainer}>
+        <DynamicCardCover
+          imageId={randPetPfp()}
+          defaultImage={icon}
+          style={{ width: "30%" }}
+        />
+        <View style={styles.requestInfo}>
+          <Text variant="titleLarge">
+            {req.pets.map((p) => p.name).join(", ")}
+          </Text>
+          <Text>{req.carer ? req.carer.name : "Pending"}</Text>
+          <Text variant="bodySmall">{requestedOn}</Text>
+          {statusButton}
+        </View>
+      </View>
+      <RequestInfoModal info={req} visible={visible} onDismiss={hideMoreInfo} />
+    </Card>
   );
 }
 
@@ -221,19 +79,11 @@ const styles = StyleSheet.create({
     display: "flex",
     flex: 1,
     flexDirection: "row",
-    // flexWrap: "nowrap",
-    // alignItems: "flex-start",
-    // paddingBottom: 30,
     minheight: 200,
-    // textAlign: "center",
-    // padding: 15,
-    // marginLeft: 300,
   },
   requestImage: {
-    // alignSelf: "flex-end",
     width: "30%",
     height: "100%",
-    // resizeMode: "stretch",
   },
   requestInfo: {
     paddingLeft: 10,

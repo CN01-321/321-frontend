@@ -42,6 +42,7 @@ export interface RequestInfo {
     _id: string;
     name: string;
     petType: PetType;
+    pfp?: string;
   }>;
   requestedOn: Date;
   dateRange: {
@@ -55,7 +56,6 @@ export interface RequestInfo {
   };
   additionalInfo: string;
   status: RequestStatus;
-  pfp?: string;
 }
 
 export interface Request extends RequestInfo {

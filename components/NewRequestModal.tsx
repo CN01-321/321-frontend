@@ -107,9 +107,9 @@ export default function NewRequestModal({
             )}
             name="dateRange.startDate"
           />
-          {errors.dateRange?.startDate && (
+          {errors.dateRange?.startDate ? (
             <Text>Please choose a start date</Text>
-          )}
+          ) : null}
           <Controller
             control={control}
             rules={{ required: true }}
@@ -144,7 +144,7 @@ export default function NewRequestModal({
             )}
             name="pets"
           />
-          {errors.pets && <Text>Plesae select at least one pet</Text>}
+          {errors.pets ? <Text>Plesae select at least one pet</Text> : null}
           <Button mode="contained" onPress={handleSubmit(onSubmit)}>
             Request
           </Button>

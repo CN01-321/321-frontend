@@ -17,7 +17,7 @@ export function DatePickerButton({
 
   return (
     <>
-      {label && <Text>{label}</Text>}
+      {label ? <Text>{label}</Text> : null}
       <Button
         mode={date ? "contained" : "outlined"}
         onPress={() => setVisible(true)}

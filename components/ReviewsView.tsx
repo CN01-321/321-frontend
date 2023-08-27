@@ -14,6 +14,7 @@ import {
 import { StarRating } from "./StarRating";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
+import DynamicAvatar from "./DynamicAvatar";
 
 const icon = require("../assets/icon.png");
 const image = require("../assets/splash.png");
@@ -21,6 +22,7 @@ const image = require("../assets/splash.png");
 export interface Profile {
   _id: string;
   name: string;
+  pfp?: string;
 }
 
 export interface Review {
@@ -131,12 +133,7 @@ function ReviewCard({
     <Card>
       {review.image ? <Card.Cover source={image} /> : null}
       <Card.Content>
-        {review.authorIcon ? (
-          // TODO change to getting avatar from backend
-          <Avatar.Image size={24} source={icon} />
-        ) : (
-          <Avatar.Image size={24} source={icon} />
-        )}
+        <DynamicAvatar pfp={review.authorIcon} defaultPfp={icon} />
         <View>
           <Text variant="titleSmall">{review.authorName}</Text>
           {review.rating ? <StarRating stars={review.rating} /> : null}
@@ -228,9 +225,9 @@ function CommentsModal({
           onChangeText={(text) => setComment(text)}
           left={<Avatar.Image source={icon} />}
           right={
-            comment && (
+            comment ? (
               <TextInput.Icon icon="send-outline" onPress={handleComment} />
-            )
+            ) : null
           }
         />
       </Modal>
@@ -246,12 +243,7 @@ function CommentCard({ comment }: CommentCardProps) {
   return (
     <Card>
       <Card.Content>
-        {comment.authorIcon ? (
-          // TODO change to getting avatar from backend
-          <Avatar.Image size={24} source={icon} />
-        ) : (
-          <Avatar.Image size={24} source={icon} />
-        )}
+        <DynamicAvatar pfp={comment.authorIcon} defaultPfp={icon} />
         <View>
           <Text variant="titleSmall">{comment.authorIcon}</Text>
           <Text variant="bodySmall">
@@ -309,7 +301,7 @@ function NewReviewModal({
         style={{ backgroundColor: "white" }}
       >
         <Text variant="titleMedium">Rate & Review</Text>
-        <Avatar.Image source={icon} size={24} />
+        <DynamicAvatar pfp={profile.pfp} defaultPfp={icon} />
         <Text>{profile.name}</Text>
         <Controller
           control={control}
