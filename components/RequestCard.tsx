@@ -10,9 +10,11 @@ import {
 } from "../types";
 import { useState } from "react";
 import RequestInfoModal from "./RequestInfoModal";
-import { GestureResponderEvent, View, StyleSheet, Image } from "react-native";
+import { GestureResponderEvent, View, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import axios from "axios";
+import { sinceRequested } from "../utils";
+import DynamicCardCover from "./DynamicCardCover";
 
 const icon = require("../assets/icon.png");
 
@@ -27,31 +29,6 @@ interface CarerRequestCardProps {
 }
 
 type RequestCardProps = OwnerRequestCardProps | CarerRequestCardProps;
-
-function sinceRequested(date: Date) {
-  const diff = new Date().getTime() - date.getTime();
-
-  // if diff less than a minute ago show "now"
-  const mins = Math.floor(diff / (1000 * 60));
-  // <= 0 to catch minor time variations between backend on new requests
-  if (mins <= 0) {
-    return "now";
-  }
-
-  // if the diff less than an hour ago show "mins ago"
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  if (Math.floor(diff / (1000 * 60 * 60)) === 0) {
-    return `${mins} min${mins === 1 ? "" : "s"} ago`;
-  }
-
-  // if less than a day show "hours ago"
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  if (days === 0) {
-    return `${hours} hour${hours === 1 ? "" : "s"} ago`;
-  }
-
-  return `${days} day${days === 1 ? "" : "s"} ago`;
-}
 
 // if jobType is not presesnt the is assumed to be Request, otherwise if it is
 // then the req is a Job
@@ -83,9 +60,10 @@ export default function RequestCard(props: RequestCardProps) {
   return (
     <Card onPress={showMoreInfo} style={styles.requestCard}>
       <View style={styles.requestCardContainer}>
-        <Image
-          style={styles.requestImage}
-          source={reqInfo().pfp ? { uri: reqInfo().pfp } : icon}
+        <DynamicCardCover
+          imageId={reqInfo().pfp}
+          defaultImage={icon}
+          style={{ width: "30%" }}
         />
         {cardInfo()}
       </View>

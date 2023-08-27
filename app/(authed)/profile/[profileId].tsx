@@ -1,13 +1,13 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ImageSourcePropType, View } from "react-native";
-import { Avatar, SegmentedButtons, Text, TextInput } from "react-native-paper";
+import { View } from "react-native";
+import { SegmentedButtons, Text, TextInput } from "react-native-paper";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import { useAuth } from "../../../contexts/auth";
 import axios from "axios";
 import Header from "../../../components/Header";
 import { UserType } from "../../../types";
-import { getPfpUrl } from "../../../utils";
+import DynamicAvatar from "../../../components/DynamicAvatar";
 
 const icon = require("../../../assets/icon.png");
 
@@ -149,13 +149,9 @@ interface ProfileInfoViewProps {
 }
 
 function ProfileInfoView({ user }: ProfileInfoViewProps) {
-  const userIcon: ImageSourcePropType = user.pfp
-    ? { uri: getPfpUrl(user.pfp) }
-    : icon;
-
   return (
     <View>
-      <Avatar.Image source={userIcon} size={100} />
+      <DynamicAvatar pfp={user.pfp} defaultPfp={icon} />
       <Text>Profile</Text>
       <TextInput
         label="Name"

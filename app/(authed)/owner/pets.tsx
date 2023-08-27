@@ -1,18 +1,13 @@
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  ScrollView,
-  View,
-  StyleSheet,
-  ImageSourcePropType,
-} from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 import { Card, Text } from "react-native-paper";
 import AddPetModal from "../../../components/AddPetModal";
 import ShowModalFab from "../../../components/ShowModalFab";
 import axios from "axios";
 import { Pet } from "../../../types";
 import Header from "../../../components/Header";
-import { getPfpUrl } from "../../../utils";
+import DynamicCardCover from "../../../components/DynamicCardCover";
 
 const icon = require("../../../assets/icon.png");
 
@@ -56,12 +51,6 @@ export default function Pets() {
 function PetCard({ pet }: { pet: Pet }) {
   const router = useRouter();
 
-  const petIcon: ImageSourcePropType = pet.pfp
-    ? { uri: getPfpUrl(pet.pfp) }
-    : icon;
-
-  console.log(petIcon);
-
   return (
     <Card
       style={styles.petCard}
@@ -72,10 +61,7 @@ function PetCard({ pet }: { pet: Pet }) {
         })
       }
     >
-      <Card.Cover
-        source={petIcon}
-        // style={{ width: 200, height: 200 }}
-      />
+      <DynamicCardCover imageId={pet.pfp} defaultImage={icon} />
       <Card.Content>
         <Text variant="titleSmall">{pet.name}</Text>
       </Card.Content>

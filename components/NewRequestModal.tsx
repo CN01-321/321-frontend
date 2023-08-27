@@ -1,11 +1,5 @@
+import { ScrollView, StyleSheet, View } from "react-native";
 import {
-  ImageSourcePropType,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
-import {
-  Avatar,
   Text,
   Button,
   Checkbox,
@@ -19,7 +13,7 @@ import { CarerResult } from "./CarerResultsView";
 import axios from "axios";
 import { Pet } from "../types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { getPfpUrl } from "../utils";
+import DynamicAvatar from "./DynamicAvatar";
 
 const icon = require("../assets/icon.png");
 
@@ -206,10 +200,6 @@ interface PetCheckBoxProps {
 }
 
 function PetCheckBox({ pet, checked, onPress }: PetCheckBoxProps) {
-  const petPfp: ImageSourcePropType = pet.pfp
-    ? { uri: getPfpUrl(pet.pfp) }
-    : icon;
-
   return (
     <View style={{ flexDirection: "row", padding: 20 }}>
       <Checkbox
@@ -217,7 +207,7 @@ function PetCheckBox({ pet, checked, onPress }: PetCheckBoxProps) {
         status={checked ? "checked" : "unchecked"}
         onPress={onPress}
       />
-      <Avatar.Image source={petPfp} size={40} />
+      <DynamicAvatar pfp={pet.pfp} defaultPfp={icon} />
       <Text style={{ padding: 10 }}>{pet.name}</Text>
       <Text style={{ padding: 10 }}>{pet.petType}</Text>
     </View>

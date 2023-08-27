@@ -1,9 +1,9 @@
-import { ImageSourcePropType, ScrollView, StyleSheet } from "react-native";
-import { Avatar, Card, Text } from "react-native-paper";
+import { ScrollView, StyleSheet } from "react-native";
+import { Card, Text } from "react-native-paper";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { getPfpUrl } from "../../utils";
+import DynamicAvatar from "../../components/DynamicAvatar";
 
 const icon = require("../../assets/icon.png");
 
@@ -68,10 +68,6 @@ interface NotificationCardProps {
 }
 
 function NotificationCard({ notification }: NotificationCardProps) {
-  const userPfp: ImageSourcePropType = notification.subjectPfp
-    ? { uri: getPfpUrl(notification.subjectPfp) }
-    : icon;
-
   const getNotificationTitle = () => {
     switch (notification.notificationType) {
       case "recievedDirect":
@@ -100,7 +96,7 @@ function NotificationCard({ notification }: NotificationCardProps) {
 
   return (
     <Card>
-      <Avatar.Image source={userPfp} />
+      <DynamicAvatar pfp={notification.subjectPfp} defaultPfp={icon} />
       <Card.Content>
         <Text variant="titleSmall">{getNotificationTitle()}</Text>
         <Text variant="bodyMedium">{getNotificationSubject()}</Text>

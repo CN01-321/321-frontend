@@ -23,6 +23,7 @@ export type AuthContextType = {
   logIn: (token: string) => void;
   logOut: () => void;
   getTokenUser: () => TokenUser | null;
+  getBearerToken: () => string;
 };
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -137,10 +138,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
     await deleteTokenUser();
   };
 
-  const getUser = () => user;
+  const getTokenUser = () => user;
+
+  const getBearerToken = () =>
+    axios.defaults.headers.common["Authorization"]?.toString() ?? "";
 
   return (
-    <AuthContext.Provider value={{ logIn, logOut, getTokenUser: getUser }}>
+    <AuthContext.Provider
+      value={{ logIn, logOut, getTokenUser, getBearerToken }}
+    >
       {children}
     </AuthContext.Provider>
   );

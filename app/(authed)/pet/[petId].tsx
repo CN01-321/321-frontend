@@ -1,12 +1,12 @@
 import { useLocalSearchParams } from "expo-router";
-import { Avatar, SegmentedButtons, Text } from "react-native-paper";
-import { ImageSourcePropType, View } from "react-native";
+import { SegmentedButtons, Text } from "react-native-paper";
+import { View } from "react-native";
 import { useEffect, useState } from "react";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import axios from "axios";
 import { Pet } from "../../../types";
 import Header from "../../../components/Header";
-import { getPfpUrl } from "../../../utils";
+import DynamicAvatar from "../../../components/DynamicAvatar";
 
 const icon = require("../../../assets/icon.png");
 
@@ -114,15 +114,9 @@ export default function PetView() {
 }
 
 function PetInfoView({ pet }: { pet: Pet }) {
-  const petIcon: ImageSourcePropType = pet.pfp
-    ? { uri: getPfpUrl(pet.pfp) }
-    : icon;
-
-  console.log(petIcon);
-
   return (
     <View>
-      <Avatar.Image source={petIcon} />
+      <DynamicAvatar pfp={pet.pfp} defaultPfp={icon} />
       <Text variant="titleMedium">{pet.name}</Text>
       <Text variant="bodyMedium">Pet Type: {pet.petType}</Text>
       <Text variant="bodyMedium">Pet Size: {pet.petSize}</Text>

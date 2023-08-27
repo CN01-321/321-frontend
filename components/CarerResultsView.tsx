@@ -1,8 +1,8 @@
-import { FlatList, View, StyleSheet, ImageSourcePropType } from "react-native";
-import { Avatar, Button, Card, Text } from "react-native-paper";
+import { FlatList, View, StyleSheet } from "react-native";
+import { Button, Card, Text } from "react-native-paper";
 import { StarRating } from "./StarRating";
 import { Link } from "expo-router";
-import { getPfpUrl } from "../utils";
+import DynamicAvatar from "./DynamicAvatar";
 
 const icon = require("../assets/icon.png");
 
@@ -51,10 +51,6 @@ function CarerResultCard({
   handleRequest,
   cardButtonLabel,
 }: CarerResultCardProps) {
-  const carerIcon: ImageSourcePropType = carerResult.pfp
-    ? { uri: getPfpUrl(carerResult.pfp) }
-    : icon;
-
   return (
     <Card>
       <Link
@@ -64,7 +60,7 @@ function CarerResultCard({
         }}
       >
         <Card.Content style={styles.carerResultCard}>
-          <Avatar.Image source={carerIcon} />
+          <DynamicAvatar pfp={carerResult.pfp} defaultPfp={icon} />
           <CarerResultCardInfo
             carerResult={carerResult}
             handleRequest={handleRequest}
