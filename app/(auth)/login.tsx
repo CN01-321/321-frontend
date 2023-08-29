@@ -4,7 +4,7 @@ import { Button, TextInput, Title } from "react-native-paper";
 import { useAuth } from "../../contexts/auth";
 import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types";
 import axios from "axios";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import Header from "../../components/Header";
 
 type GetToken = {

@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
@@ -16,11 +16,11 @@ export default function Offers() {
   const [offerType, setOfferType] = useState<OfferType>(
     initOfferType ?? "direct"
   );
-  const [offers, setOffers] = useState<Array<Job>>([]);
+  const [offers, setOffers] = useState<Job[]>([]);
 
   const updateOffers = async () => {
     try {
-      const { data } = await axios.get<Array<Job>>(`/carers/${offerType}`);
+      const { data } = await axios.get<Job[]>(`/carers/${offerType}`);
 
       // map all date strings to date objects
       const offers = data.map((o) => {
@@ -43,7 +43,7 @@ export default function Offers() {
   useEffect((): (() => void) => {
     let ignore = false;
 
-    updateOffers();
+    if (!ignore) updateOffers();
 
     return () => (ignore = true);
   }, [offerType]);

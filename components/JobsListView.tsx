@@ -1,6 +1,6 @@
 import { FlatList, View } from "react-native";
-import { Job, JobType } from "../types";
-import RequestCard from "./RequestCard";
+import { Job } from "../types";
+import OfferCard from "./OfferCard";
 
 interface OffersListViewProps {
   jobs: Job[];
@@ -9,7 +9,7 @@ interface OffersListViewProps {
 }
 
 interface JobsListViewProps {
-  jobs: Array<Job>;
+  jobs: Job[];
   jobType: "job";
 }
 
@@ -30,7 +30,7 @@ export default function JobsListView(
       <FlatList
         data={props.jobs}
         renderItem={({ item }) => (
-          <RequestCard
+          <OfferCard
             job={item}
             jobType={props.jobType}
             updateOffers={getPropUpdateOffers()}

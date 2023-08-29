@@ -1,8 +1,7 @@
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
-import { BottomNavigation, IconButton } from "react-native-paper";
-import { View } from "react-native";
+import { BottomNavigation } from "react-native-paper";
 import { Href } from "expo-router/build/link/href";
 
 export interface Route {
@@ -86,8 +85,6 @@ export default function UserLayout() {
     setIndex(routes.findIndex((r) => r.key === path));
   }, [segments]);
 
-  const notificationButton = () => <IconButton icon="bell" />;
-
   return (
     <>
       <Stack />
@@ -97,7 +94,7 @@ export default function UserLayout() {
         onChange={(route: Route) => {
           setIndex(routes.findIndex((r) => r.key === route.key));
 
-          let href: Href =
+          const href: Href =
             route.key === "profile"
               ? {
                   pathname: `/profile/[profileId]`,
@@ -113,7 +110,7 @@ export default function UserLayout() {
 }
 
 interface UserBottomNavProps {
-  routes: Array<Route>;
+  routes: Route[];
   index: number;
   onChange: (route: Route) => void;
 }

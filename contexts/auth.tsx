@@ -1,6 +1,12 @@
 // based off of https://expo.github.io/router/docs/guides/auth/
 import { useRouter, useSegments } from "expo-router";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import JWT from "expo-jwt";
 import * as SecureStore from "expo-secure-store";
 import { JWT_SECRET } from "@env";
@@ -17,6 +23,7 @@ export type AuthContextType = {
   logIn: (token: string) => void;
   logOut: () => void;
   getTokenUser: () => TokenUser | null;
+  getBearerToken: () => string;
 };
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -63,7 +70,7 @@ function useProtectedRoute(user: TokenUser | null) {
   }, [user, segments]);
 }
 
-export function AuthProvider(props: any) {
+export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<TokenUser | null>(null);
 
   // stores and sets the token
@@ -96,7 +103,7 @@ export function AuthProvider(props: any) {
     let ignore = false;
 
     (async () => {
-      let token = await SecureStore.getItemAsync("token");
+      const token = await SecureStore.getItemAsync("token");
 
       // do not set token if no token is present
       if (!token) {
@@ -131,11 +138,16 @@ export function AuthProvider(props: any) {
     await deleteTokenUser();
   };
 
-  const getUser = () => user;
+  const getTokenUser = () => user;
+
+  const getBearerToken = () =>
+    axios.defaults.headers.common["Authorization"]?.toString() ?? "";
 
   return (
-    <AuthContext.Provider value={{ logIn, logOut, getTokenUser: getUser }}>
-      {props.children}
+    <AuthContext.Provider
+      value={{ logIn, logOut, getTokenUser, getBearerToken }}
+    >
+      {children}
     </AuthContext.Provider>
   );
 }

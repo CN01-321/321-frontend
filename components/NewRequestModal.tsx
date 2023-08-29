@@ -1,6 +1,5 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 import {
-  Avatar,
   Text,
   Button,
   Checkbox,
@@ -14,7 +13,9 @@ import { CarerResult } from "./CarerResultsView";
 import axios from "axios";
 import { Pet } from "../types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { resolveScheme } from "expo-linking";
+import DynamicAvatar from "./DynamicAvatar";
+
+const icon = require("../assets/icon.png");
 
 interface NewRequestModalProps {
   carerResult?: CarerResult | null;
@@ -106,9 +107,9 @@ export default function NewRequestModal({
             )}
             name="dateRange.startDate"
           />
-          {errors.dateRange?.startDate && (
+          {errors.dateRange?.startDate ? (
             <Text>Please choose a start date</Text>
-          )}
+          ) : null}
           <Controller
             control={control}
             rules={{ required: true }}
@@ -143,7 +144,7 @@ export default function NewRequestModal({
             )}
             name="pets"
           />
-          {errors.pets && <Text>Plesae select at least one pet</Text>}
+          {errors.pets ? <Text>Plesae select at least one pet</Text> : null}
           <Button mode="contained" onPress={handleSubmit(onSubmit)}>
             Request
           </Button>
@@ -163,8 +164,8 @@ function SelectPetsArea({ pets, value, onChange }: SelectPetsAreaProps) {
   const [selected] = useState<Map<string, boolean>>(
     new Map(
       pets.map((p) => [
-        p._id!,
-        (value ?? []).find((id) => id === p._id!) != undefined,
+        p._id,
+        (value ?? []).find((id) => id === p._id) != undefined,
       ])
     )
   );
@@ -174,9 +175,7 @@ function SelectPetsArea({ pets, value, onChange }: SelectPetsAreaProps) {
     selected.set(id, !(selected.get(id) ?? false));
     // create an array of all the pets ids that have been selected,
     // onChange will re-render this component so no need for setSelected in useState
-    onChange(
-      [...selected].filter(([_, checked]) => checked).map(([id, _]) => id)
-    );
+    onChange([...selected].filter(([, checked]) => checked).map(([id]) => id));
   };
 
   return (
@@ -208,7 +207,7 @@ function PetCheckBox({ pet, checked, onPress }: PetCheckBoxProps) {
         status={checked ? "checked" : "unchecked"}
         onPress={onPress}
       />
-      <Avatar.Icon icon={"dog"} size={40} style={{ padding: 10 }} />
+      <DynamicAvatar pfp={pet.pfp} defaultPfp={icon} />
       <Text style={{ padding: 10 }}>{pet.name}</Text>
       <Text style={{ padding: 10 }}>{pet.petType}</Text>
     </View>

@@ -1,12 +1,15 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import { Avatar, SegmentedButtons, Text, TextInput } from "react-native-paper";
+import { SegmentedButtons, Text, TextInput } from "react-native-paper";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import { useAuth } from "../../../contexts/auth";
 import axios from "axios";
 import Header from "../../../components/Header";
 import { UserType } from "../../../types";
+import DynamicAvatar from "../../../components/DynamicAvatar";
+
+const icon = require("../../../assets/icon.png");
 
 interface User {
   _id: string;
@@ -37,7 +40,7 @@ export default function Profile() {
     bio: "",
     phone: "",
   });
-  const [reviews, setReviews] = useState<Array<Review>>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   const getProfile = async (profileId: string): Promise<User> => {
     console.log("profile id is ", profileId);
@@ -46,11 +49,9 @@ export default function Profile() {
     return data;
   };
 
-  const getUserReviews = async (profileId: string): Promise<Array<Review>> => {
+  const getUserReviews = async (profileId: string): Promise<Review[]> => {
     console.log(profileId);
-    const { data } = await axios.get<Array<Review>>(
-      `/users/${profileId}/feedback`
-    );
+    const { data } = await axios.get<Review[]>(`/users/${profileId}/feedback`);
 
     console.log(data);
     // map all date strings to dates
@@ -72,7 +73,7 @@ export default function Profile() {
 
   const updateReviews = async () => {
     setReviews(await getUserReviews(profileId!));
-  }
+  };
 
   useEffect((): (() => void) => {
     let ignore = false;
@@ -101,9 +102,9 @@ export default function Profile() {
   useEffect(() => {
     const updateFeedback = async () => {
       await updateReviews();
-    }
+    };
     updateFeedback();
-  }, [currentView])
+  }, [currentView]);
 
   return (
     <View>
@@ -150,12 +151,7 @@ interface ProfileInfoViewProps {
 function ProfileInfoView({ user }: ProfileInfoViewProps) {
   return (
     <View>
-      {user.pfp ? (
-        // TODO replace this with actual profile picture
-        <Avatar.Icon icon="account-circle" size={100} />
-      ) : (
-        <Avatar.Icon icon="account-circle" size={100} />
-      )}
+      <DynamicAvatar pfp={user.pfp} defaultPfp={icon} />
       <Text>Profile</Text>
       <TextInput
         label="Name"

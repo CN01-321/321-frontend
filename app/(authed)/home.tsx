@@ -17,7 +17,7 @@ export default function Home() {
     (async () => {
       try {
         const { data } = await axios.get(`/users/${getTokenUser()?._id}`);
-        setUser(data);
+        if (!ignore) setUser(data);
       } catch (e) {
         console.error(e);
       }

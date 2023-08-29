@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter, Link, Stack } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types";
 import { Text, Button } from "react-native-paper";
 import { View } from "react-native";
