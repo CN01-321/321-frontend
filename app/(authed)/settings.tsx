@@ -19,56 +19,100 @@ import PrivacyPolicyIcon from "../../assets/icons/settings/privacypolicy.svg";
 export default function Settings() {
   const theme = useTheme();
   const router = useRouter();
-  const { getTokenUser, logOut } = useAuth();
+  const { logOut } = useAuth();
 
   return (
     <View>
-      <Header
-        title="Settings"
-      />
+      <Header title="Settings" />
       <View style={styles.pageContainer}>
         <List.Section>
           <List.Subheader style={styles.listSubHeading}>Account</List.Subheader>
-          <SettingsOption 
+          <SettingsOption
             name="Edit Profile"
-            icon={() => <EditProfileIcon height={30} width={30} fill={theme.colors.primary} />} 
-            onPress={() => router.push(`/profile/${getTokenUser()?._id}/edit`)}
+            icon={() => (
+              <EditProfileIcon
+                height={30}
+                width={30}
+                fill={theme.colors.primary}
+              />
+            )}
+            onPress={() => router.push(`/profile/edit`)}
           />
-          <SettingsOption 
-            name="Edit Location" 
-            icon={() => <EditLocationIcon height={30} width={30} fill={theme.colors.primary} />} 
+          <SettingsOption
+            name="Edit Location"
+            icon={() => (
+              <EditLocationIcon
+                height={30}
+                width={30}
+                fill={theme.colors.primary}
+              />
+            )}
           />
-          <SettingsOption 
-            name="Reset Password" 
-            icon={() => <ResetPasswordIcon height={30} width={30} fill={theme.colors.primary} />} 
+          <SettingsOption
+            name="Reset Password"
+            icon={() => (
+              <ResetPasswordIcon
+                height={30}
+                width={30}
+                fill={theme.colors.primary}
+              />
+            )}
           />
-          <SettingsOption 
-            name="Delete Account" 
-            icon={() => <DeleteAccountIcon height={30} width={30} fill={theme.colors.primary} />} 
+          <SettingsOption
+            name="Delete Account"
+            icon={() => (
+              <DeleteAccountIcon
+                height={30}
+                width={30}
+                fill={theme.colors.primary}
+              />
+            )}
           />
-          <SettingsOption 
-            name="Log Out" 
-            icon={() => <LogOutIcon height={30} width={30} fill={theme.colors.primary} />}
-            onPress={logOut} 
+          <SettingsOption
+            name="Log Out"
+            icon={() => (
+              <LogOutIcon height={30} width={30} fill={theme.colors.primary} />
+            )}
+            onPress={logOut}
           />
         </List.Section>
         <List.Section>
           <List.Subheader style={styles.listSubHeading}>About</List.Subheader>
-          <SettingsOption 
-            name="Contact Us" 
-            icon={() => <ContactUsIcon height={30} width={30} fill={theme.colors.primary} />} 
+          <SettingsOption
+            name="Contact Us"
+            icon={() => (
+              <ContactUsIcon
+                height={30}
+                width={30}
+                fill={theme.colors.primary}
+              />
+            )}
           />
           <SettingsOption
             name="About Us"
-            icon={() => <AboutUsIcon height={30} width={30} fill={theme.colors.primary} />} 
+            icon={() => (
+              <AboutUsIcon height={30} width={30} fill={theme.colors.primary} />
+            )}
           />
-          <SettingsOption 
+          <SettingsOption
             name="Terms of Service"
-            icon={() => <TermsOfServiceIcon height={30} width={30} fill={theme.colors.primary} />} 
+            icon={() => (
+              <TermsOfServiceIcon
+                height={30}
+                width={30}
+                fill={theme.colors.primary}
+              />
+            )}
           />
-          <SettingsOption 
+          <SettingsOption
             name="Privacy Policy"
-            icon={() => <PrivacyPolicyIcon height={30} width={30} fill={theme.colors.primary} />} 
+            icon={() => (
+              <PrivacyPolicyIcon
+                height={30}
+                width={30}
+                fill={theme.colors.primary}
+              />
+            )}
           />
         </List.Section>
       </View>
@@ -79,26 +123,28 @@ export default function Settings() {
 type SettingsOptionProps = {
   name: String;
   icon: IconSource;
-  onPress?: () => void
-}
+  onPress?: () => void;
+};
 
 const SettingsOption = ({ name, icon, onPress }: SettingsOptionProps) => {
   return (
     <List.Item
       style={styles.listItemContainer}
       title={name}
-      left={props => <List.Icon {...props} icon={icon} />}
-      right={props => <List.Icon {...props} icon="chevron-right" color="#000000" />}
+      left={(props) => <List.Icon {...props} icon={icon} />}
+      right={(props) => (
+        <List.Icon {...props} icon="chevron-right" color="#000000" />
+      )}
       onPress={onPress}
       titleStyle={styles.listItemTitle}
     />
   );
-}
+};
 
 const styles = StyleSheet.create({
   pageContainer: {
     backgroundColor: "#FCFCFC",
-    height: "100%"
+    height: "100%",
   },
   listItemContainer: {
     height: 45,
@@ -112,6 +158,6 @@ const styles = StyleSheet.create({
   listItemTitle: {
     fontFamily: "Montserrat-Medium",
     fontSize: 17,
-    color: "#777777"
-  }
+    color: "#777777",
+  },
 });
