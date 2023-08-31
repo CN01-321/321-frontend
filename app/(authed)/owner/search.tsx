@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
 import Slider from "@react-native-community/slider";
-import {
-  Button,
-  Checkbox,
-  Modal,
-  Portal,
-  Searchbar,
-  Text,
-} from "react-native-paper";
+import { Button, Checkbox, Modal, Portal, Text } from "react-native-paper";
 import CarerResultsView, {
   CarerResult,
 } from "../../../components/CarerResultsView";
@@ -56,7 +49,7 @@ export default function Search() {
   const [filters, setFilters] = useState<Filters>(defaultFilters());
   const [filterVisible, setFilterVisible] = useState(false);
   const [requestVisible, setRequestVisible] = useState(false);
-  const [searchResults, setSearchResults] = useState<Array<CarerResult>>([]);
+  const [searchResults, setSearchResults] = useState<CarerResult[]>([]);
   const [selectedCarer, setSelectedCarer] = useState<CarerResult | null>();
 
   useEffect((): (() => void) => {
@@ -69,7 +62,7 @@ export default function Search() {
 
       console.log("query string ", getQueryString());
       try {
-        const { data } = await axios.get<Array<CarerResult>>(
+        const { data } = await axios.get<CarerResult[]>(
           `/owners/requests/nearby${getQueryString()}`
         );
 
@@ -98,17 +91,17 @@ export default function Search() {
 
     // filter all chosen pet types and add them as petTypes[]=type to the query string
     query += Object.entries(filters.petTypes)
-      .filter(([_, selected]) => selected)
+      .filter(([, selected]) => selected)
       .reduce(
-        (petTypeQuery, [petType, _]) => petTypeQuery + `petTypes[]=${petType}&`,
+        (petTypeQuery, [petType]) => petTypeQuery + `petTypes[]=${petType}&`,
         ""
       );
 
     // do the same thing for pet sizes
     query += Object.entries(filters.petSizes)
-      .filter(([_, selected]) => selected)
+      .filter(([, selected]) => selected)
       .reduce(
-        (petSizeQuery, [petSize, _]) => petSizeQuery + `petSizes[]=${petSize}&`,
+        (petSizeQuery, [petSize]) => petSizeQuery + `petSizes[]=${petSize}&`,
         ""
       );
 

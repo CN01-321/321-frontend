@@ -72,7 +72,7 @@ export default function Profile() {
 
   const updateReviews = async () => {
     setReviews(await getUserReviews(profileId!));
-  }
+  };
 
   useEffect((): (() => void) => {
     let ignore = false;
@@ -101,9 +101,9 @@ export default function Profile() {
   useEffect(() => {
     const updateFeedback = async () => {
       await updateReviews();
-    }
+    };
     updateFeedback();
-  }, [currentView])
+  }, [currentView]);
 
   return (
     <View>

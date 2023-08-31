@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FlatList, View } from "react-native";
 import ShowModalFab from "./ShowModalFab";
 import {
@@ -14,6 +14,8 @@ import {
 import { StarRating } from "./StarRating";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
+import DynamicAvatar from "./DynamicAvatar";
+import { toDDMMYYYY } from "../utils";
 
 const icon = require("../assets/icon.png");
 const image = require("../assets/splash.png");
@@ -21,6 +23,7 @@ const image = require("../assets/splash.png");
 export interface Profile {
   _id: string;
   name: string;
+  pfp?: string;
 }
 
 export interface Review {
@@ -28,12 +31,12 @@ export interface Review {
   authorId: string;
   authorName: string;
   authorIcon?: string;
-  postedOn: Date;
+  postedOn: string;
   rating?: number;
   message: string;
   image?: string;
   likes: number;
-  comments: Array<Comment>;
+  comments: Comment[];
 }
 
 export interface Comment {
@@ -41,14 +44,14 @@ export interface Comment {
   authorName: string;
   authorIcon?: string;
   message: string;
-  postedOn: Date;
+  postedOn: string;
 }
 
 interface ProfileReviewsViewProps {
   profile: Profile;
   isSelf?: boolean;
   isPet?: boolean;
-  reviews: Array<Review>;
+  reviews: Review[];
   updateReviews: () => Promise<void>;
 }
 
@@ -104,7 +107,12 @@ interface ReviewCardProps {
   updateReviews: () => Promise<void>;
 }
 
-function ReviewCard({ review, profile, isPet, updateReviews }: ReviewCardProps) {
+function ReviewCard({
+  review,
+  profile,
+  isPet,
+  updateReviews,
+}: ReviewCardProps) {
   const [showComments, setShowComments] = useState(false);
 
   const handleLike = async () => {
@@ -126,12 +134,7 @@ function ReviewCard({ review, profile, isPet, updateReviews }: ReviewCardProps) 
     <Card>
       {review.image ? <Card.Cover source={image} /> : null}
       <Card.Content>
-        {review.authorIcon ? (
-          // TODO change to getting avatar from backend
-          <Avatar.Image size={24} source={icon} />
-        ) : (
-          <Avatar.Image size={24} source={icon} />
-        )}
+        <DynamicAvatar pfp={review.authorIcon} defaultPfp={icon} />
         <View>
           <Text variant="titleSmall">{review.authorName}</Text>
           {review.rating ? <StarRating stars={review.rating} /> : null}
@@ -171,7 +174,7 @@ function ReviewCard({ review, profile, isPet, updateReviews }: ReviewCardProps) 
 interface CommentsModalProps {
   profile: Profile;
   review: Review;
-  comments: Array<Comment>;
+  comments: Comment[];
   visible: boolean;
   onDismiss: () => void;
   isPet: boolean;
@@ -194,7 +197,8 @@ function CommentsModal({
     try {
       const prefix = `/${isPet ? "pets" : "users"}`;
       await axios.post(
-        `${prefix}/${profile._id}/feedback/${review._id}/comments`, { message: comment }
+        `${prefix}/${profile._id}/feedback/${review._id}/comments`,
+        { message: comment }
       );
       await updateReviews();
     } catch (e) {
@@ -222,9 +226,9 @@ function CommentsModal({
           onChangeText={(text) => setComment(text)}
           left={<Avatar.Image source={icon} />}
           right={
-            comment && (
+            comment ? (
               <TextInput.Icon icon="send-outline" onPress={handleComment} />
-            )
+            ) : null
           }
         />
       </Modal>
@@ -240,16 +244,11 @@ function CommentCard({ comment }: CommentCardProps) {
   return (
     <Card>
       <Card.Content>
-        {comment.authorIcon ? (
-          // TODO change to getting avatar from backend
-          <Avatar.Image size={24} source={icon} />
-        ) : (
-          <Avatar.Image size={24} source={icon} />
-        )}
+        <DynamicAvatar pfp={comment.authorIcon} defaultPfp={icon} />
         <View>
           <Text variant="titleSmall">{comment.authorIcon}</Text>
           <Text variant="bodySmall">
-            Posted: {comment.postedOn.toUTCString()}
+            Posted: {toDDMMYYYY(new Date(comment.postedOn))}
           </Text>
           <Text variant="bodySmall">{comment.message}</Text>
         </View>
@@ -265,7 +264,7 @@ interface NewReviewModalProps {
   isPet: boolean;
 }
 
-interface NewReviewForm {
+interface NewReviewFormData {
   rating: number;
   message: string;
 }
@@ -276,14 +275,9 @@ function NewReviewModal({
   onDismiss,
   isPet,
 }: NewReviewModalProps) {
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<NewReviewForm>();
+  const { control, handleSubmit, reset } = useForm<NewReviewFormData>();
 
-  const onSubmit: SubmitHandler<NewReviewForm> = async (data) => {
+  const onSubmit: SubmitHandler<NewReviewFormData> = async (data) => {
     console.log(data);
 
     try {
@@ -308,7 +302,7 @@ function NewReviewModal({
         style={{ backgroundColor: "white" }}
       >
         <Text variant="titleMedium">Rate & Review</Text>
-        <Avatar.Image source={icon} size={24} />
+        <DynamicAvatar pfp={profile.pfp} defaultPfp={icon} />
         <Text>{profile.name}</Text>
         <Controller
           control={control}
@@ -347,7 +341,7 @@ interface RatingPickerProps {
 
 function RatingPicker({ rating, onRatingChange }: RatingPickerProps) {
   const renderStars = () => {
-    let stars = [];
+    const stars = [];
     for (let i = 0; i < 5; i++) {
       stars.push(
         <IconButton

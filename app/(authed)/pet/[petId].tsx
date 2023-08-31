@@ -1,11 +1,12 @@
 import { useLocalSearchParams } from "expo-router";
-import { Avatar, SegmentedButtons, Text } from "react-native-paper";
+import { SegmentedButtons, Text } from "react-native-paper";
 import { View } from "react-native";
 import { useEffect, useState } from "react";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import axios from "axios";
 import { Pet } from "../../../types";
 import Header from "../../../components/Header";
+import DynamicAvatar from "../../../components/DynamicAvatar";
 
 const icon = require("../../../assets/icon.png");
 
@@ -24,35 +25,19 @@ export default function PetView() {
     petType: "dog",
     petSize: "small",
   });
-  const [reviews, setReviews] = useState<Array<Review>>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   const getPetProfile = async (): Promise<Pet> => {
-    const { data } = await axios.get<Pet>(`/owners/pets/${petId}`);
+    const { data } = await axios.get<Pet>(`/pets/${petId}`);
     return data;
   };
 
-  const getPetReviews = async (): Promise<Array<Review>> => {
-    const { data } = await axios.get<Array<Review>>(`/pets/${petId}/feedback`);
-
-    console.log(data);
-    // map all date strings to dates
-    const reviews = data.map((r) => {
-      return {
-        ...r,
-        postedOn: new Date(r.postedOn),
-        comments: r.comments.map((c) => {
-          return {
-            ...c,
-            postedOn: new Date(c.postedOn),
-          };
-        }),
-      };
-    });
-
-    return reviews;
+  const getPetReviews = async (): Promise<Review[]> => {
+    const { data } = await axios.get<Review[]>(`/pets/${petId}/feedback`);
+    return data;
   };
 
-  useEffect(() => {
+  useEffect((): (() => void) => {
     let ignore = false;
 
     (async () => {
@@ -61,12 +46,17 @@ export default function PetView() {
           getPetProfile(),
           getPetReviews(),
         ]);
-        setPet(pet);
-        setReviews(reviews);
+
+        if (!ignore) {
+          setPet(pet);
+          setReviews(reviews);
+        }
       } catch (e) {
         console.error(e);
       }
     })();
+
+    return () => (ignore = true);
   }, []);
 
   return (
@@ -98,6 +88,9 @@ export default function PetView() {
           isSelf={ownPet !== undefined}
           reviews={reviews}
           isPet={true}
+          updateReviews={async () => {
+            setReviews(await getPetReviews());
+          }}
         />
       )}
     </View>
@@ -107,7 +100,7 @@ export default function PetView() {
 function PetInfoView({ pet }: { pet: Pet }) {
   return (
     <View>
-      <Avatar.Image source={icon} />
+      <DynamicAvatar pfp={pet.pfp} defaultPfp={icon} />
       <Text variant="titleMedium">{pet.name}</Text>
       <Text variant="bodyMedium">Pet Type: {pet.petType}</Text>
       <Text variant="bodyMedium">Pet Size: {pet.petSize}</Text>

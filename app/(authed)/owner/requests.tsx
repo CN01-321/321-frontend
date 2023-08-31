@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
-import { FlatList, GestureResponderEvent, View } from "react-native";
-import { Avatar, Button, Card, FAB, Text } from "react-native-paper";
-import { StyleSheet } from "react-native";
+import { FlatList, View } from "react-native";
 import NewRequestModal from "../../../components/NewRequestModal";
-import { Stack, useRouter } from "expo-router";
 import ShowModalFab from "../../../components/ShowModalFab";
 import { Request } from "../../../types";
 import axios from "axios";
-import RequestInfoModal from "../../../components/RequestInfoModal";
 import RequestCard from "../../../components/RequestCard";
 import Header from "../../../components/Header";
 import { useIsFocused } from "@react-navigation/native";
-
-const icon = require("../../../assets/icon.png");
 
 export default function Requests() {
   const [requests, setRequests] = useState<Request[]>([]);

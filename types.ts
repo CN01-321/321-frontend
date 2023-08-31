@@ -37,7 +37,7 @@ export interface Pet {
   isVaccinated?: boolean;
   isFriendly?: boolean;
   isNeutered?: boolean;
-  profilePicture?: string;
+  pfp?: string;
 }
 
 export type RequestStatus =
@@ -53,6 +53,7 @@ export interface RequestInfo {
     _id: string;
     name: string;
     petType: PetType;
+    pfp?: string;
   }>;
   requestedOn: Date;
   dateRange: {
@@ -66,7 +67,6 @@ export interface RequestInfo {
   };
   additionalInfo: string;
   status: RequestStatus;
-  pfp?: string;
 }
 
 export interface Request extends RequestInfo {

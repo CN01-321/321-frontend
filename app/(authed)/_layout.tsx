@@ -25,7 +25,7 @@ const carerRoutes = [
     key: "home",
     title: "Home",
     focusedIcon: () => <HomeIcon height={25} fill={"#FFFFFF"} />,
-    unfocusedIcon: () => <HomeIcon height={25} fill={"#49454F"}/>,
+    unfocusedIcon: () => <HomeIcon height={25} fill={"#49454F"} />,
   },
   {
     key: "carer/offers",
@@ -52,7 +52,7 @@ const ownerRoutes = [
     key: "home",
     title: "Home",
     focusedIcon: () => <HomeIcon height={25} fill={"#FFFFFF"} />,
-    unfocusedIcon: () => <HomeIcon height={25} fill={"#49454F"}/>,
+    unfocusedIcon: () => <HomeIcon height={25} fill={"#49454F"} />,
   },
   {
     key: "owner/requests",
@@ -94,8 +94,6 @@ export default function UserLayout() {
     setIndex(routes.findIndex((r) => r.key === path));
   }, [segments]);
 
-  const notificationButton = () => <IconButton icon="bell" />;
-
   return (
     <>
       <Stack />
@@ -105,7 +103,7 @@ export default function UserLayout() {
         onChange={(route: Route) => {
           setIndex(routes.findIndex((r) => r.key === route.key));
 
-          let href: Href =
+          const href: Href =
             route.key === "profile"
               ? {
                   pathname: `/profile/[profileId]/overview`,
@@ -121,7 +119,7 @@ export default function UserLayout() {
 }
 
 interface UserBottomNavProps {
-  routes: Array<Route>;
+  routes: Route[];
   index: number;
   onChange: (route: Route) => void;
 }
@@ -131,12 +129,8 @@ function UserBottomNav({ routes, index, onChange }: UserBottomNavProps) {
     <BottomNavigation.Bar
       navigationState={{ index, routes }}
       onTabPress={({ route }) => onChange(route)}
-      renderLabel={(props: {
-        route: any;
-      }): React.ReactNode => (
-        <Text style={styles.navbarLabel}>
-          {props.route.title}
-        </Text>
+      renderLabel={(props: { route: any }): React.ReactNode => (
+        <Text style={styles.navbarLabel}>{props.route.title}</Text>
       )}
     />
   );
@@ -146,6 +140,6 @@ const styles = StyleSheet.create({
   navbarLabel: {
     fontFamily: "Montserrat-Medium",
     textAlign: "center",
-    fontSize: 12
-  }
+    fontSize: 12,
+  },
 });

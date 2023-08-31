@@ -1,33 +1,35 @@
 import { ScrollView } from "react-native";
-import { Avatar, Button, Checkbox, Modal, Portal, Text, TextInput } from "react-native-paper";
-import * as ImagePicker from 'expo-image-picker';
+import {
+  Avatar,
+  Button,
+  Checkbox,
+  Modal,
+  Portal,
+  Text,
+  TextInput,
+} from "react-native-paper";
+import * as ImagePicker from "expo-image-picker";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import axios from "axios";
 
-type FormData = {
+type AddPetFormData = {
   name: string;
   petType: string;
   petSize: string;
   isVaccinated: boolean;
   isFriendly: boolean;
   isNeutered: boolean;
-}
+};
 
 type AddPetModalProps = {
   visible: boolean;
   onDismiss: () => void;
-}
+};
 
 const AddPetModal = ({ visible, onDismiss }: AddPetModalProps) => {
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
-    defaultValues: {
-        isVaccinated: false,
-        isFriendly: false,
-        isNeutered: false,
-    },
-  });
+  const { control, handleSubmit, reset } = useForm<AddPetFormData>();
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
+  const onSubmit: SubmitHandler<AddPetFormData> = async (data) => {
     console.log(data);
     try {
       await axios.post("/owners/pets", data);
@@ -36,22 +38,29 @@ const AddPetModal = ({ visible, onDismiss }: AddPetModalProps) => {
     }
     reset();
     onDismiss();
-  }
+  };
 
   const pickProfilePicture = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
-  }
+  };
 
   return (
     <Portal>
-      <Modal visible={visible} onDismiss={onDismiss} style={{ backgroundColor: "white" }}>
+      <Modal
+        visible={visible}
+        onDismiss={onDismiss}
+        style={{ backgroundColor: "white" }}
+      >
         <ScrollView>
-          <Avatar.Text label="P" onTouchStart={pickProfilePicture}></Avatar.Text>
+          <Avatar.Text
+            label="P"
+            onTouchStart={pickProfilePicture}
+          ></Avatar.Text>
           <Controller
             control={control}
             rules={{ required: true }}
@@ -92,34 +101,34 @@ const AddPetModal = ({ visible, onDismiss }: AddPetModalProps) => {
             name="petSize"
           />
           <Text>Vaccinated</Text>
-          <Controller 
+          <Controller
             control={control}
             render={({ field: { onChange, value } }) => (
-              <Checkbox 
-                status={value ? 'checked' : 'unchecked'}
-                onPress={e => onChange(!value)}
+              <Checkbox
+                status={value ? "checked" : "unchecked"}
+                onPress={() => onChange(!value)}
               />
             )}
             name="isVaccinated"
           />
           <Text>Friendly</Text>
-          <Controller 
+          <Controller
             control={control}
             render={({ field: { onChange, value } }) => (
-              <Checkbox 
-                status={value ? 'checked' : 'unchecked'}
-                onPress={e => onChange(!value)}
+              <Checkbox
+                status={value ? "checked" : "unchecked"}
+                onPress={() => onChange(!value)}
               />
             )}
             name="isFriendly"
           />
           <Text>Neutered</Text>
-          <Controller 
+          <Controller
             control={control}
             render={({ field: { onChange, value } }) => (
-              <Checkbox 
-                status={value ? 'checked' : 'unchecked'}
-                onPress={e => onChange(!value)}
+              <Checkbox
+                status={value ? "checked" : "unchecked"}
+                onPress={() => onChange(!value)}
               />
             )}
             name="isNeutered"
@@ -131,6 +140,6 @@ const AddPetModal = ({ visible, onDismiss }: AddPetModalProps) => {
       </Modal>
     </Portal>
   );
-}
- 
+};
+
 export default AddPetModal;

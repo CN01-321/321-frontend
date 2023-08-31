@@ -5,38 +5,38 @@ import axios from "axios";
 
 import * as Location from "expo-location";
 
-type FormData = {
+interface AccountInfoFormData {
   name: string;
-  street: string;
-  city: string;
-  state: string;
-  postcode: string;
-  coords: number[];
   bio: string;
+  location: {
+    street: string;
+    city: string;
+    state: string;
+    postcode: string;
+    coords: [number, number];
+  };
 }
 
 const AccountInfoForm = () => {
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
-    defaultValues: {
-        name: "",
-        street: "",
-        city: "",
-        state: "",
-        postcode: "",
-        bio: "",
-    },
-  });
+  const { control, handleSubmit, reset } = useForm<AccountInfoFormData>();
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    const geocodedLocation = await Location.geocodeAsync(`${data.street} ${data.city} ${data.state} ${data.postcode}`);
-    data.coords = [geocodedLocation[0].latitude,  geocodedLocation[0].longitude];
+  const onSubmit: SubmitHandler<AccountInfoFormData> = async (data) => {
+    const geocodedLocation = await Location.geocodeAsync(
+      `${data.location.street} ${data.location.city} ${data.location.state} ${data.location.postcode}`
+    );
+
+    data.location.coords = [
+      geocodedLocation[0].latitude,
+      geocodedLocation[0].longitude,
+    ];
+
     try {
       await axios.post("/owners/pets", data);
     } catch (error) {
       console.log(error);
     }
     reset();
-  }
+  };
 
   return (
     <View>
@@ -54,7 +54,7 @@ const AccountInfoForm = () => {
       />
       <Controller
         control={control}
-        name="street"
+        name="location.street"
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             label="Street"
@@ -66,7 +66,7 @@ const AccountInfoForm = () => {
       />
       <Controller
         control={control}
-        name="city"
+        name="location.city"
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             label="City"
@@ -78,7 +78,7 @@ const AccountInfoForm = () => {
       />
       <Controller
         control={control}
-        name="state"
+        name="location.state"
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             label="State"
@@ -90,7 +90,7 @@ const AccountInfoForm = () => {
       />
       <Controller
         control={control}
-        name="postcode"
+        name="location.postcode"
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             label="Postcode"
@@ -117,6 +117,6 @@ const AccountInfoForm = () => {
       </Button>
     </View>
   );
-}
- 
+};
+
 export default AccountInfoForm;
