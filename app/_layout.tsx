@@ -1,11 +1,14 @@
 import { useCallback } from "react";
-import { View } from "react-native";
 import { Slot } from "expo-router";
-import { MD3LightTheme, PaperProvider } from "react-native-paper";
+import {
+  MD3LightTheme,
+  PaperProvider,
+  configureFonts,
+} from "react-native-paper";
 import { AuthProvider, useAuth } from "../contexts/auth";
 import { CARER_COLOUR, ERROR_COLOUR, OWNER_COLOUR } from "../types";
 import { useFonts } from "expo-font";
-import * as SplashScreen from 'expo-splash-screen';
+import * as SplashScreen from "expo-splash-screen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -13,6 +16,46 @@ function LayoutWithTheme() {
   const { getTokenUser } = useAuth();
 
   const colour = getTokenUser()?.type === "owner" ? OWNER_COLOUR : CARER_COLOUR;
+
+  const baseFont = {
+    fontFamily: "Montserrat-Regular",
+  };
+
+  const baseVariants = configureFonts({ config: baseFont });
+
+  const montserratVariants = {
+    titleSmall: {
+      ...baseVariants.titleSmall,
+      fontFamily: "Montserrat-Bold",
+    },
+    titleMedium: {
+      ...baseVariants.titleMedium,
+      fontFamily: "Montserrat-Bold",
+    },
+    titleLarge: {
+      ...baseVariants.titleLarge,
+      fontFamily: "Montserrat-Bold",
+    },
+    headlineSmall: {
+      ...baseVariants.headlineSmall,
+      fontFamily: "Montserrat-Bold",
+    },
+    headlineMedium: {
+      ...baseVariants.headlineMedium,
+      fontFamily: "Montserrat-Bold",
+    },
+    headlineLarge: {
+      ...baseVariants.headlineLarge,
+      fontFamily: "Montserrat-Bold",
+    },
+  };
+
+  const fonts = configureFonts({
+    config: {
+      ...baseVariants,
+      ...montserratVariants,
+    },
+  });
 
   const theme = {
     ...MD3LightTheme,
@@ -53,11 +96,12 @@ function LayoutWithTheme() {
         level5: "transparent",
       },
     },
+    fonts,
   };
 
   return (
     <PaperProvider theme={theme}>
-				<Slot />
+      <Slot />
     </PaperProvider>
   );
 }
@@ -67,7 +111,7 @@ export default function Layout() {
     "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
     "Montserrat-Medium": require("../assets/fonts/Montserrat-Medium.ttf"),
     "Montserrat-SemiBold": require("../assets/fonts/Montserrat-SemiBold.ttf"),
-    "Montserrat-Bold": require("../assets/fonts/Montserrat-Bold.ttf")
+    "Montserrat-Bold": require("../assets/fonts/Montserrat-Bold.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -77,12 +121,10 @@ export default function Layout() {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) return null;
-  
+
   return (
     <AuthProvider>
-      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-        <LayoutWithTheme />
-      </View>
+      <LayoutWithTheme />
     </AuthProvider>
   );
 }

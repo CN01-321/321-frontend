@@ -29,12 +29,12 @@ export default function Header({ title, showButtons }: HeaderProps) {
         headerTitle: title,
         headerRight: buttons,
         headerStyle: {
-          backgroundColor: "#ffffff"
+          backgroundColor: "#ffffff",
         },
         headerTitleStyle: {
           fontFamily: "Montserrat-Bold",
           fontSize: 24,
-        }
+        },
       }}
     />
   );

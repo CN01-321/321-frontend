@@ -138,7 +138,7 @@ function UserBottomNav({ routes, index, onChange }: UserBottomNavProps) {
 
 const styles = StyleSheet.create({
   navbarLabel: {
-    fontFamily: "Montserrat-Medium",
+    // fontFamily: "Montserrat-Medium",
     textAlign: "center",
     fontSize: 12,
   },
