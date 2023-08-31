@@ -1,7 +1,7 @@
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import { SegmentedButtons, Text, TextInput } from "react-native-paper";
+import { Avatar, SegmentedButtons, Text, TextInput } from "react-native-paper";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import { useAuth } from "../../../contexts/auth";
 import axios from "axios";
@@ -49,26 +49,13 @@ export default function Profile() {
     return data;
   };
 
-  const getUserReviews = async (profileId: string): Promise<Review[]> => {
+  const getUserReviews = async (profileId: string): Promise<Array<Review>> => {
     console.log(profileId);
-    const { data } = await axios.get<Review[]>(`/users/${profileId}/feedback`);
+    const { data } = await axios.get<Array<Review>>(
+      `/users/${profileId}/feedback`
+    );
 
-    console.log(data);
-    // map all date strings to dates
-    const reviews = data.map((r) => {
-      return {
-        ...r,
-        postedOn: new Date(r.postedOn),
-        comments: r.comments.map((c) => {
-          return {
-            ...c,
-            postedOn: new Date(c.postedOn),
-          };
-        }),
-      };
-    });
-
-    return reviews;
+    return data;
   };
 
   const updateReviews = async () => {

@@ -15,6 +15,7 @@ import { StarRating } from "./StarRating";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import DynamicAvatar from "./DynamicAvatar";
+import { toDDMMYYYY } from "../utils";
 
 const icon = require("../assets/icon.png");
 const image = require("../assets/splash.png");
@@ -30,7 +31,7 @@ export interface Review {
   authorId: string;
   authorName: string;
   authorIcon?: string;
-  postedOn: Date;
+  postedOn: string;
   rating?: number;
   message: string;
   image?: string;
@@ -43,7 +44,7 @@ export interface Comment {
   authorName: string;
   authorIcon?: string;
   message: string;
-  postedOn: Date;
+  postedOn: string;
 }
 
 interface ProfileReviewsViewProps {
@@ -247,7 +248,7 @@ function CommentCard({ comment }: CommentCardProps) {
         <View>
           <Text variant="titleSmall">{comment.authorIcon}</Text>
           <Text variant="bodySmall">
-            Posted: {comment.postedOn.toUTCString()}
+            Posted: {toDDMMYYYY(new Date(comment.postedOn))}
           </Text>
           <Text variant="bodySmall">{comment.message}</Text>
         </View>

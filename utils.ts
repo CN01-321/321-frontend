@@ -22,3 +22,10 @@ export function sinceRequested(date: Date) {
 
   return `${days} day${days === 1 ? "" : "s"} ago`;
 }
+
+export function toDDMMYYYY(date: Date) {
+  const day = date.getDate();
+  const month = date.getMonth().toString().padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}

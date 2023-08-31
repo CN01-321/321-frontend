@@ -13,10 +13,21 @@ export interface User {
   _id: string;
   name: string;
   email: string;
+  location?: UserLocation;
   userType: UserType;
   bio?: string;
   phone?: string;
+  pfp?: string;
 }
+
+export interface UserLocation {
+    type: "Point"; // the GeoJSON type is always "Point"
+    coordinates: [number, number]; // longitude, latitude
+    street: string;
+    city: string;
+    state: string;
+    postcode: string;
+  }
 
 export interface Pet {
   _id: string;

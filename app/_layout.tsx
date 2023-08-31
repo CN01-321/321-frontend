@@ -1,7 +1,13 @@
+import { useCallback } from "react";
+import { View } from "react-native";
 import { Slot } from "expo-router";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import { AuthProvider, useAuth } from "../contexts/auth";
 import { CARER_COLOUR, ERROR_COLOUR, OWNER_COLOUR } from "../types";
+import { useFonts } from "expo-font";
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 function LayoutWithTheme() {
   const { getTokenUser } = useAuth();
@@ -51,15 +57,32 @@ function LayoutWithTheme() {
 
   return (
     <PaperProvider theme={theme}>
-      <Slot />
+				<Slot />
     </PaperProvider>
   );
 }
 
 export default function Layout() {
+  const [fontsLoaded] = useFonts({
+    "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
+    "Montserrat-Medium": require("../assets/fonts/Montserrat-Medium.ttf"),
+    "Montserrat-SemiBold": require("../assets/fonts/Montserrat-SemiBold.ttf"),
+    "Montserrat-Bold": require("../assets/fonts/Montserrat-Bold.ttf")
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) return null;
+  
   return (
     <AuthProvider>
-      <LayoutWithTheme />
+      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+        <LayoutWithTheme />
+      </View>
     </AuthProvider>
   );
 }

@@ -34,23 +34,7 @@ export default function PetView() {
 
   const getPetReviews = async (): Promise<Review[]> => {
     const { data } = await axios.get<Review[]>(`/pets/${petId}/feedback`);
-
-    console.log(data);
-    // map all date strings to dates
-    const reviews = data.map((r) => {
-      return {
-        ...r,
-        postedOn: new Date(r.postedOn),
-        comments: r.comments.map((c) => {
-          return {
-            ...c,
-            postedOn: new Date(c.postedOn),
-          };
-        }),
-      };
-    });
-
-    return reviews;
+    return data;
   };
 
   useEffect((): (() => void) => {
