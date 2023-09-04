@@ -26,6 +26,7 @@ import { toDDMMYYYY } from "../../utils";
 import { UserType } from "../../types";
 import { Link, useRouter } from "expo-router";
 import Star from "../../components/Star";
+import { useErrorSnackbar } from "../../contexts/errorSnackbar";
 
 const icon = require("../../assets/icon.png");
 
@@ -51,6 +52,7 @@ export default function Home() {
   const { getTokenUser, logOut } = useAuth();
   const [homeInfo, setHomeInfo] = useState<HomeInfo>({} as HomeInfo);
   const theme = useTheme();
+  const { pushError } = useErrorSnackbar();
 
   const userType = getTokenUser()?.type ?? "owner";
 
@@ -64,6 +66,7 @@ export default function Home() {
         if (!ignore) setHomeInfo(data);
       } catch (e) {
         console.error(e);
+        pushError("Could not fetch home page information");
       }
     })();
 

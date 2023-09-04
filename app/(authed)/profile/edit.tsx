@@ -7,17 +7,24 @@ import Header from "../../../components/Header";
 import { User } from "../../../types";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../contexts/auth";
+import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
 
 const EditProfile = () => {
   const [user, setUser] = useState<User>();
   const { getTokenUser } = useAuth();
+  const { pushError } = useErrorSnackbar();
 
   useEffect((): (() => void) => {
     let ignore = false;
 
     (async () => {
-      const { data } = await axios.get<User>(`/users/${getTokenUser()?._id}`);
-      if (!ignore) setUser(data);
+      try {
+        const { data } = await axios.get<User>(`/users/${getTokenUser()?._id}`);
+        if (!ignore) setUser(data);
+      } catch (e) {
+        console.error(e);
+        pushError("Could not fetch profile information");
+      }
     })();
 
     return () => (ignore = true);

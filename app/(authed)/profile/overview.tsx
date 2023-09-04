@@ -8,6 +8,7 @@ import axios from "axios";
 import Header from "../../../components/Header";
 import { UserType } from "../../../types";
 import DynamicAvatar from "../../../components/DynamicAvatar";
+import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
 
 const icon = require("../../../assets/icon.png");
 
@@ -41,6 +42,7 @@ export default function Profile() {
     phone: "",
   });
   const [reviews, setReviews] = useState<Review[]>([]);
+  const { pushError } = useErrorSnackbar();
 
   const getProfile = async (profileId: string): Promise<User> => {
     console.log("profile id is ", profileId);
@@ -80,6 +82,7 @@ export default function Profile() {
         }
       } catch (e) {
         console.error(e);
+        pushError("Could not fetch user data");
       }
     })();
 

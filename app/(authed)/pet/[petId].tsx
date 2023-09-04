@@ -7,6 +7,7 @@ import axios from "axios";
 import { Pet } from "../../../types";
 import Header from "../../../components/Header";
 import DynamicAvatar from "../../../components/DynamicAvatar";
+import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
 
 const icon = require("../../../assets/icon.png");
 
@@ -26,6 +27,7 @@ export default function PetView() {
     petSize: "small",
   });
   const [reviews, setReviews] = useState<Review[]>([]);
+  const { pushError } = useErrorSnackbar();
 
   const getPetProfile = async (): Promise<Pet> => {
     const { data } = await axios.get<Pet>(`/pets/${petId}`);
@@ -53,6 +55,7 @@ export default function PetView() {
         }
       } catch (e) {
         console.error(e);
+        pushError("Could not fetch pet information");
       }
     })();
 

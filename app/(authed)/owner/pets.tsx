@@ -9,12 +9,14 @@ import { Pet } from "../../../types";
 import PetsView from "../../../components/PetsView";
 import Header from "../../../components/Header";
 import DynamicCardCover from "../../../components/DynamicCardCover";
+import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
 
 const icon = require("../../../assets/icon.png");
 
 export default function Pets() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [visible, setVisible] = useState(false);
+  const { pushError } = useErrorSnackbar();
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -23,11 +25,13 @@ export default function Pets() {
     let ignore = false;
 
     (async () => {
-      const { data } = await axios.get<Pet[]>("/owners/pets");
-
-      console.log("pets are: ", data);
-
-      if (!ignore) setPets(data);
+      try {
+        const { data } = await axios.get<Pet[]>("/owners/pets");
+        if (!ignore) setPets(data);
+      } catch (e) {
+        console.error(e);
+        pushError("Could not fetch pets");
+      }
     })();
 
     return () => (ignore = true);

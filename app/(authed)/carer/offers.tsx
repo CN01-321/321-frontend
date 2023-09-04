@@ -6,6 +6,7 @@ import JobsListView from "../../../components/JobsListView";
 import axios from "axios";
 import { Job } from "../../../types";
 import Header from "../../../components/Header";
+import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
 
 type OfferType = "direct" | "broad";
 
@@ -17,6 +18,7 @@ export default function Offers() {
     initOfferType ?? "direct"
   );
   const [offers, setOffers] = useState<Job[]>([]);
+  const { pushError } = useErrorSnackbar();
 
   const updateOffers = async () => {
     try {
@@ -37,6 +39,7 @@ export default function Offers() {
       setOffers(offers);
     } catch (e) {
       console.error(e);
+      pushError("Could not fetch offers");
     }
   };
 

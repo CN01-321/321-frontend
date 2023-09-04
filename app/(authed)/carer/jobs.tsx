@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Job } from "../../../types";
 import Header from "../../../components/Header";
+import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
 
 export default function Jobs() {
   const [jobs, setJobs] = useState<Job[]>([]);
+
+  const { pushError } = useErrorSnackbar();
 
   useEffect((): (() => void) => {
     let ignore = false;
@@ -32,6 +35,7 @@ export default function Jobs() {
         }
       } catch (e) {
         console.error(e);
+        pushError("Could not fetch Jobs");
       }
     })();
 

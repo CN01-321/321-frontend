@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import DynamicAvatar from "../../components/DynamicAvatar";
+import { useErrorSnackbar } from "../../contexts/errorSnackbar";
 
 const icon = require("../../assets/icon.png");
 
@@ -22,6 +23,7 @@ interface Notification {
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { pushError } = useErrorSnackbar();
 
   useEffect((): (() => void) => {
     let ignore = false;
@@ -45,6 +47,7 @@ export default function Notifications() {
           );
       } catch (err) {
         console.error(err);
+        pushError("Could not fetch notifications");
       }
     })();
 

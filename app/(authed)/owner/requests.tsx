@@ -7,10 +7,12 @@ import axios from "axios";
 import RequestCard from "../../../components/RequestCard";
 import Header from "../../../components/Header";
 import { useIsFocused } from "@react-navigation/native";
+import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
 
 export default function Requests() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [visible, setVisible] = useState(false);
+  const { pushError } = useErrorSnackbar();
 
   // isFocused is used to reload the requests in case a new request has been
   // made from the search page
@@ -35,6 +37,7 @@ export default function Requests() {
       setRequests(reqs);
     } catch (e) {
       console.error(e);
+      pushError("Could not fetch requests");
     }
   };
 

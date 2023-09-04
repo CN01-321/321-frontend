@@ -7,6 +7,7 @@ import CarerResultsView, {
 } from "../../../components/CarerResultsView";
 import axios from "axios";
 import Header from "../../../components/Header";
+import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
 
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();
@@ -14,6 +15,7 @@ export default function Respondents() {
   const [respondents, setRespondents] = useState<CarerResult[]>([]);
   const [visible, setVisible] = useState(false);
   const router = useRouter();
+  const { pushError } = useErrorSnackbar();
 
   useEffect((): (() => void) => {
     let ignore = false;
@@ -29,6 +31,7 @@ export default function Respondents() {
         }
       } catch (e) {
         console.error(e);
+        pushError("Could not fetch respondents");
       }
     })();
 
@@ -80,6 +83,8 @@ function PaymentModal({
   requestId,
   respondentId,
 }: PaymentModalProps) {
+  const { pushError } = useErrorSnackbar();
+
   const handleAccept = async () => {
     try {
       await axios.post(
@@ -88,6 +93,7 @@ function PaymentModal({
       onDismiss(true);
     } catch (e) {
       console.error(e);
+      pushError("Could not accept carer");
       onDismiss(false);
     }
   };
