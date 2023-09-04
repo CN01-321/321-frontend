@@ -15,11 +15,14 @@ import ContactUsIcon from "../../assets/icons/settings/contactus.svg";
 import AboutUsIcon from "../../assets/icons/settings/aboutus.svg";
 import TermsOfServiceIcon from "../../assets/icons/settings/termsofservice.svg";
 import PrivacyPolicyIcon from "../../assets/icons/settings/privacypolicy.svg";
+import { useErrorSnackbar } from "../../contexts/errorSnackbar";
 
 export default function Settings() {
   const theme = useTheme();
   const router = useRouter();
   const { logOut } = useAuth();
+
+  const { pushError } = useErrorSnackbar();
 
   return (
     <View>
@@ -47,6 +50,7 @@ export default function Settings() {
                 fill={theme.colors.primary}
               />
             )}
+            onPress={() => pushError("Button not implemented")}
           />
           <SettingsOption
             name="Reset Password"
@@ -57,6 +61,7 @@ export default function Settings() {
                 fill={theme.colors.primary}
               />
             )}
+            onPress={() => pushError("other Button not implemented")}
           />
           <SettingsOption
             name="Delete Account"

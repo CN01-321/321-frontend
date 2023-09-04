@@ -4,9 +4,16 @@ import {
   Card,
   Divider,
   Text,
+  TouchableRipple,
   useTheme,
 } from "react-native-paper";
-import { View, StyleSheet, FlatList, SafeAreaView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  SafeAreaView,
+  Pressable,
+} from "react-native";
 import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -210,32 +217,35 @@ function TopCarerCard({ carer }: { carer: TopCarer }) {
   };
 
   return (
-    <Card style={{ margin: 5 }} onPress={handlePress}>
-      <DynamicCardCover
-        style={{ width: 180, height: 180 }}
-        imageId={carer.pfp}
-        defaultImage={icon}
-      />
-      <Card.Content style={{ height: 50 }}>
-        <Text style={{ paddingTop: 5 }} variant="titleSmall">
-          {carer.name}
-        </Text>
-        <View
-          style={{
-            marginBottom: 20,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Star size={15} />
-          <Text style={{ paddingLeft: 5 }} variant="bodySmall">
-            {carer.rating
-              ? `${carer.rating.toFixed(1)} (${carer.totalReviews} reviews)`
-              : ""}
+    <View style={{ margin: 5 }}>
+      <Pressable onPress={handlePress}>
+        <DynamicCardCover
+          style={{ zIndex: 0, width: 180, height: 180 }}
+          imageId={carer.pfp}
+          defaultImage={icon}
+        />
+        <Card.Content style={{ paddingLeft: 5, height: 50 }}>
+          <Text style={{ paddingTop: 5 }} variant="titleSmall">
+            {carer.name}
           </Text>
-        </View>
-      </Card.Content>
-    </Card>
+          <View
+            style={{
+              marginBottom: 20,
+              flexDirection: "row",
+            }}
+          >
+            {carer.rating ? (
+              <>
+                <Star size={15} />
+                <Text style={{ paddingLeft: 5 }} variant="bodySmall">
+                  {carer.rating.toFixed(1)} ({carer.totalReviews} reviews)
+                </Text>
+              </>
+            ) : null}
+          </View>
+        </Card.Content>
+      </Pressable>
+    </View>
   );
 }
 
@@ -284,9 +294,22 @@ function TopReviewCard({
   review: Review;
   carer?: TopCarer;
 }) {
-  console.log(review);
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push({
+      pathname: "/profile/overview",
+      params: {
+        profileId: carer ? carer._id : review.authorId,
+      },
+    });
+  };
+
   return (
-    <Card style={{ minWidth: 200, maxWidth: 300, margin: 2 }}>
+    <Card
+      style={{ minWidth: 200, maxWidth: 300, margin: 2 }}
+      onPress={handlePress}
+    >
       <Card.Content>
         <View
           style={{

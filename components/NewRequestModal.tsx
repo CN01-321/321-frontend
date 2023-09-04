@@ -76,7 +76,10 @@ export default function NewRequestModal({
     console.log("request data is ", data);
 
     try {
-      await axios.post("/owners/requests", data);
+      await axios.post("/owners/requests", {
+        ...data,
+        carer: carerResult?._id,
+      });
 
       // update the new list if updateRequests is not undefined
       updateRequests && updateRequests();
