@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import DynamicAvatar from "../../components/DynamicAvatar";
-import { useErrorSnackbar } from "../../contexts/errorSnackbar";
+import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 
 const icon = require("../../assets/icon.png");
 
@@ -23,7 +23,7 @@ interface Notification {
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   useEffect((): (() => void) => {
     let ignore = false;

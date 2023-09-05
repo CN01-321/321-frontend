@@ -7,12 +7,12 @@ import Header from "../../../components/Header";
 import { User } from "../../../types";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../contexts/auth";
-import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 
 const EditProfile = () => {
   const [user, setUser] = useState<User>();
   const { getTokenUser } = useAuth();
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   useEffect((): (() => void) => {
     let ignore = false;

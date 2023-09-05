@@ -6,7 +6,7 @@ import JobsListView from "../../../components/JobsListView";
 import axios from "axios";
 import { Job } from "../../../types";
 import Header from "../../../components/Header";
-import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 
 type OfferType = "direct" | "broad";
 
@@ -18,7 +18,7 @@ export default function Offers() {
     initOfferType ?? "direct"
   );
   const [offers, setOffers] = useState<Job[]>([]);
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   const updateOffers = async () => {
     try {

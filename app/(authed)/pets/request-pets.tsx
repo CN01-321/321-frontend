@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Pet } from "../../../types";
 import PetsView from "../../../components/PetsView";
-import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 
 const RequestPets = () => {
   const { requestId } = useLocalSearchParams<{
     requestId: string;
   }>();
   const [pets, setPets] = useState<Pet[]>([]);
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   useEffect((): (() => void) => {
     let ignore = false;

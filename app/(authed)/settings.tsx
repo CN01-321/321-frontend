@@ -15,14 +15,14 @@ import ContactUsIcon from "../../assets/icons/settings/contactus.svg";
 import AboutUsIcon from "../../assets/icons/settings/aboutus.svg";
 import TermsOfServiceIcon from "../../assets/icons/settings/termsofservice.svg";
 import PrivacyPolicyIcon from "../../assets/icons/settings/privacypolicy.svg";
-import { useErrorSnackbar } from "../../contexts/errorSnackbar";
+import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 
 export default function Settings() {
   const theme = useTheme();
   const router = useRouter();
   const { logOut } = useAuth();
 
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   return (
     <View>

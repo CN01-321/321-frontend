@@ -7,12 +7,12 @@ import axios from "axios";
 import RequestCard from "../../../components/RequestCard";
 import Header from "../../../components/Header";
 import { useIsFocused } from "@react-navigation/native";
-import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 
 export default function Requests() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [visible, setVisible] = useState(false);
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   // isFocused is used to reload the requests in case a new request has been
   // made from the search page

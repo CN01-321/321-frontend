@@ -14,6 +14,7 @@ import axios from "axios";
 import { Pet } from "../types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import DynamicAvatar from "./DynamicAvatar";
+import { useMessageSnackbar } from "../contexts/messageSnackbar";
 
 const icon = require("../assets/icon.png");
 
@@ -47,6 +48,7 @@ export default function NewRequestModal({
     reset,
     formState: { errors },
   } = useForm<NewRequestForm>();
+  const { pushMessage, pushError } = useMessageSnackbar();
 
   useEffect((): (() => void) => {
     let ignore = false;
@@ -81,10 +83,13 @@ export default function NewRequestModal({
         carer: carerResult?._id,
       });
 
+      pushMessage("Created new request");
+
       // update the new list if updateRequests is not undefined
       updateRequests && updateRequests();
     } catch (e) {
       console.error(e);
+      pushError("Error creating new request");
     }
 
     reset();

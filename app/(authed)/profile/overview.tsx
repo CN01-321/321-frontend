@@ -8,7 +8,7 @@ import axios from "axios";
 import Header from "../../../components/Header";
 import { UserType } from "../../../types";
 import DynamicAvatar from "../../../components/DynamicAvatar";
-import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 
 const icon = require("../../../assets/icon.png");
 
@@ -42,7 +42,7 @@ export default function Profile() {
     phone: "",
   });
   const [reviews, setReviews] = useState<Review[]>([]);
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   const getProfile = async (profileId: string): Promise<User> => {
     console.log("profile id is ", profileId);

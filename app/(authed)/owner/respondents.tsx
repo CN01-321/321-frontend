@@ -7,7 +7,7 @@ import CarerResultsView, {
 } from "../../../components/CarerResultsView";
 import axios from "axios";
 import Header from "../../../components/Header";
-import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();
@@ -15,7 +15,7 @@ export default function Respondents() {
   const [respondents, setRespondents] = useState<CarerResult[]>([]);
   const [visible, setVisible] = useState(false);
   const router = useRouter();
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   useEffect((): (() => void) => {
     let ignore = false;
@@ -83,7 +83,7 @@ function PaymentModal({
   requestId,
   respondentId,
 }: PaymentModalProps) {
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   const handleAccept = async () => {
     try {

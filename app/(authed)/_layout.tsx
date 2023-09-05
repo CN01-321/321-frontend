@@ -12,7 +12,7 @@ import JobsIcon from "../../assets/icons/navbar/jobs.svg";
 import FindCarersIcon from "../../assets/icons/navbar/findcarers.svg";
 import PetsIcon from "../../assets/icons/navbar/pets.svg";
 import ProfileIcon from "../../assets/icons/navbar/profile.svg";
-import { ErrorSnackbarProvider } from "../../contexts/errorSnackbar";
+import { MessageSnackbarProvider } from "../../contexts/messageSnackbar";
 
 export interface Route {
   key: string;
@@ -96,7 +96,7 @@ export default function UserLayout() {
   }, [segments]);
 
   return (
-    <ErrorSnackbarProvider>
+    <MessageSnackbarProvider>
       <Stack />
       <UserBottomNav
         routes={routes}
@@ -116,7 +116,7 @@ export default function UserLayout() {
           router.push(href);
         }}
       />
-    </ErrorSnackbarProvider>
+    </MessageSnackbarProvider>
   );
 }
 

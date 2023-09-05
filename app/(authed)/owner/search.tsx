@@ -8,7 +8,7 @@ import CarerResultsView, {
 import NewRequestModal from "../../../components/NewRequestModal";
 import axios from "axios";
 import Header from "../../../components/Header";
-import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 
 interface PetTypes {
   dog: boolean;
@@ -52,7 +52,7 @@ export default function Search() {
   const [requestVisible, setRequestVisible] = useState(false);
   const [searchResults, setSearchResults] = useState<CarerResult[]>([]);
   const [selectedCarer, setSelectedCarer] = useState<CarerResult | null>();
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   useEffect((): (() => void) => {
     let ignore = false;

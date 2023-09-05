@@ -11,6 +11,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import axios from "axios";
+import { useMessageSnackbar } from "../contexts/messageSnackbar";
 
 type AddPetFormData = {
   name: string;
@@ -28,13 +29,16 @@ type AddPetModalProps = {
 
 const AddPetModal = ({ visible, onDismiss }: AddPetModalProps) => {
   const { control, handleSubmit, reset } = useForm<AddPetFormData>();
+  const { pushMessage, pushError } = useMessageSnackbar();
 
   const onSubmit: SubmitHandler<AddPetFormData> = async (data) => {
     console.log(data);
     try {
       await axios.post("/owners/pets", data);
+      pushMessage("Successfully added new pet");
     } catch (error) {
       console.log(error);
+      pushError("Error adding new pet");
     }
     reset();
     onDismiss();

@@ -9,14 +9,14 @@ import { Pet } from "../../../types";
 import PetsView from "../../../components/PetsView";
 import Header from "../../../components/Header";
 import DynamicCardCover from "../../../components/DynamicCardCover";
-import { useErrorSnackbar } from "../../../contexts/errorSnackbar";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 
 const icon = require("../../../assets/icon.png");
 
 export default function Pets() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [visible, setVisible] = useState(false);
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);

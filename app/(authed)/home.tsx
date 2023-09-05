@@ -26,7 +26,7 @@ import { toDDMMYYYY } from "../../utils";
 import { UserType } from "../../types";
 import { Link, useRouter } from "expo-router";
 import Star from "../../components/Star";
-import { useErrorSnackbar } from "../../contexts/errorSnackbar";
+import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 
 const icon = require("../../assets/icon.png");
 
@@ -52,7 +52,7 @@ export default function Home() {
   const { getTokenUser, logOut } = useAuth();
   const [homeInfo, setHomeInfo] = useState<HomeInfo>({} as HomeInfo);
   const theme = useTheme();
-  const { pushError } = useErrorSnackbar();
+  const { pushError } = useMessageSnackbar();
 
   const userType = getTokenUser()?.type ?? "owner";
 

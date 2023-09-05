@@ -4,6 +4,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import axios from "axios";
 
 import * as Location from "expo-location";
+import { useMessageSnackbar } from "../contexts/messageSnackbar";
 
 interface AccountInfoFormData {
   name: string;
@@ -19,6 +20,7 @@ interface AccountInfoFormData {
 
 const AccountInfoForm = () => {
   const { control, handleSubmit, reset } = useForm<AccountInfoFormData>();
+  const { pushError } = useMessageSnackbar();
 
   const onSubmit: SubmitHandler<AccountInfoFormData> = async (data) => {
     const geocodedLocation = await Location.geocodeAsync(
@@ -34,6 +36,7 @@ const AccountInfoForm = () => {
       await axios.post("/owners/pets", data);
     } catch (error) {
       console.log(error);
+      pushError("Could not update data");
     }
     reset();
   };
