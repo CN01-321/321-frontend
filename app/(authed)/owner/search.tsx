@@ -9,48 +9,45 @@ import NewRequestModal from "../../../components/NewRequestModal";
 import axios from "axios";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
-
-interface PetTypes {
-  dog: boolean;
-  cat: boolean;
-  bird: boolean;
-  rabbit: boolean;
-}
-
-interface PetSizes {
-  small: boolean;
-  medium: boolean;
-  large: boolean;
-}
+import { PetSize, PetType } from "../../../types";
 
 interface Filters {
   maxPrice?: number;
   minRating?: number;
-  petTypes: PetTypes;
-  petSizes: PetSizes;
+  petTypes: Map<PetType, boolean>;
+  petSizes: Map<PetSize, boolean>;
 }
 
-const defaultFilters = () => {
-  return {
-    petTypes: {
+const defaultFilters = {
+  petTypes: new Map(
+    Object.entries({
       dog: false,
       cat: false,
       bird: false,
       rabbit: false,
-    },
-    petSizes: {
+    }) as [PetType, boolean][]
+  ),
+  petSizes: new Map(
+    Object.entries({
       small: false,
       medium: false,
       large: false,
-    },
-  };
+    }) as [PetSize, boolean][]
+  ),
 };
 
+interface NearbyCarer extends CarerResult {
+  hourlyRate: number;
+  preferredPetTypes: PetType[];
+  preferredPetSizes: PetSize[];
+}
+
 export default function Search() {
-  const [filters, setFilters] = useState<Filters>(defaultFilters());
+  const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [filterVisible, setFilterVisible] = useState(false);
   const [requestVisible, setRequestVisible] = useState(false);
-  const [searchResults, setSearchResults] = useState<CarerResult[]>([]);
+  const [carers, setCarers] = useState<NearbyCarer[]>([]);
+  const [searchResults, setSearchResults] = useState<NearbyCarer[]>([]);
   const [selectedCarer, setSelectedCarer] = useState<CarerResult | null>();
   const { pushError } = useMessageSnackbar();
 
@@ -58,60 +55,51 @@ export default function Search() {
     let ignore = false;
 
     (async () => {
-      await doSearch();
-
-      console.log("searching with filters", filters);
-
-      console.log("query string ", getQueryString());
       try {
-        const { data } = await axios.get<CarerResult[]>(
-          `/owners/requests/nearby${getQueryString()}`
+        const { data } = await axios.get<NearbyCarer[]>(
+          "/owners/requests/nearby"
         );
 
-        console.log("search results ", data);
         if (!ignore) {
-          setSearchResults(data);
+          console.log("nearby carers are ", data);
+          setCarers(data);
         }
       } catch (e) {
         console.error(e);
-        pushError("Could not fetch search results");
+        pushError("Could not fetch carers");
       }
     })();
 
     return () => (ignore = true);
-  }, [filters]);
+  }, []);
 
   const updateFilters = (filter: Filters) => {
     setFilters({ ...filter });
   };
 
-  const getQueryString = () => {
-    // construct the query parameters for the api call
-    let query = "?";
-    if (filters.maxPrice) {
-      query += `price=${filters.maxPrice}&`;
-    }
-
-    // filter all chosen pet types and add them as petTypes[]=type to the query string
-    query += Object.entries(filters.petTypes)
-      .filter(([, selected]) => selected)
-      .reduce(
-        (petTypeQuery, [petType]) => petTypeQuery + `petTypes[]=${petType}&`,
-        ""
+  useEffect(() => {
+    const res = carers
+      .filter((c) =>
+        filters.maxPrice ? c.hourlyRate < filters.maxPrice : true
+      )
+      .filter((c) =>
+        Array.from(filters.petTypes.entries())
+          .filter(([, v]) => v)
+          .every(([k]) => c.preferredPetTypes.includes(k))
+      )
+      .filter((c) =>
+        Array.from(filters.petSizes.entries())
+          .filter(([, v]) => v)
+          .every(([k]) => c.preferredPetSizes.includes(k))
+      )
+      .filter((c) =>
+        filters.minRating ? c.rating ?? -1 >= filters.minRating : true
       );
 
-    // do the same thing for pet sizes
-    query += Object.entries(filters.petSizes)
-      .filter(([, selected]) => selected)
-      .reduce(
-        (petSizeQuery, [petSize]) => petSizeQuery + `petSizes[]=${petSize}&`,
-        ""
-      );
+    console.log("search results are: ", res);
 
-    return query;
-  };
-
-  const doSearch = async () => {};
+    setSearchResults(res);
+  }, [carers, filters]);
 
   return (
     <View>
@@ -161,18 +149,23 @@ function FilterModal({
     updateFilters(filters);
   };
 
-  const updatePetTypes = (pet: PetTypeKey) => {
-    filters.petTypes[pet] = !filters.petTypes[pet];
+  const updateMinRating = (rating: number) => {
+    filters.minRating = rating;
     updateFilters(filters);
   };
 
-  const updatePetSizes = (size: PetSizeKey) => {
-    filters.petSizes[size] = !filters.petSizes[size];
+  const updatePetTypes = (selection: PetType) => {
+    filters.petTypes.set(selection, !filters.petTypes.get(selection));
+    updateFilters(filters);
+  };
+
+  const updatePetSizes = (size: PetSize) => {
+    filters.petSizes.set(size, !filters.petSizes.get(size));
     updateFilters(filters);
   };
 
   const clearFilters = () => {
-    updateFilters(defaultFilters());
+    updateFilters(defaultFilters);
   };
 
   return (
@@ -187,9 +180,16 @@ function FilterModal({
             step={25}
             onValueChange={updateMaxPrice}
           />
+          <Text>Min Rating: {filters.minRating}</Text>
+          <Slider
+            minimumValue={0}
+            maximumValue={5}
+            step={0.5}
+            onValueChange={updateMinRating}
+          />
           <Text>Select Pet Types</Text>
           <View style={styles.checkboxArea}>
-            <FilterSelection<PetTypeKey, PetTypes>
+            <FilterSelection
               selections={filters.petTypes}
               onSelection={updatePetTypes}
             />
@@ -197,7 +197,7 @@ function FilterModal({
 
           <Text>Select Pet Sizes</Text>
           <View style={styles.checkboxArea}>
-            <FilterSelection<PetSizeKey, PetSizes>
+            <FilterSelection
               selections={filters.petSizes}
               onSelection={updatePetSizes}
             />
@@ -214,48 +214,44 @@ function FilterModal({
   );
 }
 
-type PetTypeKey = "dog" | "cat" | "bird" | "rabbit";
-type PetSizeKey = "small" | "medium" | "large";
+type FilterType = PetType | PetSize;
 
-type FilterType = PetTypes | PetSizes;
-type FilterTypeKey = PetTypeKey | PetSizeKey;
-
-interface FilterSelectionProps<K extends FilterTypeKey, T extends FilterType> {
-  selections: T;
+interface FilterSelectionProps<K extends FilterType> {
+  selections: Map<K, boolean>;
   onSelection: (selection: K) => void;
 }
 
-function FilterSelection<K extends FilterTypeKey, T extends FilterType>({
+function FilterSelection<K extends FilterType>({
   selections,
   onSelection,
-}: FilterSelectionProps<K, T>) {
+}: FilterSelectionProps<K>) {
   return (
     <View style={styles.checkboxArea}>
-      {Object.entries(selections).map(([selection, checked]) => (
+      {Array.from(selections.entries()).map(([selection, checked]) => (
         <FilterSelectionCheckbox
           key={selection}
-          selection={selection as K}
+          selection={selection}
           checked={checked}
-          onCheck={() => onSelection(selection as K)}
+          onCheck={() => onSelection(selection)}
         />
       ))}
     </View>
   );
 }
 
-interface FilterSelectionCheckboxProps<K extends FilterTypeKey> {
-  selection: K;
+interface FilterSelectionCheckboxProps {
+  selection: FilterType;
   name?: string;
   checked: boolean;
   onCheck: () => void;
 }
 
-function FilterSelectionCheckbox<K extends FilterTypeKey>({
+function FilterSelectionCheckbox({
   selection,
   name,
   checked,
   onCheck,
-}: FilterSelectionCheckboxProps<K>) {
+}: FilterSelectionCheckboxProps) {
   return (
     <View style={styles.checkbox}>
       <Checkbox status={checked ? "checked" : "unchecked"} onPress={onCheck} />

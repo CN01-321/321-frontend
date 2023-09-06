@@ -26,7 +26,7 @@ export function DatePickerButton({
       </Button>
       <DateTimePickerModal
         isVisible={visible}
-        mode="date"
+        mode="datetime"
         onConfirm={updateDate}
         onCancel={() => setVisible(false)}
       />

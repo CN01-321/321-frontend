@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Button,
-  Card,
-  Divider,
-  Text,
-  TouchableRipple,
-  useTheme,
-} from "react-native-paper";
+import { Card, Divider, Text, useTheme } from "react-native-paper";
 import {
   View,
   StyleSheet,
@@ -24,7 +16,7 @@ import DynamicAvatar from "../../components/DynamicAvatar";
 import { StarRating } from "../../components/StarRating";
 import { toDDMMYYYY } from "../../utils";
 import { UserType } from "../../types";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import Star from "../../components/Star";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 
@@ -49,7 +41,7 @@ interface HomeInfo {
 }
 
 export default function Home() {
-  const { getTokenUser, logOut } = useAuth();
+  const { getTokenUser } = useAuth();
   const [homeInfo, setHomeInfo] = useState<HomeInfo>({} as HomeInfo);
   const theme = useTheme();
   const { pushError } = useMessageSnackbar();
@@ -62,7 +54,7 @@ export default function Home() {
     (async () => {
       try {
         const { data } = await axios.get<HomeInfo>(`/${userType}s/home`);
-
+        console.log(data);
         if (!ignore) setHomeInfo(data);
       } catch (e) {
         console.error(e);

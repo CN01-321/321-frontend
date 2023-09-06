@@ -55,7 +55,7 @@ function CarerResultCard({
     <Card>
       <Link
         href={{
-          pathname: "/profile/[profileId]",
+          pathname: "/profile/overview",
           params: { profileId: carerResult._id },
         }}
       >
