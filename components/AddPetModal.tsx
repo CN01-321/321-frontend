@@ -12,6 +12,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import axios from "axios";
 import { useMessageSnackbar } from "../contexts/messageSnackbar";
+import BaseModal from "./BaseModal";
 
 type AddPetFormData = {
   name: string;
@@ -54,95 +55,84 @@ const AddPetModal = ({ visible, onDismiss }: AddPetModalProps) => {
   };
 
   return (
-    <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        style={{ backgroundColor: "white" }}
-      >
-        <ScrollView>
-          <Avatar.Text
-            label="P"
-            onTouchStart={pickProfilePicture}
-          ></Avatar.Text>
-          <Controller
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                label="Name"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-            name="name"
+    <BaseModal title="New Pet" visible={visible} onDismiss={onDismiss}>
+      <Avatar.Text label="P" onTouchStart={pickProfilePicture}></Avatar.Text>
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            label="Name"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
           />
-          <Controller
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                label="Type"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-            name="petType"
+        )}
+        name="name"
+      />
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            label="Type"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
           />
-          <Controller
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                label="Size"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-            name="petSize"
+        )}
+        name="petType"
+      />
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            label="Size"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
           />
-          <Text>Vaccinated</Text>
-          <Controller
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <Checkbox
-                status={value ? "checked" : "unchecked"}
-                onPress={() => onChange(!value)}
-              />
-            )}
-            name="isVaccinated"
+        )}
+        name="petSize"
+      />
+      <Text>Vaccinated</Text>
+      <Controller
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <Checkbox
+            status={value ? "checked" : "unchecked"}
+            onPress={() => onChange(!value)}
           />
-          <Text>Friendly</Text>
-          <Controller
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <Checkbox
-                status={value ? "checked" : "unchecked"}
-                onPress={() => onChange(!value)}
-              />
-            )}
-            name="isFriendly"
+        )}
+        name="isVaccinated"
+      />
+      <Text>Friendly</Text>
+      <Controller
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <Checkbox
+            status={value ? "checked" : "unchecked"}
+            onPress={() => onChange(!value)}
           />
-          <Text>Neutered</Text>
-          <Controller
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <Checkbox
-                status={value ? "checked" : "unchecked"}
-                onPress={() => onChange(!value)}
-              />
-            )}
-            name="isNeutered"
+        )}
+        name="isFriendly"
+      />
+      <Text>Neutered</Text>
+      <Controller
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <Checkbox
+            status={value ? "checked" : "unchecked"}
+            onPress={() => onChange(!value)}
           />
-          <Button mode="contained" onPress={handleSubmit(onSubmit)}>
-            Add Pet
-          </Button>
-        </ScrollView>
-      </Modal>
-    </Portal>
+        )}
+        name="isNeutered"
+      />
+      <Button mode="contained" onPress={handleSubmit(onSubmit)}>
+        Add Pet
+      </Button>
+    </BaseModal>
   );
 };
 

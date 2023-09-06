@@ -15,6 +15,7 @@ import { Pet } from "../types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import DynamicAvatar from "./DynamicAvatar";
 import { useMessageSnackbar } from "../contexts/messageSnackbar";
+import BaseModal from "./BaseModal";
 
 const icon = require("../assets/icon.png");
 
@@ -97,68 +98,65 @@ export default function NewRequestModal({
   };
 
   return (
-    <Portal>
-      <Modal visible={visible} onDismiss={onDismiss}>
-        <ScrollView style={styles.container}>
-          <Text variant="titleMedium">
-            {carerResult ? `Request to ${carerResult.name}` : "New Request"}
-          </Text>
-          <Controller
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { onChange, value } }) => (
-              <DatePickerButton
-                label="Start date"
-                date={value}
-                updateDate={onChange}
-              />
-            )}
-            name="dateRange.startDate"
+    <BaseModal
+      title={carerResult ? `Request to ${carerResult.name}` : "New Request"}
+      visible={visible}
+      onDismiss={onDismiss}
+    >
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, value } }) => (
+          <DatePickerButton
+            label="Start date"
+            date={value}
+            updateDate={onChange}
           />
-          {errors.dateRange?.startDate ? (
-            <Text>Please choose a start date</Text>
-          ) : null}
-          <Controller
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { onChange, value } }) => (
-              <DatePickerButton
-                label="End date"
-                date={value}
-                updateDate={onChange}
-              />
-            )}
-            name="dateRange.endDate"
+        )}
+        name="dateRange.startDate"
+      />
+      {errors.dateRange?.startDate ? (
+        <Text>Please choose a start date</Text>
+      ) : null}
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, value } }) => (
+          <DatePickerButton
+            label="End date"
+            date={value}
+            updateDate={onChange}
           />
-          {errors.dateRange?.endDate && <Text>Please choose an end date</Text>}
-          <Controller
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextInput
-                label="Additional information"
-                mode="outlined"
-                value={value}
-                onChangeText={onChange}
-                multiline={true}
-              />
-            )}
-            name="message"
+        )}
+        name="dateRange.endDate"
+      />
+      {errors.dateRange?.endDate && <Text>Please choose an end date</Text>}
+      <Controller
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <TextInput
+            label="Additional information"
+            mode="outlined"
+            value={value}
+            onChangeText={onChange}
+            multiline={true}
           />
-          <Controller
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { onChange, value } }) => (
-              <SelectPetsArea pets={pets} value={value} onChange={onChange} />
-            )}
-            name="pets"
-          />
-          {errors.pets ? <Text>Plesae select at least one pet</Text> : null}
-          <Button mode="contained" onPress={handleSubmit(onSubmit)}>
-            Request
-          </Button>
-        </ScrollView>
-      </Modal>
-    </Portal>
+        )}
+        name="message"
+      />
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, value } }) => (
+          <SelectPetsArea pets={pets} value={value} onChange={onChange} />
+        )}
+        name="pets"
+      />
+      {errors.pets ? <Text>Plesae select at least one pet</Text> : null}
+      <Button mode="contained" onPress={handleSubmit(onSubmit)}>
+        Request
+      </Button>
+    </BaseModal>
   );
 }
 

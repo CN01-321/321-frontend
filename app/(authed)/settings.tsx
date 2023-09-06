@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { List, useTheme } from "react-native-paper";
+import { List, useTheme, Text } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
 import { useRouter } from "expo-router";
 
@@ -15,15 +15,11 @@ import ContactUsIcon from "../../assets/icons/settings/contactus.svg";
 import AboutUsIcon from "../../assets/icons/settings/aboutus.svg";
 import TermsOfServiceIcon from "../../assets/icons/settings/termsofservice.svg";
 import PrivacyPolicyIcon from "../../assets/icons/settings/privacypolicy.svg";
-import { useMessageSnackbar } from "../../contexts/messageSnackbar";
+import BaseModal from "../../components/BaseModal";
 
 export default function Settings() {
   const theme = useTheme();
-  const router = useRouter();
   const { logOut } = useAuth();
-
-  const { pushError } = useMessageSnackbar();
-
   return (
     <View>
       <Header title="Settings" />
@@ -39,7 +35,6 @@ export default function Settings() {
                 fill={theme.colors.primary}
               />
             )}
-            onPress={() => router.push(`/profile/edit`)}
           />
           <SettingsOption
             name="Edit Location"
@@ -50,7 +45,6 @@ export default function Settings() {
                 fill={theme.colors.primary}
               />
             )}
-            onPress={() => pushError("Button not implemented")}
           />
           <SettingsOption
             name="Reset Password"
@@ -61,7 +55,6 @@ export default function Settings() {
                 fill={theme.colors.primary}
               />
             )}
-            onPress={() => pushError("other Button not implemented")}
           />
           <SettingsOption
             name="Delete Account"

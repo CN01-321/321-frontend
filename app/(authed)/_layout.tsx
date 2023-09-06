@@ -1,7 +1,7 @@
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
-import { Text, BottomNavigation, IconButton } from "react-native-paper";
+import { Text, BottomNavigation, IconButton, Portal } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { Href } from "expo-router/build/link/href";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
@@ -97,7 +97,9 @@ export default function UserLayout() {
 
   return (
     <MessageSnackbarProvider>
-      <Stack />
+      <Portal.Host>
+        <Stack />
+      </Portal.Host>
       <UserBottomNav
         routes={routes}
         index={index}
