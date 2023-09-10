@@ -17,13 +17,15 @@ export async function pickImage() {
 }
 
 export async function uploadImage(fileUri: string) {
+    const fileType: string = fileUri.slice((fileUri.lastIndexOf(".") - 1 >>> 0) + 2);
+
     try {
         const response = await FileSystem.uploadAsync(`${AXIOS_BASE_URL}/users/pfp`, fileUri, {
             fieldName: "profilePicture",
             httpMethod: "POST",
             headers: {
                 "Authorization": axios.defaults.headers.common["Authorization"]?.toString() ?? "",
-                "Content-Type": "image/jpeg",  // Need to add recognition of file type
+                "Content-Type": (fileType == "jpeg" || fileType == "jpg") ? "image/jpeg" : "image/png",
             },
             uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
         });
