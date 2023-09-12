@@ -100,42 +100,6 @@ const AddPetModal = ({ visible, onDismiss }: AddPetModalProps) => {
             )}
             name="petSize"
           />
-          <Text>Vaccinated</Text>
-          <Controller
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <Checkbox
-                status={value ? "checked" : "unchecked"}
-                onPress={() => onChange(!value)}
-              />
-            )}
-            name="isVaccinated"
-          />
-          <Text>Friendly</Text>
-          <Controller
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <Checkbox
-                status={value ? "checked" : "unchecked"}
-                onPress={() => onChange(!value)}
-              />
-            )}
-            name="isFriendly"
-          />
-          <Text>Neutered</Text>
-          <Controller
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <Checkbox
-                status={value ? "checked" : "unchecked"}
-                onPress={() => onChange(!value)}
-              />
-            )}
-            name="isNeutered"
-          />
-          <Button mode="contained" onPress={handleSubmit(onSubmit)}>
-            Add Pet
-          </Button>
         </ScrollView>
       </Modal>
     </Portal>

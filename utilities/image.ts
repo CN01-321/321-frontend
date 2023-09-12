@@ -16,11 +16,11 @@ export async function pickImage() {
     }
 }
 
-export async function uploadImage(fileUri: string) {
+export async function uploadImage(apiEndpoint: string, fileUri: string) {
     const fileType: string = fileUri.slice((fileUri.lastIndexOf(".") - 1 >>> 0) + 2);
 
     try {
-        const response = await FileSystem.uploadAsync(`${AXIOS_BASE_URL}/users/pfp`, fileUri, {
+        const response = await FileSystem.uploadAsync(`${AXIOS_BASE_URL}${apiEndpoint}`, fileUri, {
             fieldName: "profilePicture",
             httpMethod: "POST",
             headers: {

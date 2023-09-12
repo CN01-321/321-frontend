@@ -153,7 +153,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
 
     try {
       user.userType == "owner" ? await axios.put("/owners", submittedData) : await axios.put("/carers", submittedData)
-      if (profilePicture != undefined) await uploadImage(profilePicture);
+      if (profilePicture != undefined) await uploadImage("/users/pfp", profilePicture);
     } catch (error) {
       console.log(error);
     }
@@ -169,7 +169,9 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
           {user.pfp ? (
             <DynamicAvatar pfp={user.pfp} defaultPfp={icon} />
           ) : (
-            profilePicture ? <Avatar.Image source={{ uri: profilePicture }} size={150} /> : null
+            profilePicture 
+              ? <Avatar.Image source={{ uri: profilePicture }} size={150} /> 
+              : <Avatar.Image source={icon} size={150} /> 
           )}
           <Button mode="text" labelStyle={styles.pfpEditDescription} onPress={editProfilePicture}>
             Tap Here to Change Photo
