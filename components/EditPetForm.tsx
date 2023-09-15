@@ -25,6 +25,7 @@ type FormData = {
 };
 
 const EditPetForm = ({ pet }: EditPetFormProp ) => {
+  console.log(pet);
   const router = useRouter();
 
   const { control, handleSubmit, reset } = useForm<FormData>({
@@ -51,7 +52,7 @@ const EditPetForm = ({ pet }: EditPetFormProp ) => {
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     console.log(data);
     try {
-      await axios.put(`/owner/pets/${pet._id}`, data);
+      await axios.put(`/owners/pets/${pet._id}`, data);
       if (profilePicture != null) await uploadImage(`/owner/pets/${pet._id}/pfp`, profilePicture);
     } catch (error) {
       console.log(error);
@@ -93,21 +94,25 @@ const EditPetForm = ({ pet }: EditPetFormProp ) => {
         rules={{ required: true }}
         render={({ field: { onChange, value } }) => (
           <View>
+            <Text>Dog</Text>
             <RadioButton
               value="Dog"
               status={ value == "dog" ? "checked" : "unchecked"}
               onPress={() => onChange("dog")}
             />
+            <Text>Cat</Text>
             <RadioButton
               value="Cat"
               status={ value == "cat" ? "checked" : "unchecked"}
               onPress={() => onChange("cat")}
             />
+            <Text>Bird</Text>
             <RadioButton
               value="Bird"
               status={ value == "bird" ? "checked" : "unchecked"}
               onPress={() => onChange("bird")}
             />
+            <Text>Rabbit</Text>
             <RadioButton
               value="Rabbit"
               status={ value == "rabbit" ? "checked" : "unchecked"}
@@ -122,16 +127,19 @@ const EditPetForm = ({ pet }: EditPetFormProp ) => {
         rules={{ required: true }}
         render={({ field: { onChange, value } }) => (
           <View>
+            <Text>Small</Text>
             <RadioButton
               value="Small"
               status={ value == "small" ? "checked" : "unchecked"}
               onPress={() => onChange("small")}
             />
+            <Text>Medium</Text>
             <RadioButton
               value="Medium"
               status={ value == "medium" ? "checked" : "unchecked"}
               onPress={() => onChange("medium")}
             />
+            <Text>Large</Text>
             <RadioButton
               value="Large"
               status={ value == "large" ? "checked" : "unchecked"}
@@ -174,7 +182,7 @@ const EditPetForm = ({ pet }: EditPetFormProp ) => {
         )}
       />
       <Button mode="contained" onPress={handleSubmit(onSubmit)}>
-        Add Pet
+        Save Changes
       </Button>
     </View>
   );

@@ -1,5 +1,5 @@
-import { useLocalSearchParams } from "expo-router";
-import { SegmentedButtons, Text } from "react-native-paper";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { SegmentedButtons, Text, Button } from "react-native-paper";
 import { View } from "react-native";
 import { useEffect, useState } from "react";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
@@ -98,9 +98,19 @@ export default function PetView() {
 }
 
 function PetInfoView({ pet }: { pet: Pet }) {
+  const router = useRouter();
+
+  const editHref = {
+    pathname: `/pet/edit`,
+    params: { petId: pet._id },
+  }
+
   return (
     <View>
       <DynamicAvatar pfp={pet.pfp} defaultPfp={icon} />
+      <Button mode="text" onPress={() => router.push(editHref)}>
+          Tap Here to Edit Profile
+      </Button>
       <Text variant="titleMedium">{pet.name}</Text>
       <Text variant="bodyMedium">Pet Type: {pet.petType}</Text>
       <Text variant="bodyMedium">Pet Size: {pet.petSize}</Text>
