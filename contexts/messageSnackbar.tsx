@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import { Snackbar, useTheme } from "react-native-paper";
-import { ERROR_COLOUR } from "../types";
+import { ERROR_COLOUR } from "../types/types";
 
 interface MessageSnackbarContextType {
   pushMessage: (message: string) => void;

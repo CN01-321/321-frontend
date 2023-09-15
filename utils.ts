@@ -1,3 +1,5 @@
+import { RequestInfoLocation } from "./types/types";
+
 export function sinceRequested(date: Date) {
   return `${getDuration(new Date(), date)} ago`;
 }
@@ -32,4 +34,18 @@ export function getDuration(start: Date, end: Date) {
   }
 
   return `${days} day${days === 1 ? "" : "s"}`;
+}
+
+export function locationToString(location: RequestInfoLocation) {
+  return `${location.street}, ${location.city}, ${location.state}`;
+}
+
+export function calculateTotalCost(
+  hourlyRate: number,
+  start: Date,
+  end: Date
+): number {
+  const hours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+  console.log(hours);
+  return hours * hourlyRate;
 }

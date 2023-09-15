@@ -1,26 +1,31 @@
 import { View, ScrollView, StyleSheet } from "react-native";
 import { Avatar, Button, List, TextInput, Text } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { User } from "../types";
+import { User } from "../types/types";
 import EditableTextbox from "./EditableTextbox";
 
 type EditProfileFormProp = {
   user: User;
-}
+};
 
 type FormData = {
   name: string;
   email: string;
   phone: string;
-  street: string,
-  city: string,
-  state: string,
-  postcode: string,
+  street: string;
+  city: string;
+  state: string;
+  postcode: string;
   bio: string;
-}
+};
 
 const EditProfileForm = ({ user }: EditProfileFormProp) => {
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       name: user.name || "",
       email: user.email,
@@ -42,9 +47,8 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
     //   console.log(error);
     // }
     // reset();
-  }
+  };
 
-  
   return (
     <ScrollView>
       <View style={styles.form}>
@@ -54,7 +58,9 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
           ) : (
             <Avatar.Icon icon="account-circle" size={150} />
           )}
-          <Text style={styles.pfpEditDescription}>Tap Here to Change Photo</Text>
+          <Text style={styles.pfpEditDescription}>
+            Tap Here to Change Photo
+          </Text>
         </View>
         <Controller
           control={control}
@@ -153,13 +159,11 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
             />
           )}
         />
-        <Button mode="contained">
-          Save Changes
-        </Button>
+        <Button mode="contained">Save Changes</Button>
       </View>
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   form: {
@@ -181,8 +185,8 @@ const styles = StyleSheet.create({
   },
   pfpEditDescription: {
     fontFamily: "Montserrat-Medium",
-    color: "#777777"
-  }
+    color: "#777777",
+  },
 });
- 
+
 export default EditProfileForm;

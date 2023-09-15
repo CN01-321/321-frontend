@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { Title, Button } from "react-native-paper";
 import { useRouter } from "expo-router";
 import Header from "../../components/Header";
-import { CARER_COLOUR, OWNER_COLOUR } from "../../types";
+import { CARER_COLOUR, OWNER_COLOUR } from "../../types/types";
 
 export default function Landing() {
   const router = useRouter();

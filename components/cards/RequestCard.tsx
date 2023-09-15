@@ -1,6 +1,6 @@
 import { Button, Text } from "react-native-paper";
 import BaseRequestCard from "./BaseRequestCard";
-import { Request } from "../../types";
+import { Request } from "../../types/types";
 import { sinceRequested } from "../../utils";
 import RequestStatusText from "../RequestStatusText";
 import { useRouter } from "expo-router";
@@ -23,7 +23,7 @@ export default function RequestCard({ request }: RequestCardProps) {
 
   const handleViewRespondents = () => {
     router.push({
-      pathname: "/pets/request-pets",
+      pathname: "/owner/respondents",
       params: { requestId: request._id },
     });
   };

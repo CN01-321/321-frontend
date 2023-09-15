@@ -12,6 +12,7 @@ export interface CarerResult {
   rating?: number;
   bio?: string;
   pfp?: string;
+  hourlyRate?: number;
 }
 
 interface CarerResultsViewProps {

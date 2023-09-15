@@ -6,7 +6,7 @@ import {
   configureFonts,
 } from "react-native-paper";
 import { AuthProvider, useAuth } from "../contexts/auth";
-import { CARER_COLOUR, ERROR_COLOUR, OWNER_COLOUR } from "../types";
+import { CARER_COLOUR, ERROR_COLOUR, OWNER_COLOUR } from "../types/types";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 

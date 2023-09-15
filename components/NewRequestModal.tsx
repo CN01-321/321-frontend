@@ -1,17 +1,10 @@
-import { ScrollView, StyleSheet, View } from "react-native";
-import {
-  Text,
-  Button,
-  Checkbox,
-  Modal,
-  Portal,
-  TextInput,
-} from "react-native-paper";
+import { View } from "react-native";
+import { Text, Button, Checkbox, TextInput } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { DatePickerButton } from "./DatePickerButton";
 import { CarerResult } from "./CarerResultsView";
 import axios from "axios";
-import { Pet } from "../types";
+import { Pet } from "../types/types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import DynamicAvatar from "./DynamicAvatar";
 import { useMessageSnackbar } from "../contexts/messageSnackbar";
@@ -219,11 +212,3 @@ function PetCheckBox({ pet, checked, onPress }: PetCheckBoxProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    padding: 30,
-    borderRadius: 5,
-  },
-});

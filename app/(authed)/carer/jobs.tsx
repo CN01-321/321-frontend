@@ -2,12 +2,15 @@ import { View } from "react-native";
 import JobsListView from "../../../components/JobsListView";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Job } from "../../../types";
+import { Job } from "../../../types/types";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
+import { SegmentedButtons } from "react-native-paper";
 
 export default function Jobs() {
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [currentJobs, setCurrentJobs] = useState<Job[]>([]);
+  const [pastJobs, setPastJobs] = useState<Job[]>([]);
+  const [currentView, setCurrentView] = useState<"current" | "past">("current");
 
   const { pushError } = useMessageSnackbar();
 
@@ -27,7 +30,11 @@ export default function Jobs() {
         };
       });
 
-      setJobs(jobs);
+      const isPastJob = (j: Job) =>
+        j.status === "rejected" || j.status === "completed";
+
+      setCurrentJobs(jobs.filter((j) => !isPastJob(j)));
+      setPastJobs(jobs.filter(isPastJob));
     } catch (e) {
       console.error(e);
       pushError("Could not fetch Jobs");
@@ -45,7 +52,24 @@ export default function Jobs() {
   return (
     <View>
       <Header title="Jobs" />
-      <JobsListView jobs={jobs} updateJobs={updateJobs} />
+      <SegmentedButtons
+        value={currentView}
+        onValueChange={(v) => setCurrentView(v as "current" | "past")}
+        buttons={[
+          {
+            value: "current",
+            label: "Current",
+          },
+          {
+            value: "past",
+            label: "Past",
+          },
+        ]}
+      />
+      <JobsListView
+        jobs={currentView === "current" ? currentJobs : pastJobs}
+        updateJobs={updateJobs}
+      />
     </View>
   );
 }

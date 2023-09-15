@@ -9,7 +9,7 @@ import NewRequestModal from "../../../components/NewRequestModal";
 import axios from "axios";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
-import { PetSize, PetType } from "../../../types";
+import { PetSize, PetType } from "../../../types/types";
 
 interface Filters {
   maxPrice?: number;

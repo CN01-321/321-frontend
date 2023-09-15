@@ -1,9 +1,9 @@
 import { View, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
-import { Job } from "../../types";
+import { Job } from "../../types/types";
 import BaseModal, { BaseModalProps } from "./BaseModal";
 import { Link } from "expo-router";
-import { getDuration } from "../../utils";
+import { getDuration, locationToString } from "../../utils";
 import RequestStatusText from "../RequestStatusText";
 
 export interface BaseOfferInfoModalProps extends BaseModalProps {
@@ -17,9 +17,6 @@ export default function BaseOfferInfoModal({
   onDismiss,
   children,
 }: BaseOfferInfoModalProps) {
-  const location = () =>
-    `${info.location.street}, ${info.location.city}, ${info.location.state}`;
-
   return (
     <BaseModal title={title} visible={visible} onDismiss={onDismiss}>
       <View style={styles.container}>
@@ -43,7 +40,9 @@ export default function BaseOfferInfoModal({
         </View>
 
         <View style={styles.textBlock}>
-          <Text variant="bodyMedium">Location: {location()}</Text>
+          <Text variant="bodyMedium">
+            Location: {locationToString(info.location)}
+          </Text>
         </View>
 
         <View style={styles.textBlock}>

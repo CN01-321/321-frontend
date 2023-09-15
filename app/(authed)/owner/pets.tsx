@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import AddPetModal from "../../../components/AddPetModal";
 import ShowModalFab from "../../../components/ShowModalFab";
 import axios from "axios";
-import { Pet } from "../../../types";
+import { Pet } from "../../../types/types";
 import PetsView from "../../../components/PetsView";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";

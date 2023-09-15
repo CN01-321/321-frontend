@@ -4,7 +4,7 @@ import {
   ERROR_COLOUR,
   RequestStatus,
   SUCCESS_COLOUR,
-} from "../types";
+} from "../types/types";
 
 interface RequestStatusTextProps {
   status: RequestStatus;

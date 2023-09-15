@@ -1,5 +1,5 @@
 import { ScrollView, View, StyleSheet } from "react-native";
-import { Pet } from "../types";
+import { Pet } from "../types/types";
 import { useRouter } from "expo-router";
 import { Card, Text } from "react-native-paper";
 
@@ -7,7 +7,7 @@ const icon = require("../assets/icon.png");
 
 type PetsViewProp = {
   pets: Pet[];
-}
+};
 
 const PetsView = ({ pets }: PetsViewProp) => {
   return (
@@ -19,7 +19,7 @@ const PetsView = ({ pets }: PetsViewProp) => {
       ))}
     </ScrollView>
   );
-}
+};
 
 function PetCard({ pet }: { pet: Pet }) {
   const router = useRouter();
@@ -61,5 +61,5 @@ const styles = StyleSheet.create({
   },
   petCardImg: {},
 });
- 
+
 export default PetsView;

@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Pet } from "../../../types";
+import { Pet } from "../../../types/types";
 import PetsView from "../../../components/PetsView";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 

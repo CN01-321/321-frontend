@@ -28,7 +28,9 @@ export default function BaseModal({
           </Text>
           <Divider style={styles.divider} />
         </View>
-        <ScrollView style={styles.contentContainer}>{children}</ScrollView>
+        <View style={{ maxHeight: "80%" }}>
+          <ScrollView style={styles.contentContainer}>{children}</ScrollView>
+        </View>
       </Modal>
     </Portal>
   );
@@ -40,6 +42,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
+    marginBottom: 240,
     top: "20%",
   },
   titleContainer: {

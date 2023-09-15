@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { useEffect, useState } from "react";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import axios from "axios";
-import { Pet } from "../../../types";
+import { Pet } from "../../../types/types";
 import Header from "../../../components/Header";
 import DynamicAvatar from "../../../components/DynamicAvatar";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";

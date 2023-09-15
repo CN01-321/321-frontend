@@ -2,7 +2,7 @@ import { View, ScrollView } from "react-native";
 import axios from "axios";
 import EditProfileForm from "../../../components/EditProfileForm";
 import Header from "../../../components/Header";
-import { User } from "../../../types";
+import { User } from "../../../types/types";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../contexts/auth";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";

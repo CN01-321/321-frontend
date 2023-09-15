@@ -6,7 +6,7 @@ import ReviewsView, { Review } from "../../../components/ReviewsView";
 import { useAuth } from "../../../contexts/auth";
 import axios from "axios";
 import Header from "../../../components/Header";
-import { UserType } from "../../../types";
+import { UserType } from "../../../types/types";
 import DynamicAvatar from "../../../components/DynamicAvatar";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 

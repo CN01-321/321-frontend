@@ -1,5 +1,5 @@
 import { Button, Text } from "react-native-paper";
-import { Job } from "../../types";
+import { Job } from "../../types/types";
 import BaseRequestCard from "./BaseRequestCard";
 import { sinceRequested } from "../../utils";
 import RequestStatusText from "../RequestStatusText";

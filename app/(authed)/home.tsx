@@ -15,7 +15,7 @@ import DynamicCardCover from "../../components/DynamicCardCover";
 import DynamicAvatar from "../../components/DynamicAvatar";
 import { StarRating } from "../../components/StarRating";
 import { toDDMMYYYY } from "../../utils";
-import { UserType } from "../../types";
+import { UserType } from "../../types/types";
 import { useRouter } from "expo-router";
 import Star from "../../components/Star";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";

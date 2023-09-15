@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
 import axios from "axios";
-import { Job } from "../../../types";
+import { Job } from "../../../types/types";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import OffersListView from "../../../components/OfferListView";
