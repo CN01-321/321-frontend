@@ -3,7 +3,7 @@ import { Pet, Request } from "../../types/types";
 import BaseModal from "./BaseModal";
 import axios from "axios";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
 import {
   Text,
@@ -11,7 +11,6 @@ import {
   useTheme,
   Divider,
   Button,
-  Checkbox,
   TextInput,
 } from "react-native-paper";
 import {
@@ -21,13 +20,14 @@ import {
   toDDMMYYYY,
 } from "../../utils";
 import { CarerResult } from "../CarerResultsView";
+import { PetListItem } from "../PetListItem";
 
 interface PaymentModalProps {
   visible: boolean;
   onDismiss: () => void;
   onAccept: () => Promise<void>;
   requestId: string;
-  respondent: CarerResult;
+  respondent?: CarerResult;
 }
 
 export default function PaymentModal({
@@ -92,103 +92,88 @@ export default function PaymentModal({
 
   return (
     <BaseModal title="Payment" visible={visible} onDismiss={onDismiss}>
-      <ScrollView>
-        <Text variant="displaySmall" style={styles.sectionTextHeader}>
-          SUMMARY OF THE JOB REQUEST
+      <Text variant="displaySmall" style={styles.sectionTextHeader}>
+        SUMMARY OF THE JOB REQUEST
+      </Text>
+      <RequestItem icon="calendar-outline" title="Date">
+        <Text variant="bodySmall">
+          {toDDMMYYYY(request?.dateRange.startDate ?? new Date())}
         </Text>
-        <RequestItem icon="calendar-outline" title="Date">
-          <Text variant="bodySmall">
-            {toDDMMYYYY(request?.dateRange.startDate ?? new Date())}
-          </Text>
-        </RequestItem>
+      </RequestItem>
 
-        <RequestItem icon="clock-outline" title="Time">
-          <Text variant="bodySmall">
-            {request?.dateRange.startDate.toTimeString()}
-          </Text>
-        </RequestItem>
+      <RequestItem icon="clock-outline" title="Time">
+        <Text variant="bodySmall">
+          {request?.dateRange.startDate.toTimeString()}
+        </Text>
+      </RequestItem>
 
-        <RequestItem icon="timer-sand" title="Duration">
-          <Text variant="bodySmall">
-            {getDuration(
-              request.dateRange.startDate,
-              request.dateRange.endDate
-            )}
-          </Text>
-        </RequestItem>
+      <RequestItem icon="timer-sand" title="Duration">
+        <Text variant="bodySmall">
+          {getDuration(request.dateRange.startDate, request.dateRange.endDate)}
+        </Text>
+      </RequestItem>
 
-        <RequestItem icon="crosshairs-gps" title="Location">
+      <RequestItem icon="crosshairs-gps" title="Location">
+        <Text variant="bodySmall">{locationToString(request.location)}</Text>
+      </RequestItem>
+
+      {request.carer ? (
+        <RequestItem icon="account-outline" title="Carer's Name">
           <Text variant="bodySmall">{locationToString(request.location)}</Text>
         </RequestItem>
+      ) : null}
 
-        {request.carer ? (
-          <RequestItem icon="account-outline" title="Carer's Name">
-            <Text variant="bodySmall">
-              {locationToString(request.location)}
-            </Text>
-          </RequestItem>
-        ) : null}
-
-        <RequestItem icon="dog-side" title="Pets">
-          <View>
-            {pets.map((pet) => (
-              <PetListItem key={pet._id} name={pet.name} />
-            ))}
-          </View>
-        </RequestItem>
-
-        <RequestItem icon="information" title="Additional Info">
-          <Text variant="bodySmall">{request.additionalInfo}</Text>
-        </RequestItem>
-
-        <Text variant="displaySmall" style={styles.sectionTextHeader}>
-          COST BREAKDOWN
-        </Text>
-
-        <RequestItem icon="cash-fast" title="Hourly Rate">
-          <Text variant="bodySmall">$ {respondent.hourlyRate ?? 0}</Text>
-        </RequestItem>
-
-        <RequestItem icon="cash" title="Total Cost">
-          <Text variant="bodySmall">
-            ${" "}
-            {calculateTotalCost(
-              respondent.hourlyRate ?? 1,
-              request.dateRange.startDate,
-              request.dateRange.endDate
-            )}
-          </Text>
-        </RequestItem>
-
-        <Text variant="displaySmall" style={styles.sectionTextHeader}>
-          PAYMENT DETAILS
-        </Text>
-
-        <PaymentDetails />
-
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-          }}
-        >
-          <Button
-            style={styles.actionButton}
-            mode="outlined"
-            onPress={onDismiss}
-          >
-            Cancel
-          </Button>
-          <Button
-            style={styles.actionButton}
-            mode="contained"
-            onPress={onAccept}
-          >
-            Pay now
-          </Button>
+      <RequestItem icon="dog-side" title="Pets">
+        <View>
+          {pets.map((pet) => (
+            <PetListItem key={pet._id} name={pet.name} />
+          ))}
         </View>
-      </ScrollView>
+      </RequestItem>
+
+      <RequestItem icon="information" title="Additional Info">
+        <Text variant="bodySmall">{request.additionalInfo}</Text>
+      </RequestItem>
+
+      <Text variant="displaySmall" style={styles.sectionTextHeader}>
+        COST BREAKDOWN
+      </Text>
+
+      <RequestItem icon="cash-fast" title="Hourly Rate">
+        <Text variant="bodySmall">$ {respondent?.hourlyRate ?? "0"}</Text>
+      </RequestItem>
+
+      <RequestItem icon="cash" title="Total Cost">
+        <Text variant="bodySmall">
+          ${" "}
+          {calculateTotalCost(
+            respondent?.hourlyRate ?? 1,
+            request.dateRange.startDate,
+            request.dateRange.endDate
+          )}
+        </Text>
+      </RequestItem>
+
+      <Text variant="displaySmall" style={styles.sectionTextHeader}>
+        PAYMENT DETAILS
+      </Text>
+
+      <PaymentDetails />
+
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+        }}
+      >
+        <Button style={styles.actionButton} mode="outlined" onPress={onDismiss}>
+          Cancel
+        </Button>
+        <Button style={styles.actionButton} mode="contained" onPress={onAccept}>
+          Pay now
+        </Button>
+      </View>
     </BaseModal>
   );
 }
@@ -214,20 +199,6 @@ function RequestItem({ icon, title, children }: RequestItemProps) {
   );
 }
 
-function PetListItem({ name }: { name: string }) {
-  return (
-    <View>
-      <View style={styles.petItem}>
-        <Text variant="bodySmall" style={{ paddingRight: "50%" }}>
-          {name}
-        </Text>
-        <Checkbox status="checked" />
-      </View>
-      <Divider />
-    </View>
-  );
-}
-
 function PaymentDetails() {
   const theme = useTheme();
   return (
@@ -237,6 +208,12 @@ function PaymentDetails() {
         label="Card Number"
         outlineColor={theme.colors.primary}
         value="1234 5678 9123 4567"
+        left={
+          <TextInput.Icon
+            icon="credit-card-outline"
+            iconColor={theme.colors.primary}
+          />
+        }
       />
       <View
         style={{
@@ -252,6 +229,12 @@ function PaymentDetails() {
           label="Expiration Date"
           outlineColor={theme.colors.primary}
           value="12/27"
+          left={
+            <TextInput.Icon
+              icon="credit-card-outline"
+              iconColor={theme.colors.primary}
+            />
+          }
         />
         <TextInput
           style={{ flexBasis: 100 }}
@@ -259,6 +242,12 @@ function PaymentDetails() {
           label="CVV"
           outlineColor={theme.colors.primary}
           value="***"
+          left={
+            <TextInput.Icon
+              icon="credit-card-outline"
+              iconColor={theme.colors.primary}
+            />
+          }
         />
       </View>
     </View>

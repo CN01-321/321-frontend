@@ -5,7 +5,7 @@ import { Button, Checkbox, Modal, Portal, Text } from "react-native-paper";
 import CarerResultsView, {
   CarerResult,
 } from "../../../components/CarerResultsView";
-import NewRequestModal from "../../../components/NewRequestModal";
+import NewRequestModal from "../../../components/modals/NewRequestModal";
 import axios from "axios";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
@@ -48,7 +48,7 @@ export default function Search() {
   const [requestVisible, setRequestVisible] = useState(false);
   const [carers, setCarers] = useState<NearbyCarer[]>([]);
   const [searchResults, setSearchResults] = useState<NearbyCarer[]>([]);
-  const [selectedCarer, setSelectedCarer] = useState<CarerResult | null>();
+  const [selectedCarer, setSelectedCarer] = useState<CarerResult>();
   const { pushError } = useMessageSnackbar();
 
   useEffect((): (() => void) => {
@@ -122,6 +122,7 @@ export default function Search() {
         cardButtonLabel="Request Carer's Services"
       />
       <NewRequestModal
+        title="Request Carer's Services"
         carerResult={selectedCarer}
         visible={requestVisible}
         onDismiss={() => setRequestVisible(false)}

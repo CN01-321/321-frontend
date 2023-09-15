@@ -62,9 +62,7 @@ export default function Respondents() {
         requestId={requestId ?? ""}
         onAccept={handleAccept}
         onDismiss={() => setVisible(false)}
-        respondent={
-          respondents.find((r) => r._id === respodentId) ?? respondents[0]
-        }
+        respondent={respondents.find((r) => r._id === respodentId)}
       />
       <CarerResultsView
         carerResults={respondents}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
-import NewRequestModal from "../../../components/NewRequestModal";
+import NewRequestModal from "../../../components/modals/NewRequestModal";
 import ShowModalFab from "../../../components/ShowModalFab";
 import { Request } from "../../../types/types";
 import axios from "axios";
@@ -65,6 +65,7 @@ export default function Requests() {
       <Header title="Requests" />
       <View>
         <NewRequestModal
+          title="New Request"
           visible={visible}
           onDismiss={hideModal}
           updateRequests={updateRequests}
