@@ -9,6 +9,7 @@ type EditableTextboxProps = {
   icon?: IconSource;
   onBlur?: (args: any) => void;
   onChangeText?: (args: any) => void;
+  secureTextEntry?: boolean;
 }
 
 const EditableTextbox = ({ 
@@ -17,7 +18,8 @@ const EditableTextbox = ({
   multiline,
   icon,
   onBlur, 
-  onChangeText 
+  onChangeText,
+  secureTextEntry, 
 }: EditableTextboxProps) => {
   const theme = useTheme();
 
@@ -36,6 +38,7 @@ const EditableTextbox = ({
       multiline={multiline}
       onBlur={onBlur}
       onChangeText={onChangeText}
+      secureTextEntry={secureTextEntry}
     />
   );
 }
