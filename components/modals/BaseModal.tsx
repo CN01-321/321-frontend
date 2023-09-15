@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Text, Modal, Portal, Divider } from "react-native-paper";
 
-interface BaseModalProps extends PropsWithChildren {
+export interface BaseModalProps extends PropsWithChildren {
   title: string;
   visible: boolean;
   onDismiss: () => void;

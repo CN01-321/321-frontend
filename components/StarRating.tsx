@@ -1,5 +1,4 @@
 import { View } from "react-native";
-import { Avatar } from "react-native-paper";
 import Star from "./Star";
 
 export function StarRating({ stars, size }: { stars: number; size?: number }) {

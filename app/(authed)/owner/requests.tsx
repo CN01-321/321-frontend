@@ -4,7 +4,7 @@ import NewRequestModal from "../../../components/NewRequestModal";
 import ShowModalFab from "../../../components/ShowModalFab";
 import { Request } from "../../../types";
 import axios from "axios";
-import RequestCard from "../../../components/RequestCard";
+import RequestCard from "../../../components/cards/RequestCard";
 import Header from "../../../components/Header";
 import { useIsFocused } from "@react-navigation/native";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
@@ -64,7 +64,7 @@ export default function Requests() {
         />
         <FlatList
           data={requests}
-          renderItem={({ item }) => <RequestCard req={item} />}
+          renderItem={({ item }) => <RequestCard request={item} />}
           keyExtractor={(item) => item._id}
         />
       </View>

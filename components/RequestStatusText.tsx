@@ -1,4 +1,4 @@
-import { Button, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import {
   COMPLETED_COLOUR,
   ERROR_COLOUR,
@@ -6,37 +6,31 @@ import {
   SUCCESS_COLOUR,
 } from "../types";
 
-export default function RequestStatusButton({
-  statusType,
-}: {
-  statusType: RequestStatus;
-}) {
+interface RequestStatusTextProps {
+  status: RequestStatus;
+}
+
+export default function RequestStatusText({ status }: RequestStatusTextProps) {
   const theme = useTheme();
 
   const getStatus = () => {
-    console.log(statusType);
-
-    switch (statusType) {
+    switch (status) {
       case "pending":
         return { name: "Pending", colour: theme.colors.primary };
       case "applied":
-        return { name: "Applied", colour: theme.colors.primary };
+        return { name: "Applied", colour: SUCCESS_COLOUR };
       case "accepted":
         return { name: "Accepted", colour: SUCCESS_COLOUR };
       case "rejected":
         return { name: "Rejected", colour: ERROR_COLOUR };
       case "completed":
-        return { name: "Rejected", colour: COMPLETED_COLOUR };
+        return { name: "Completed", colour: COMPLETED_COLOUR };
     }
   };
 
   return (
-    <Button
-      mode="outlined"
-      style={{ borderColor: getStatus().colour }}
-      textColor={getStatus().colour}
-    >
+    <Text variant="bodySmall" style={{ color: getStatus().colour }}>
       {getStatus().name}
-    </Button>
+    </Text>
   );
 }

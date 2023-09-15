@@ -1,18 +1,9 @@
-import { ScrollView } from "react-native";
-import {
-  Avatar,
-  Button,
-  Checkbox,
-  Modal,
-  Portal,
-  Text,
-  TextInput,
-} from "react-native-paper";
+import { Avatar, Button, Checkbox, Text, TextInput } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import axios from "axios";
 import { useMessageSnackbar } from "../contexts/messageSnackbar";
-import BaseModal from "./BaseModal";
+import BaseModal from "./modals/BaseModal";
 
 type AddPetFormData = {
   name: string;

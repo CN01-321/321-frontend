@@ -1,7 +1,7 @@
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
-import { Text, BottomNavigation, IconButton, Portal } from "react-native-paper";
+import { Text, BottomNavigation, Portal } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { Href } from "expo-router/build/link/href";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
@@ -133,8 +133,8 @@ function UserBottomNav({ routes, index, onChange }: UserBottomNavProps) {
     <BottomNavigation.Bar
       navigationState={{ index, routes }}
       onTabPress={({ route }) => onChange(route)}
-      renderLabel={(props: { route: any }): React.ReactNode => (
-        <Text style={styles.navbarLabel}>{props.route.title}</Text>
+      renderLabel={({ route }: { route: Route }): React.ReactNode => (
+        <Text style={styles.navbarLabel}>{route.title}</Text>
       )}
     />
   );

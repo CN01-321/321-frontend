@@ -15,7 +15,7 @@ import { Pet } from "../types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import DynamicAvatar from "./DynamicAvatar";
 import { useMessageSnackbar } from "../contexts/messageSnackbar";
-import BaseModal from "./BaseModal";
+import BaseModal from "./modals/BaseModal";
 
 const icon = require("../assets/icon.png");
 

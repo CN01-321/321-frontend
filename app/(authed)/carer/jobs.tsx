@@ -11,33 +11,33 @@ export default function Jobs() {
 
   const { pushError } = useMessageSnackbar();
 
+  const updateJobs = async () => {
+    try {
+      const { data } = await axios.get<Job[]>(`/carers/jobs`);
+
+      // map all date strings to date objects
+      const jobs = data.map((o) => {
+        return {
+          ...o,
+          requestedOn: new Date(o.requestedOn),
+          dateRange: {
+            startDate: new Date(o.dateRange.startDate),
+            endDate: new Date(o.dateRange.endDate),
+          },
+        };
+      });
+
+      setJobs(jobs);
+    } catch (e) {
+      console.error(e);
+      pushError("Could not fetch Jobs");
+    }
+  };
+
   useEffect((): (() => void) => {
     let ignore = false;
 
-    (async () => {
-      try {
-        const { data } = await axios.get<Job[]>(`/carers/jobs`);
-
-        // map all date strings to date objects
-        const jobs = data.map((o) => {
-          return {
-            ...o,
-            requestedOn: new Date(o.requestedOn),
-            dateRange: {
-              startDate: new Date(o.dateRange.startDate),
-              endDate: new Date(o.dateRange.endDate),
-            },
-          };
-        });
-
-        if (!ignore) {
-          setJobs(jobs);
-        }
-      } catch (e) {
-        console.error(e);
-        pushError("Could not fetch Jobs");
-      }
-    })();
+    if (!ignore) updateJobs();
 
     return () => (ignore = true);
   }, []);
@@ -45,7 +45,7 @@ export default function Jobs() {
   return (
     <View>
       <Header title="Jobs" />
-      <JobsListView jobs={jobs} jobType="job" />
+      <JobsListView jobs={jobs} updateJobs={updateJobs} />
     </View>
   );
 }

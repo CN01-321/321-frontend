@@ -1,6 +1,4 @@
 import { View, ScrollView } from "react-native";
-import { Text } from "react-native-paper";
-import { useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import EditProfileForm from "../../../components/EditProfileForm";
 import Header from "../../../components/Header";

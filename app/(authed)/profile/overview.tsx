@@ -1,7 +1,7 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import { Avatar, SegmentedButtons, Text, TextInput } from "react-native-paper";
+import { SegmentedButtons, Text, TextInput } from "react-native-paper";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import { useAuth } from "../../../contexts/auth";
 import axios from "axios";

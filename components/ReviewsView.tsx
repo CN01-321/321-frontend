@@ -16,7 +16,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import DynamicAvatar from "./DynamicAvatar";
 import { toDDMMYYYY } from "../utils";
-import BaseModal from "./BaseModal";
+import BaseModal from "./modals/BaseModal";
 
 const icon = require("../assets/icon.png");
 const image = require("../assets/splash.png");

@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Header from "../../components/Header";
 import { Review } from "../../components/ReviewsView";
 import DynamicCardCover from "../../components/DynamicCardCover";
@@ -45,6 +45,7 @@ export default function Home() {
   const [homeInfo, setHomeInfo] = useState<HomeInfo>({} as HomeInfo);
   const theme = useTheme();
   const { pushError } = useMessageSnackbar();
+  const router = useRouter();
 
   const userType = getTokenUser()?.type ?? "owner";
 
@@ -57,6 +58,11 @@ export default function Home() {
         console.log(data);
         if (!ignore) setHomeInfo(data);
       } catch (e) {
+        // if forbidden the user has not filled out their required information
+        if (e instanceof AxiosError && e.status === 403) {
+          router.replace("/more-info");
+          return;
+        }
         console.error(e);
         pushError("Could not fetch home page information");
       }
