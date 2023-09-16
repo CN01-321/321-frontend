@@ -29,7 +29,7 @@ export default function OfferCard({
 
   const handleAccept = async () => {
     try {
-      await axios.post(`/carers/${offer}/${offer._id}/accept`);
+      await axios.post(`/carers/${offerType}/${offer._id}/accept`);
       if (updateOffers) await updateOffers();
       pushMessage(
         offerType === "direct"
@@ -46,7 +46,7 @@ export default function OfferCard({
 
   const handleReject = async () => {
     try {
-      await axios.post(`/carers/${offer}/${offer._id}/reject`);
+      await axios.post(`/carers/${offerType}/${offer._id}/reject`);
       if (updateOffers) await updateOffers();
 
       pushMessage("Offer has been succeessfully rejected.");

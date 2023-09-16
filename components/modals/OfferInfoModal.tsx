@@ -2,7 +2,7 @@ import { View } from "react-native";
 import BaseOfferInfoModal, {
   BaseOfferInfoModalProps,
 } from "./BaseOfferInfoModal";
-import { Button, Dialog, Portal } from "react-native-paper";
+import { Text, Button, Dialog, Portal, useTheme } from "react-native-paper";
 import { useState } from "react";
 
 interface OfferInfoModalProps
@@ -22,6 +22,7 @@ export default function OfferInfoModal({
   onReject,
 }: OfferInfoModalProps) {
   const [rejDialogVisible, setRejDialogVisible] = useState(false);
+  const theme = useTheme();
 
   return (
     <BaseOfferInfoModal
@@ -30,14 +31,26 @@ export default function OfferInfoModal({
       visible={visible}
       onDismiss={onDismiss}
     >
-      <View>
-        <Button mode="outlined">Reject</Button>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+        }}
+      >
+        <Button
+          mode="outlined"
+          style={{ flexBasis: 150, borderColor: theme.colors.primary }}
+          onPress={() => setRejDialogVisible(true)}
+        >
+          Reject
+        </Button>
         <RejectConfirmationDialog
           visible={rejDialogVisible}
           onDismiss={() => setRejDialogVisible(false)}
           onReject={onReject}
         />
-        <Button mode="contained" onPress={onAccept}>
+        <Button mode="contained" onPress={onAccept} style={{ flexBasis: 150 }}>
           {offerType === "direct" ? "Accept" : "Apply"}
         </Button>
       </View>
@@ -56,6 +69,8 @@ function RejectConfirmationDialog({
   onReject,
   onDismiss,
 }: RejectConfirmationDialogProps) {
+  const theme = useTheme();
+
   const handleCancel = () => {
     onDismiss();
   };
@@ -67,14 +82,27 @@ function RejectConfirmationDialog({
 
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={handleCancel}>
+      <Dialog
+        style={{ backgroundColor: "white" }}
+        visible={visible}
+        onDismiss={handleCancel}
+      >
         <Dialog.Title>Reject Job Offer</Dialog.Title>
         <Dialog.Content>
-          Are you sure you want to reject this offer? If you reject it, it will
-          be permanently removed.
+          <Text variant="bodySmall">
+            Are you sure you want to reject this offer? If you reject it, it
+            will be permanently removed.
+          </Text>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button mode="text" onPress={handleReject}>
+          <Button mode="text" textColor="#777777" onPress={onDismiss}>
+            Cancel
+          </Button>
+          <Button
+            mode="text"
+            textColor={theme.colors.error}
+            onPress={handleReject}
+          >
             Reject Offer
           </Button>
         </Dialog.Actions>
@@ -82,19 +110,3 @@ function RejectConfirmationDialog({
     </Portal>
   );
 }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     backgroundColor: "white",
-//     padding: 30,
-//     borderRadius: 5,
-//   },
-//   details: {
-//     padding: 10,
-//     fontSize: 30,
-//     textAlign: "center",
-//   },
-//   textBlock: {
-//     padding: 10,
-//   },
-// });

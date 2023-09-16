@@ -10,7 +10,9 @@ export default function JobInfoModal(props: JobInfoModalProps) {
   return (
     <BaseOfferInfoModal {...props}>
       {props.info.status !== "completed" ? (
-        <Button onPress={props.onComplete}>Complete</Button>
+        <Button mode="contained" onPress={props.onComplete}>
+          Complete
+        </Button>
       ) : null}
     </BaseOfferInfoModal>
   );
