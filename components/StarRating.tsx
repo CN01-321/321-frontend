@@ -1,16 +1,14 @@
 import { View } from "react-native";
-import { Avatar } from "react-native-paper";
+import Star from "./Star";
 
-export function StarRating({ stars }: { stars: number }) {
-  const star = <Avatar.Icon icon={"star"} size={20} />;
-
+export function StarRating({ stars, size }: { stars: number; size?: number }) {
   return (
     <View style={{ flexDirection: "row" }}>
-      {stars > 0 && star}
-      {stars > 1 && star}
-      {stars > 2 && star}
-      {stars > 3 && star}
-      {stars > 4 && star}
+      <Star size={size ?? 25} colour={stars > 0 ? "yellow" : "grey"} />
+      <Star size={size ?? 25} colour={stars > 1 ? "yellow" : "grey"} />
+      <Star size={size ?? 25} colour={stars > 2 ? "yellow" : "grey"} />
+      <Star size={size ?? 25} colour={stars > 3 ? "yellow" : "grey"} />
+      <Star size={size ?? 25} colour={stars > 4 ? "yellow" : "grey"} />
     </View>
   );
 }

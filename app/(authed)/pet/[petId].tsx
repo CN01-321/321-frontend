@@ -4,9 +4,10 @@ import { View } from "react-native";
 import { useEffect, useState } from "react";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import axios from "axios";
-import { Pet } from "../../../types";
+import { Pet } from "../../../types/types";
 import Header from "../../../components/Header";
 import DynamicAvatar from "../../../components/DynamicAvatar";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 
 const icon = require("../../../assets/icon.png");
 
@@ -26,6 +27,7 @@ export default function PetView() {
     petSize: "small",
   });
   const [reviews, setReviews] = useState<Review[]>([]);
+  const { pushError } = useMessageSnackbar();
 
   const getPetProfile = async (): Promise<Pet> => {
     const { data } = await axios.get<Pet>(`/pets/${petId}`);
@@ -53,6 +55,7 @@ export default function PetView() {
         }
       } catch (e) {
         console.error(e);
+        pushError("Could not fetch pet information");
       }
     })();
 

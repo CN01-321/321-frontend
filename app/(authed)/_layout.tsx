@@ -1,7 +1,7 @@
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
-import { Text, BottomNavigation, IconButton } from "react-native-paper";
+import { Text, BottomNavigation, Portal } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { Href } from "expo-router/build/link/href";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
@@ -12,6 +12,7 @@ import JobsIcon from "../../assets/icons/navbar/jobs.svg";
 import FindCarersIcon from "../../assets/icons/navbar/findcarers.svg";
 import PetsIcon from "../../assets/icons/navbar/pets.svg";
 import ProfileIcon from "../../assets/icons/navbar/profile.svg";
+import { MessageSnackbarProvider } from "../../contexts/messageSnackbar";
 
 export interface Route {
   key: string;
@@ -95,12 +96,15 @@ export default function UserLayout() {
   }, [segments]);
 
   return (
-    <>
-      <Stack />
+    <MessageSnackbarProvider>
+      <Portal.Host>
+        <Stack />
+      </Portal.Host>
       <UserBottomNav
         routes={routes}
         index={index}
         onChange={(route: Route) => {
+          console.log(route);
           setIndex(routes.findIndex((r) => r.key === route.key));
 
           const href: Href =
@@ -114,7 +118,7 @@ export default function UserLayout() {
           router.push(href);
         }}
       />
-    </>
+    </MessageSnackbarProvider>
   );
 }
 
@@ -129,8 +133,8 @@ function UserBottomNav({ routes, index, onChange }: UserBottomNavProps) {
     <BottomNavigation.Bar
       navigationState={{ index, routes }}
       onTabPress={({ route }) => onChange(route)}
-      renderLabel={(props: { route: any }): React.ReactNode => (
-        <Text style={styles.navbarLabel}>{props.route.title}</Text>
+      renderLabel={({ route }: { route: Route }): React.ReactNode => (
+        <Text style={styles.navbarLabel}>{route.title}</Text>
       )}
     />
   );
@@ -138,7 +142,7 @@ function UserBottomNav({ routes, index, onChange }: UserBottomNavProps) {
 
 const styles = StyleSheet.create({
   navbarLabel: {
-    fontFamily: "Montserrat-Medium",
+    // fontFamily: "Montserrat-Medium",
     textAlign: "center",
     fontSize: 12,
   },

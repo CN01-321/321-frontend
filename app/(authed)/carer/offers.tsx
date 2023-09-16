@@ -2,10 +2,11 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
-import JobsListView from "../../../components/JobsListView";
 import axios from "axios";
-import { Job } from "../../../types";
+import { Job } from "../../../types/types";
 import Header from "../../../components/Header";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
+import OffersListView from "../../../components/OfferListView";
 
 type OfferType = "direct" | "broad";
 
@@ -17,6 +18,7 @@ export default function Offers() {
     initOfferType ?? "direct"
   );
   const [offers, setOffers] = useState<Job[]>([]);
+  const { pushError } = useMessageSnackbar();
 
   const updateOffers = async () => {
     try {
@@ -37,6 +39,7 @@ export default function Offers() {
       setOffers(offers);
     } catch (e) {
       console.error(e);
+      pushError("Could not fetch offers");
     }
   };
 
@@ -65,9 +68,9 @@ export default function Offers() {
           },
         ]}
       />
-      <JobsListView
-        jobs={offers}
-        jobType={offerType}
+      <OffersListView
+        offers={offers}
+        offerType={offerType}
         updateOffers={updateOffers}
       />
     </View>

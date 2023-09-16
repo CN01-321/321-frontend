@@ -21,13 +21,13 @@ export interface User {
 }
 
 export interface UserLocation {
-    type: "Point"; // the GeoJSON type is always "Point"
-    coordinates: [number, number]; // longitude, latitude
-    street: string;
-    city: string;
-    state: string;
-    postcode: string;
-  }
+  type: "Point"; // the GeoJSON type is always "Point"
+  coordinates: [number, number]; // longitude, latitude
+  street: string;
+  city: string;
+  state: string;
+  postcode: string;
+}
 
 export interface Pet {
   _id: string;
@@ -47,6 +47,12 @@ export type RequestStatus =
   | "rejected"
   | "completed";
 
+export interface RequestInfoLocation {
+  state: string;
+  city: string;
+  street: string;
+}
+
 export interface RequestInfo {
   _id: string;
   pets: Array<{
@@ -60,12 +66,8 @@ export interface RequestInfo {
     startDate: Date;
     endDate: Date;
   };
-  location: {
-    state: string;
-    city: string;
-    street: string;
-  };
-  additionalInfo: string;
+  location: RequestInfoLocation;
+  additionalInfo?: string;
   status: RequestStatus;
 }
 

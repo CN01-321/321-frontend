@@ -1,13 +1,14 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import { Avatar, SegmentedButtons, Text, TextInput } from "react-native-paper";
+import { SegmentedButtons, Text, TextInput } from "react-native-paper";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import { useAuth } from "../../../contexts/auth";
 import axios from "axios";
 import Header from "../../../components/Header";
-import { UserType } from "../../../types";
+import { UserType } from "../../../types/types";
 import DynamicAvatar from "../../../components/DynamicAvatar";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 
 const icon = require("../../../assets/icon.png");
 
@@ -41,6 +42,7 @@ export default function Profile() {
     phone: "",
   });
   const [reviews, setReviews] = useState<Review[]>([]);
+  const { pushError } = useMessageSnackbar();
 
   const getProfile = async (profileId: string): Promise<User> => {
     console.log("profile id is ", profileId);
@@ -80,6 +82,7 @@ export default function Profile() {
         }
       } catch (e) {
         console.error(e);
+        pushError("Could not fetch user data");
       }
     })();
 

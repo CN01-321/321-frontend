@@ -12,6 +12,7 @@ export interface CarerResult {
   rating?: number;
   bio?: string;
   pfp?: string;
+  hourlyRate?: number;
 }
 
 interface CarerResultsViewProps {
@@ -55,7 +56,7 @@ function CarerResultCard({
     <Card>
       <Link
         href={{
-          pathname: "/profile/[profileId]",
+          pathname: "/profile/overview",
           params: { profileId: carerResult._id },
         }}
       >

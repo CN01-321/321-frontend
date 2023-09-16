@@ -69,6 +69,7 @@ xcuserdata
 .history/
 
 # Android
+/android
 *.apk
 *.hprof
 /android/**/build

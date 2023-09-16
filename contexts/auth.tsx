@@ -11,7 +11,7 @@ import JWT from "expo-jwt";
 import * as SecureStore from "expo-secure-store";
 import { JWT_SECRET } from "@env";
 import axios from "axios";
-import { UserType } from "../types";
+import { UserType } from "../types/types";
 
 interface TokenUser {
   _id: string;

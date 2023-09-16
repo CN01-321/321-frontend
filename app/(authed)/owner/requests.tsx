@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
-import NewRequestModal from "../../../components/NewRequestModal";
+import NewRequestModal from "../../../components/modals/NewRequestModal";
 import ShowModalFab from "../../../components/ShowModalFab";
-import { Request } from "../../../types";
+import { Request } from "../../../types/types";
 import axios from "axios";
-import RequestCard from "../../../components/RequestCard";
+import RequestCard from "../../../components/cards/RequestCard";
 import Header from "../../../components/Header";
 import { useIsFocused } from "@react-navigation/native";
+import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
+import { SegmentedButtons } from "react-native-paper";
 
 export default function Requests() {
-  const [requests, setRequests] = useState<Request[]>([]);
+  const [currentRequests, setCurrentRequests] = useState<Request[]>([]);
+  const [pastRequests, setPastRequests] = useState<Request[]>([]);
   const [visible, setVisible] = useState(false);
+  const [currentView, setCurrentView] = useState<"current" | "past">("current");
+  const { pushError } = useMessageSnackbar();
 
   // isFocused is used to reload the requests in case a new request has been
   // made from the search page
@@ -32,9 +37,14 @@ export default function Requests() {
         };
       });
 
-      setRequests(reqs);
+      const isPastRequest = (r: Request) =>
+        r.status === "rejected" || r.status === "completed";
+
+      setCurrentRequests(reqs.filter((r) => !isPastRequest(r)));
+      setPastRequests(reqs.filter(isPastRequest));
     } catch (e) {
       console.error(e);
+      pushError("Could not fetch requests");
     }
   };
 
@@ -55,13 +65,28 @@ export default function Requests() {
       <Header title="Requests" />
       <View>
         <NewRequestModal
+          title="New Request"
           visible={visible}
           onDismiss={hideModal}
           updateRequests={updateRequests}
         />
+        <SegmentedButtons
+          value={currentView}
+          onValueChange={(v) => setCurrentView(v as "current" | "past")}
+          buttons={[
+            {
+              value: "current",
+              label: "Current",
+            },
+            {
+              value: "past",
+              label: "Past",
+            },
+          ]}
+        />
         <FlatList
-          data={requests}
-          renderItem={({ item }) => <RequestCard req={item} />}
+          data={currentView === "current" ? currentRequests : pastRequests}
+          renderItem={({ item }) => <RequestCard request={item} />}
           keyExtractor={(item) => item._id}
         />
       </View>

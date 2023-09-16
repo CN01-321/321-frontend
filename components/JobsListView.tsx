@@ -1,40 +1,19 @@
 import { FlatList, View } from "react-native";
-import { Job } from "../types";
-import OfferCard from "./OfferCard";
-
-interface OffersListViewProps {
-  jobs: Job[];
-  jobType: "direct" | "broad";
-  updateOffers: () => Promise<void>;
-}
+import { Job } from "../types/types";
+import JobCard from "./cards/JobCard";
 
 interface JobsListViewProps {
   jobs: Job[];
-  jobType: "job";
+  updateJobs: () => Promise<void>;
 }
 
-export default function JobsListView(
-  props: OffersListViewProps | JobsListViewProps
-) {
-  const getPropUpdateOffers = () => {
-    // do nothing if job as there is no updating needed for this page
-    if (props.jobType === "job") {
-      return async () => {};
-    }
-
-    return props.updateOffers;
-  };
-
+export default function JobsListView({ jobs, updateJobs }: JobsListViewProps) {
   return (
     <View>
       <FlatList
-        data={props.jobs}
+        data={jobs}
         renderItem={({ item }) => (
-          <OfferCard
-            job={item}
-            jobType={props.jobType}
-            updateOffers={getPropUpdateOffers()}
-          />
+          <JobCard job={item} updateJobs={updateJobs} />
         )}
         keyExtractor={(item) => item._id}
         contentContainerStyle={{ paddingBottom: 100 }}

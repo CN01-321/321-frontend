@@ -16,6 +16,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import DynamicAvatar from "./DynamicAvatar";
 import { toDDMMYYYY } from "../utils";
+import BaseModal from "./modals/BaseModal";
 
 const icon = require("../assets/icon.png");
 const image = require("../assets/splash.png");
@@ -295,42 +296,36 @@ function NewReviewModal({
   };
 
   return (
-    <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        style={{ backgroundColor: "white" }}
-      >
-        <Text variant="titleMedium">Rate & Review</Text>
-        <DynamicAvatar pfp={profile.pfp} defaultPfp={icon} />
-        <Text>{profile.name}</Text>
-        <Controller
-          control={control}
-          rules={{ max: 5, min: 0 }}
-          render={({ field: { onChange, value } }) => (
-            <RatingPicker rating={value} onRatingChange={onChange} />
-          )}
-          name="rating"
-        />
-        <Controller
-          control={control}
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              mode="outlined"
-              value={value}
-              onBlur={onBlur}
-              label="Write Message"
-              onChangeText={onChange}
-            />
-          )}
-          name="message"
-        />
-        <Button mode="contained" onPress={handleSubmit(onSubmit)}>
-          Submit
-        </Button>
-      </Modal>
-    </Portal>
+    <BaseModal title="Rate & Review" visible={visible} onDismiss={onDismiss}>
+      <Text variant="titleMedium">Rate & Review</Text>
+      <DynamicAvatar pfp={profile.pfp} defaultPfp={icon} />
+      <Text>{profile.name}</Text>
+      <Controller
+        control={control}
+        rules={{ max: 5, min: 0 }}
+        render={({ field: { onChange, value } }) => (
+          <RatingPicker rating={value} onRatingChange={onChange} />
+        )}
+        name="rating"
+      />
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            mode="outlined"
+            value={value}
+            onBlur={onBlur}
+            label="Write Message"
+            onChangeText={onChange}
+          />
+        )}
+        name="message"
+      />
+      <Button mode="contained" onPress={handleSubmit(onSubmit)}>
+        Submit
+      </Button>
+    </BaseModal>
   );
 }
 

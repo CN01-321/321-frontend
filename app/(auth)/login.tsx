@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import { Button, TextInput, Title } from "react-native-paper";
 import { useAuth } from "../../contexts/auth";
-import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types";
+import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
 import axios from "axios";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Header from "../../components/Header";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types";
+import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import axios from "axios";
 import { View } from "react-native";
