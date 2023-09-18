@@ -2,6 +2,7 @@ import { ScrollView, View, StyleSheet } from "react-native";
 import { Pet } from "../types/types";
 import { useRouter } from "expo-router";
 import { Card, Text } from "react-native-paper";
+import DynamicCardCover from "./DynamicCardCover";
 
 const icon = require("../assets/icon.png");
 
@@ -34,7 +35,11 @@ function PetCard({ pet }: { pet: Pet }) {
         })
       }
     >
-      <Card.Cover source={icon} style={styles.petCardImg} />
+      <DynamicCardCover
+        imageId={pet.pfp}
+        defaultImage={icon}
+        style={styles.petCardImg}
+      />
       <Card.Content>
         <Text variant="titleSmall">{pet.name}</Text>
       </Card.Content>
