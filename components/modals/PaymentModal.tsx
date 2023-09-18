@@ -19,7 +19,7 @@ import {
   locationToString,
   toDDMMYYYY,
 } from "../../utils";
-import { CarerResult } from "../CarerResultsView";
+import { CarerResult } from "../../types/types";
 import CheckboxSelectorCard from "../cards/CheckboxSelectorCard";
 
 interface PaymentModalProps {

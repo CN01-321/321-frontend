@@ -1,16 +1,8 @@
 import { View, StyleSheet } from "react-native";
-import {
-  Text,
-  Card,
-  useTheme,
-  IconButton,
-  RadioButton,
-  Divider,
-} from "react-native-paper";
+import { Text, RadioButton, Divider } from "react-native-paper";
+import BaseFormCard, { BaseFormCardProps } from "./BaseFormCard";
 
-interface RadioSelectorCardProps<T> {
-  title?: string;
-  icon?: string;
+interface RadioSelectorCardProps<T> extends BaseFormCardProps {
   items: T[];
   value: T;
   onItemSelect: (value: T) => void;
@@ -19,49 +11,33 @@ interface RadioSelectorCardProps<T> {
 }
 export default function RadioSelectorCard<T>({
   title,
+  titleStyle,
   icon,
+  border,
   items,
   value,
   onItemSelect,
   keyExtractor,
   nameExtractor,
 }: RadioSelectorCardProps<T>) {
-  const theme = useTheme();
-
   return (
-    <Card
-      style={{
-        borderColor: theme.colors.primary,
-        borderWidth: 1,
-        marginTop: 5,
-        shadowColor: "white",
-      }}
+    <BaseFormCard
+      title={title}
+      titleStyle={titleStyle}
+      icon={icon}
+      border={border}
     >
-      <Card.Content style={{ paddingLeft: 0, flex: 1, flexDirection: "row" }}>
-        {icon ? (
-          <IconButton
-            style={{ margin: 3 }}
-            icon={icon}
-            iconColor={theme.colors.primary}
-          />
-        ) : null}
-        <View style={{ flex: 1 }}>
-          {title ? <Text variant="titleSmall">{title}</Text> : null}
-          {items.map((item) => (
-            <RadioListItem
-              key={keyExtractor(item)}
-              name={nameExtractor(item)}
-              checked={
-                keyExtractor(item) == keyExtractor(value)
-                  ? "checked"
-                  : "unchecked"
-              }
-              onCheck={() => onItemSelect(item)}
-            />
-          ))}
-        </View>
-      </Card.Content>
-    </Card>
+      {items.map((item) => (
+        <RadioListItem
+          key={keyExtractor(item)}
+          name={nameExtractor(item)}
+          checked={
+            keyExtractor(item) == keyExtractor(value) ? "checked" : "unchecked"
+          }
+          onCheck={() => onItemSelect(item)}
+        />
+      ))}
+    </BaseFormCard>
   );
 }
 

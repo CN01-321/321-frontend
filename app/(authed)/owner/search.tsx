@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
-import { ScrollView, View, StyleSheet } from "react-native";
-import Slider from "@react-native-community/slider";
-import { Button, Checkbox, Modal, Portal, Text } from "react-native-paper";
-import CarerResultsView, {
-  CarerResult,
-} from "../../../components/CarerResultsView";
+import { FlatList, Pressable, View } from "react-native";
+import { Searchbar, useTheme } from "react-native-paper";
 import NewRequestModal from "../../../components/modals/NewRequestModal";
 import axios from "axios";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
-import { PetSize, PetType } from "../../../types/types";
+import {
+  CarerResult,
+  NearbyCarer,
+  PetSize,
+  PetType,
+} from "../../../types/types";
+import SearchFilterModal from "../../../components/modals/SearchFilterModal";
+import SearchResultCard from "../../../components/cards/SearchResultCard";
 
 interface Filters {
   maxPrice?: number;
@@ -21,26 +24,20 @@ interface Filters {
 const defaultFilters = {
   petTypes: new Map(
     Object.entries({
-      dog: false,
-      cat: false,
-      bird: false,
-      rabbit: false,
+      dog: true,
+      cat: true,
+      bird: true,
+      rabbit: true,
     }) as [PetType, boolean][]
   ),
   petSizes: new Map(
     Object.entries({
-      small: false,
-      medium: false,
-      large: false,
+      small: true,
+      medium: true,
+      large: true,
     }) as [PetSize, boolean][]
   ),
 };
-
-interface NearbyCarer extends CarerResult {
-  hourlyRate: number;
-  preferredPetTypes: PetType[];
-  preferredPetSizes: PetSize[];
-}
 
 export default function Search() {
   const [filters, setFilters] = useState<Filters>(defaultFilters);
@@ -50,6 +47,7 @@ export default function Search() {
   const [searchResults, setSearchResults] = useState<NearbyCarer[]>([]);
   const [selectedCarer, setSelectedCarer] = useState<CarerResult>();
   const { pushError } = useMessageSnackbar();
+  const theme = useTheme();
 
   useEffect((): (() => void) => {
     let ignore = false;
@@ -77,49 +75,91 @@ export default function Search() {
     setFilters({ ...filter });
   };
 
+  const clearFilters = () => setFilters({ ...defaultFilters });
+
   useEffect(() => {
-    const res = carers
-      .filter((c) =>
-        filters.maxPrice ? c.hourlyRate < filters.maxPrice : true
-      )
-      .filter((c) =>
-        Array.from(filters.petTypes.entries())
-          .filter(([, v]) => v)
-          .every(([k]) => c.preferredPetTypes.includes(k))
-      )
-      .filter((c) =>
-        Array.from(filters.petSizes.entries())
-          .filter(([, v]) => v)
-          .every(([k]) => c.preferredPetSizes.includes(k))
-      )
-      .filter((c) =>
-        filters.minRating ? c.rating ?? -1 >= filters.minRating : true
-      );
+    const results = [];
 
-    console.log("search results are: ", res);
+    const selectedPetTypes = Array.from(filters.petTypes.entries())
+      .filter(([, selected]) => selected)
+      .map(([petType]) => petType);
 
-    setSearchResults(res);
+    const selectedPetSizes = Array.from(filters.petSizes.entries())
+      .filter(([, selected]) => selected)
+      .map(([petSize]) => petSize);
+
+    console.log(selectedPetTypes, selectedPetSizes);
+
+    for (const carer of carers) {
+      if (filters.maxPrice && carer.hourlyRate > filters.maxPrice) {
+        continue;
+      }
+
+      if (
+        !carer.preferredPetTypes.every((petType) =>
+          selectedPetTypes.includes(petType)
+        )
+      ) {
+        continue;
+      }
+
+      if (
+        !carer.preferredPetSizes.every((petSize) =>
+          selectedPetSizes.includes(petSize)
+        )
+      ) {
+        continue;
+      }
+
+      if (
+        filters.minRating &&
+        carer.rating &&
+        filters.minRating > carer.rating
+      ) {
+        continue;
+      }
+
+      results.push(carer);
+    }
+
+    // console.log("search results are: ", res);
+    console.log("filters are:", filters);
+
+    setSearchResults(results);
   }, [carers, filters]);
 
   return (
-    <View>
+    <View style={{ backgroundColor: theme.colors.background }}>
       <Header title="Search" />
-      <Button mode="outlined" onPress={() => setFilterVisible(true)}>
+      {/* <Button
+        mode="contained"
+        // style={{ borderColor: theme.colors.primary, backgroundColor: "white" }}
+        onPress={() => setFilterVisible(true)}
+      >
         Filters
-      </Button>
-      <FilterModal
+      </Button> */}
+      <Pressable onPress={() => setFilterVisible(true)}>
+        <Searchbar placeholder="Search" value="" editable={false} />
+      </Pressable>
+      <SearchFilterModal
+        title="Filters"
         visible={filterVisible}
         onDismiss={() => setFilterVisible(false)}
         filters={filters}
-        updateFilters={updateFilters}
+        onChange={updateFilters}
+        onClear={clearFilters}
       />
-      <CarerResultsView
-        carerResults={searchResults}
-        handleRequest={(carerResult) => {
-          setSelectedCarer(carerResult);
-          setRequestVisible(true);
-        }}
-        cardButtonLabel="Request Carer's Services"
+      <FlatList
+        data={searchResults}
+        renderItem={({ item }) => (
+          <SearchResultCard
+            carer={item}
+            onRequest={() => {
+              setSelectedCarer(item);
+              setRequestVisible(true);
+            }}
+          />
+        )}
       />
       <NewRequestModal
         title="Request Carer's Services"
@@ -130,150 +170,3 @@ export default function Search() {
     </View>
   );
 }
-
-interface FilterModalProps {
-  visible: boolean;
-  onDismiss: () => void;
-  filters: Filters;
-  updateFilters: (filter: Filters) => void;
-}
-
-function FilterModal({
-  visible,
-  onDismiss,
-  filters,
-  updateFilters,
-}: FilterModalProps) {
-  // TODO implement rating and availiability filters, conver to react-hook form
-  const updateMaxPrice = (price: number) => {
-    filters.maxPrice = price;
-    updateFilters(filters);
-  };
-
-  const updateMinRating = (rating: number) => {
-    filters.minRating = rating;
-    updateFilters(filters);
-  };
-
-  const updatePetTypes = (selection: PetType) => {
-    filters.petTypes.set(selection, !filters.petTypes.get(selection));
-    updateFilters(filters);
-  };
-
-  const updatePetSizes = (size: PetSize) => {
-    filters.petSizes.set(size, !filters.petSizes.get(size));
-    updateFilters(filters);
-  };
-
-  const clearFilters = () => {
-    updateFilters(defaultFilters);
-  };
-
-  return (
-    <Portal>
-      <Modal visible={visible} onDismiss={onDismiss}>
-        <ScrollView style={styles.container}>
-          <Text variant="titleMedium">Filters</Text>
-          <Text>Max Price: {filters.maxPrice}</Text>
-          <Slider
-            minimumValue={0}
-            maximumValue={200}
-            step={25}
-            onValueChange={updateMaxPrice}
-          />
-          <Text>Min Rating: {filters.minRating}</Text>
-          <Slider
-            minimumValue={0}
-            maximumValue={5}
-            step={0.5}
-            onValueChange={updateMinRating}
-          />
-          <Text>Select Pet Types</Text>
-          <View style={styles.checkboxArea}>
-            <FilterSelection
-              selections={filters.petTypes}
-              onSelection={updatePetTypes}
-            />
-          </View>
-
-          <Text>Select Pet Sizes</Text>
-          <View style={styles.checkboxArea}>
-            <FilterSelection
-              selections={filters.petSizes}
-              onSelection={updatePetSizes}
-            />
-          </View>
-          <Button mode="contained" onPress={onDismiss}>
-            Set Filters
-          </Button>
-          <Button mode="contained" onPress={clearFilters}>
-            Clear Filters
-          </Button>
-        </ScrollView>
-      </Modal>
-    </Portal>
-  );
-}
-
-type FilterType = PetType | PetSize;
-
-interface FilterSelectionProps<K extends FilterType> {
-  selections: Map<K, boolean>;
-  onSelection: (selection: K) => void;
-}
-
-function FilterSelection<K extends FilterType>({
-  selections,
-  onSelection,
-}: FilterSelectionProps<K>) {
-  return (
-    <View style={styles.checkboxArea}>
-      {Array.from(selections.entries()).map(([selection, checked]) => (
-        <FilterSelectionCheckbox
-          key={selection}
-          selection={selection}
-          checked={checked}
-          onCheck={() => onSelection(selection)}
-        />
-      ))}
-    </View>
-  );
-}
-
-interface FilterSelectionCheckboxProps {
-  selection: FilterType;
-  name?: string;
-  checked: boolean;
-  onCheck: () => void;
-}
-
-function FilterSelectionCheckbox({
-  selection,
-  name,
-  checked,
-  onCheck,
-}: FilterSelectionCheckboxProps) {
-  return (
-    <View style={styles.checkbox}>
-      <Checkbox status={checked ? "checked" : "unchecked"} onPress={onCheck} />
-      <Text>{name ? name : selection}</Text>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    padding: 30,
-    borderRadius: 5,
-  },
-  checkboxArea: {
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  checkbox: {
-    flexDirection: "row",
-    paddingLeft: 10,
-  },
-});

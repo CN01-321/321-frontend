@@ -3,7 +3,13 @@ import BaseModal, { BaseModalProps } from "./BaseModal";
 import ThemedTextInput from "../ThemedTextInput";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { View, Image, StyleSheet } from "react-native";
-import { PetSize, PetType } from "../../types/types";
+import {
+  PetSize,
+  PetType,
+  SelectorItem,
+  petSelectorSizes,
+  petSelectorTypes,
+} from "../../types/types";
 import ErrorText from "../ErrorText";
 import RadioSelectorCard from "../cards/RadioSelectorCard";
 import CheckboxSelectorCard from "../cards/CheckboxSelectorCard";
@@ -13,24 +19,6 @@ import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 import { Buffer } from "buffer";
 
 const icon = require("../../assets/icon.png");
-
-interface SelectorItem<T> {
-  key: T;
-  name: string;
-}
-
-const petTypes: SelectorItem<PetType>[] = [
-  { key: "dog", name: "Dog" },
-  { key: "cat", name: "Cat" },
-  { key: "bird", name: "Bird" },
-  { key: "rabbit", name: "Rabbit" },
-];
-
-const petSizes: SelectorItem<PetSize>[] = [
-  { key: "small", name: "1-20 kg" },
-  { key: "medium", name: "20-40 kg" },
-  { key: "large", name: "40+ kg" },
-];
 
 const petStatuses = [
   { key: "isVaccinated", name: "Vaccinated" },
@@ -63,8 +51,8 @@ export default function NewPetModal({
   } = useForm<NewPetForm>({
     defaultValues: {
       name: "",
-      petType: petTypes[0],
-      petSize: petSizes[0],
+      petType: petSelectorTypes[0],
+      petSize: petSelectorSizes[0],
       statuses: new Map(),
     },
   });
@@ -194,7 +182,8 @@ export default function NewPetModal({
             <RadioSelectorCard
               title="Pet Type"
               icon="dog-side"
-              items={petTypes}
+              border={true}
+              items={petSelectorTypes}
               value={value}
               onItemSelect={onChange}
               keyExtractor={(item) => item.key}
@@ -212,7 +201,8 @@ export default function NewPetModal({
             <RadioSelectorCard
               title="Pet Size"
               icon="scale"
-              items={petSizes}
+              border={true}
+              items={petSelectorSizes}
               value={value}
               onItemSelect={onChange}
               keyExtractor={(item) => item.key}

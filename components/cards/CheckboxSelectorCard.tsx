@@ -1,19 +1,8 @@
-import { View, StyleSheet, TextStyle, StyleProp } from "react-native";
-import {
-  Text,
-  Card,
-  useTheme,
-  Checkbox,
-  Divider,
-  IconButton,
-} from "react-native-paper";
-import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
+import { View, StyleSheet } from "react-native";
+import { Text, Checkbox, Divider } from "react-native-paper";
+import BaseFormCard, { BaseFormCardProps } from "./BaseFormCard";
 
-interface CheckboxSelectorCardProps<T> {
-  title?: string;
-  titleStyle?: StyleProp<TextStyle>;
-  icon?: IconSource;
-  border?: boolean;
+interface CheckboxSelectorCardProps<T> extends BaseFormCardProps {
   items: T[];
   values?: Map<string, boolean>;
   onItemSelect?: (event: Map<string, boolean>) => void;
@@ -32,8 +21,6 @@ export default function CheckboxSelectorCard<T>({
   keyExtractor,
   nameExtractor,
 }: CheckboxSelectorCardProps<T>) {
-  const theme = useTheme();
-
   const getValue = (item: T) => {
     if (!values) {
       return true;
@@ -56,39 +43,21 @@ export default function CheckboxSelectorCard<T>({
   };
 
   return (
-    <Card
-      style={{
-        borderColor: border ? theme.colors.primary : "white",
-        borderWidth: 1,
-        marginTop: 5,
-        shadowColor: "white",
-      }}
+    <BaseFormCard
+      title={title}
+      titleStyle={titleStyle}
+      icon={icon}
+      border={border}
     >
-      <Card.Content style={{ paddingLeft: 0, flex: 1, flexDirection: "row" }}>
-        {icon ? (
-          <IconButton
-            style={{ margin: 3 }}
-            icon={icon}
-            iconColor={theme.colors.primary}
-          />
-        ) : null}
-        <View style={{ flex: 1 }}>
-          {title ? (
-            <Text variant="titleSmall" style={titleStyle}>
-              {title}
-            </Text>
-          ) : null}
-          {items.map((item) => (
-            <CheckboxListItem
-              key={keyExtractor(item)}
-              name={nameExtractor(item)}
-              checked={getValue(item) ? "checked" : "unchecked"}
-              onCheck={() => handleCheck(item)}
-            />
-          ))}
-        </View>
-      </Card.Content>
-    </Card>
+      {items.map((item) => (
+        <CheckboxListItem
+          key={keyExtractor(item)}
+          name={nameExtractor(item)}
+          checked={getValue(item) ? "checked" : "unchecked"}
+          onCheck={() => handleCheck(item)}
+        />
+      ))}
+    </BaseFormCard>
   );
 }
 
