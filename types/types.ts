@@ -29,6 +29,23 @@ export interface UserLocation {
   postcode: string;
 }
 
+export interface CarerResult {
+  _id: string;
+  name: string;
+  rating?: number;
+  bio?: string;
+  pfp?: string;
+  hourlyRate?: number;
+}
+
+export interface NearbyCarer extends CarerResult {
+  distance: number;
+  totalReviews: number;
+  hourlyRate: number;
+  preferredPetTypes: PetType[];
+  preferredPetSizes: PetSize[];
+}
+
 export interface Pet {
   _id: string;
   name: string;
@@ -85,3 +102,21 @@ export interface Job extends RequestInfo {
   ownerName: string;
   ownerIcon?: string;
 }
+
+export interface SelectorItem<T> {
+  key: T;
+  name: string;
+}
+
+export const petSelectorTypes: SelectorItem<PetType>[] = [
+  { key: "dog", name: "Dog" },
+  { key: "cat", name: "Cat" },
+  { key: "bird", name: "Bird" },
+  { key: "rabbit", name: "Rabbit" },
+];
+
+export const petSelectorSizes: SelectorItem<PetSize>[] = [
+  { key: "small", name: "1-20 kg" },
+  { key: "medium", name: "20-40 kg" },
+  { key: "large", name: "40+ kg" },
+];

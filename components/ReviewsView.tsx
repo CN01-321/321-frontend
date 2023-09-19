@@ -1,22 +1,13 @@
 import { useState } from "react";
 import { FlatList, View } from "react-native";
 import ShowModalFab from "./ShowModalFab";
-import {
-  Avatar,
-  Button,
-  Card,
-  IconButton,
-  Modal,
-  Portal,
-  Text,
-  TextInput,
-} from "react-native-paper";
+import { Button, Card, IconButton, Text, TextInput } from "react-native-paper";
 import { StarRating } from "./StarRating";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import DynamicAvatar from "./DynamicAvatar";
-import { toDDMMYYYY } from "../utils";
 import BaseModal from "./modals/BaseModal";
+import { CommentsModal } from "./modals/CommentsModal";
 
 const icon = require("../assets/icon.png");
 const image = require("../assets/splash.png");
@@ -131,6 +122,20 @@ function ReviewCard({
     }
   };
 
+  const submitComment = async (message: string) => {
+    console.log("adding comment ", message);
+    try {
+      const prefix = `/${isPet ? "pets" : "users"}`;
+      await axios.post(
+        `${prefix}/${profile._id}/feedback/${review._id}/comments`,
+        { message }
+      );
+      await updateReviews();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <Card>
       {review.image ? <Card.Cover source={image} /> : null}
@@ -155,108 +160,103 @@ function ReviewCard({
             <Text>{review.comments.length}</Text>
           </View>
         </View>
-        {/* prevent an empty modal from showing up if there are no comments */}
-        {/* {review.comments.length > 0 && ( */}
         <CommentsModal
-          profile={profile}
-          review={review}
+          title="Comments"
           comments={review.comments}
+          onComment={submitComment}
           visible={showComments}
-          onDismiss={async () => setShowComments(false)}
-          updateReviews={updateReviews}
-          isPet={isPet}
+          onDismiss={() => setShowComments(false)}
         />
-        {/* )} */}
       </Card.Content>
     </Card>
   );
 }
 
-interface CommentsModalProps {
-  profile: Profile;
-  review: Review;
-  comments: Comment[];
-  visible: boolean;
-  onDismiss: () => void;
-  isPet: boolean;
-  updateReviews: () => Promise<void>;
-}
+// interface CommentsModalProps {
+//   profile: Profile;
+//   review: Review;
+//   comments: Comment[];
+//   visible: boolean;
+//   onDismiss: () => void;
+//   isPet: boolean;
+//   updateReviews: () => Promise<void>;
+// }
 
-function CommentsModal({
-  profile,
-  review,
-  comments,
-  visible,
-  onDismiss,
-  isPet,
-  updateReviews,
-}: CommentsModalProps) {
-  const [comment, setComment] = useState<string | undefined>();
+// function CommentsModal({
+//   profile,
+//   review,
+//   comments,
+//   visible,
+//   onDismiss,
+//   isPet,
+//   updateReviews,
+// }: CommentsModalProps) {
+//   const [comment, setComment] = useState<string | undefined>();
 
-  const handleComment = async () => {
-    console.log("adding comment ", comment);
-    try {
-      const prefix = `/${isPet ? "pets" : "users"}`;
-      await axios.post(
-        `${prefix}/${profile._id}/feedback/${review._id}/comments`,
-        { message: comment }
-      );
-      await updateReviews();
-    } catch (e) {
-      console.error(e);
-    }
-    setComment(undefined);
-    onDismiss();
-  };
+//   const handleComment = async () => {
+//     console.log("adding comment ", comment);
+//     try {
+//       const prefix = `/${isPet ? "pets" : "users"}`;
+//       await axios.post(
+//         `${prefix}/${profile._id}/feedback/${review._id}/comments`,
+//         { message: comment }
+//       );
+//       await updateReviews();
+//     } catch (e) {
+//       console.error(e);
+//     }
+//     setComment(undefined);
+//     onDismiss();
+//   };
 
-  return (
-    <Portal>
-      <Modal visible={visible} onDismiss={onDismiss}>
-        <View>
-          <FlatList
-            data={comments}
-            renderItem={({ item }) => <CommentCard comment={item} />}
-            // using index is fine here as arrays are always ordered the same way
-            keyExtractor={(_, index) => String(index)}
-          />
-        </View>
-        <TextInput
-          mode="flat"
-          label="Comment"
-          value={comment}
-          onChangeText={(text) => setComment(text)}
-          left={<Avatar.Image source={icon} />}
-          right={
-            comment ? (
-              <TextInput.Icon icon="send-outline" onPress={handleComment} />
-            ) : null
-          }
-        />
-      </Modal>
-    </Portal>
-  );
-}
+//   return (
+//     <Portal>
+//       <Modal visible={visible} onDismiss={onDismiss}>
+//         <View>
+//           <FlatList
+//             data={comments}
+//             renderItem={({ item }) => <CommentCard comment={item} />}
+//             // using index is fine here as arrays are always ordered the same way
+//             keyExtractor={(_, index) => String(index)}
+//           />
+//         </View>
+//         <TextInput
+//           mode="flat"
+//           label="Comment"
+//           value={comment}
+//           onChangeText={(text) => setComment(text)}
+//           left={<Avatar.Image source={icon} />}
+//           right={
+//             comment ? (
+//               <TextInput.Icon icon="send-outline" onPress={handleComment} />
+//             ) : null
+//           }
+//         />
+//       </Modal>
+//     </Portal>
+//   );
+// }
 
-interface CommentCardProps {
-  comment: Comment;
-}
+// interface CommentCardProps {
+//   comment: Comment;
+// }
 
-function CommentCard({ comment }: CommentCardProps) {
-  return (
-    <Card>
-      <Card.Content>
-        <DynamicAvatar pfp={comment.authorIcon} defaultPfp={icon} />
-        <View>
-          <Text variant="titleSmall">{comment.authorIcon}</Text>
-          <Text variant="bodySmall">
-            Posted: {toDDMMYYYY(new Date(comment.postedOn))}
-          </Text>
-          <Text variant="bodySmall">{comment.message}</Text>
-        </View>
-      </Card.Content>
-    </Card>
-  );
-}
+// function CommentCard({ comment }: CommentCardProps) {
+//   return (
+//     <Card>
+//       <Card.Content>
+//         <DynamicAvatar pfp={comment.authorIcon} defaultPfp={icon} />
+//         <View>
+//           <Text variant="titleSmall">{comment.authorIcon}</Text>
+//           <Text variant="bodySmall">
+//             Posted: {toDDMMYYYY(new Date(comment.postedOn))}
+//           </Text>
+//           <Text variant="bodySmall">{comment.message}</Text>
+//         </View>
+//       </Card.Content>
+//     </Card>
+//   );
+// }
 
 interface NewReviewModalProps {
   profile: Profile;

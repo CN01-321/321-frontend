@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import AddPetModal from "../../../components/AddPetModal";
 import ShowModalFab from "../../../components/ShowModalFab";
 import axios from "axios";
 import { Pet } from "../../../types/types";
 import PetsView from "../../../components/PetsView";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
+import NewPetModal from "../../../components/modals/NewPetModal";
 
 export default function Pets() {
   const [pets, setPets] = useState<Pet[]>([]);
@@ -16,17 +16,21 @@ export default function Pets() {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
+  const updatePets = async () => {
+    try {
+      const { data } = await axios.get<Pet[]>("/owners/pets");
+      setPets(data);
+    } catch (e) {
+      console.error(e);
+      pushError("Could not fetch pets");
+    }
+  };
+
   useEffect((): (() => void) => {
     let ignore = false;
 
     (async () => {
-      try {
-        const { data } = await axios.get<Pet[]>("/owners/pets");
-        if (!ignore) setPets(data);
-      } catch (e) {
-        console.error(e);
-        pushError("Could not fetch pets");
-      }
+      if (!ignore) await updatePets();
     })();
 
     return () => (ignore = true);
@@ -35,7 +39,13 @@ export default function Pets() {
   return (
     <View style={styles.container}>
       <Header title="Pets" />
-      <AddPetModal visible={visible} onDismiss={hideModal} />
+      {/* <AddPetModal visible={visible} onDismiss={hideModal} /> */}
+      <NewPetModal
+        title="Add Pet"
+        visible={visible}
+        onDismiss={hideModal}
+        updatePets={updatePets}
+      />
       <PetsView pets={pets} />
       <ShowModalFab icon="plus" showModal={showModal} />
     </View>

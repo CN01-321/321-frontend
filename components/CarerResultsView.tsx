@@ -3,17 +3,9 @@ import { Button, Card, Text } from "react-native-paper";
 import { StarRating } from "./StarRating";
 import { Link } from "expo-router";
 import DynamicAvatar from "./DynamicAvatar";
+import { CarerResult } from "../types/types";
 
 const icon = require("../assets/icon.png");
-
-export interface CarerResult {
-  _id: string;
-  name: string;
-  rating?: number;
-  bio?: string;
-  pfp?: string;
-  hourlyRate?: number;
-}
 
 interface CarerResultsViewProps {
   carerResults: CarerResult[];

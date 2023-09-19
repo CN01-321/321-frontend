@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   requestCard: {
     overflow: "hidden",
     marginHorizontal: 15,
-    marginVertical: 15,
+    marginVertical: 10,
   },
   requestCardContainer: {
     display: "flex",

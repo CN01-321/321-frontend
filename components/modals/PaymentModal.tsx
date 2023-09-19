@@ -19,8 +19,8 @@ import {
   locationToString,
   toDDMMYYYY,
 } from "../../utils";
-import { CarerResult } from "../CarerResultsView";
-import { PetListItem } from "../PetListItem";
+import { CarerResult } from "../../types/types";
+import CheckboxSelectorCard from "../cards/CheckboxSelectorCard";
 
 interface PaymentModalProps {
   visible: boolean;
@@ -123,13 +123,16 @@ export default function PaymentModal({
         </RequestItem>
       ) : null}
 
-      <RequestItem icon="dog-side" title="Pets">
-        <View>
-          {pets.map((pet) => (
-            <PetListItem key={pet._id} name={pet.name} />
-          ))}
-        </View>
-      </RequestItem>
+      <View style={{ marginTop: -20, padding: 10 }}>
+        <CheckboxSelectorCard
+          title="Pets"
+          icon="dog-side"
+          items={pets}
+          keyExtractor={(item) => item._id}
+          nameExtractor={(item) => item.name}
+        />
+        <Divider />
+      </View>
 
       <RequestItem icon="information" title="Additional Info">
         <Text variant="bodySmall">{request.additionalInfo}</Text>
@@ -262,6 +265,7 @@ const styles = StyleSheet.create({
   },
   requestItemContainer: {
     padding: 10,
+    width: "90%",
   },
   requestItem: {
     flex: 1,
