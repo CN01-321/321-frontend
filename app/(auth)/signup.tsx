@@ -3,23 +3,27 @@ import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import axios from "axios";
 import { View } from "react-native";
-import { Button, TextInput, Title } from "react-native-paper";
+import { Button, Title } from "react-native-paper";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import Header from "../../components/Header";
+import EditableTextbox from "../../components/EditableTextbox";
+
+type FormData = {
+  email: string;
+  password: string;
+}
 
 export default function SignUp() {
   const { userType } = useLocalSearchParams<{ userType: UserType }>();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const signup = async () => {
-    try {
-      await axios.post(`/${userType}s`, {
-        email,
-        password,
-      });
+  const { control, handleSubmit } = useForm<FormData>({});
 
-      console.log(`created new ${userType} with: ${email} and ${password}`);
+  const signup: SubmitHandler<FormData> = async (formData) => {
+    try {
+      await axios.post(`/${userType}s`, formData);
+
+      console.log(`created new ${userType} with: ${formData.email} and ${formData.password}`);
       router.replace({ pathname: "/login", params: { userType } });
     } catch (error) {
       console.error(error);
@@ -32,22 +36,36 @@ export default function SignUp() {
     <View>
       <Header title="Sign Up" />
       <Title>Sign up as {userType}</Title>
-      <TextInput
-        label="Email"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        theme={{ colors: { primary: colour } }}
+      <Controller
+        control={control}
+        name="email"
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <EditableTextbox
+            label="Email"
+            value={value}
+            onBlur={onBlur}
+            onChangeText={onChange}
+          />
+        )}
       />
-      <TextInput
-        label="Password"
-        value={password}
-        secureTextEntry
-        onChangeText={(text) => setPassword(text)}
-        theme={{ colors: { primary: colour } }}
+      <Controller
+        control={control}
+        name="password"
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <EditableTextbox
+            label="Password"
+            value={value}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            secureTextEntry
+          />
+        )}
       />
       <Button
         mode="contained"
-        onPress={signup}
+        onPress={handleSubmit(signup)}
         theme={{ colors: { primary: colour } }}
       >
         Sign up

@@ -20,6 +20,15 @@ export interface User {
   pfp?: string;
 }
 
+export interface Owner extends User {}
+
+export interface Carer extends User {
+  preferredTravelDistance: number; // distance is in metres
+  hourlyRate: number;
+  preferredPetTypes: PetType[];
+  preferredPetSizes: PetSize[];
+}
+
 export interface UserLocation {
   type: "Point"; // the GeoJSON type is always "Point"
   coordinates: [number, number]; // longitude, latitude
