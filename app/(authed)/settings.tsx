@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { List, useTheme } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
+import { useRouter } from "expo-router";
 
 import { useAuth } from "../../contexts/auth";
 import Header from "../../components/Header";
@@ -17,7 +18,9 @@ import PrivacyPolicyIcon from "../../assets/icons/settings/privacypolicy.svg";
 
 export default function Settings() {
   const theme = useTheme();
+  const router = useRouter();
   const { logOut } = useAuth();
+
   return (
     <View>
       <Header title="Settings" />
@@ -33,6 +36,7 @@ export default function Settings() {
                 fill={theme.colors.primary}
               />
             )}
+            onPress={() => router.push(`/profile/edit`)}
           />
           <SettingsOption
             name="Edit Location"

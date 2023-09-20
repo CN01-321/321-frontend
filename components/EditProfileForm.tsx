@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
-import { Text, Checkbox, Avatar, Button } from "react-native-paper";
+import { Text, Checkbox, Avatar, Button, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
@@ -9,6 +9,15 @@ import DynamicAvatar from "./DynamicAvatar";
 import EditableTextbox from "./EditableTextbox";
 import { pickImage, uploadImage } from "../utilities/image";
 import axios from "axios";
+
+import PersonIcon from "../assets/icons/profile/person.svg";
+import EmailIcon from "../assets/icons/profile/email.svg";
+import PhoneIcon from "../assets/icons/profile/phone.svg";
+import StreetIcon from "../assets/icons/profile/sign.svg";
+import CityIcon from "../assets/icons/profile/city.svg";
+import StateIcon from "../assets/icons/profile/map.svg";
+import PostcodeIcon from "../assets/icons/profile/mailbox.svg";
+import AboutMeIcon from "../assets/icons/profile/aboutme.svg";
 
 const icon = require("../assets/icon.png");
 
@@ -41,6 +50,7 @@ interface FormData {
 
 const EditProfileForm = ({ user }: EditProfileFormProp) => {
   const router = useRouter();
+  const theme = useTheme();
 
   const { control, handleSubmit, reset } = useForm<FormData>({
     defaultValues: user.userType == "owner" ? {
@@ -186,6 +196,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
+              icon={() => <PersonIcon height={25} width={25} fill={theme.colors.primary} />}
             />
           )}
         />
@@ -198,6 +209,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
+              icon={() => <EmailIcon height={25} width={25} fill={theme.colors.primary} />}
             />
           )}
         />
@@ -210,6 +222,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
+              icon={() => <PhoneIcon height={25} width={25} fill={theme.colors.primary} />}
             />
           )}
         />
@@ -222,6 +235,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
+              icon={() => <StreetIcon height={25} width={25} fill={theme.colors.primary} />}
             />
           )}
         />
@@ -234,6 +248,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
+              icon={() => <CityIcon height={25} width={25} fill={theme.colors.primary} />}
             />
           )}
         />
@@ -246,6 +261,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
+              icon={() => <StateIcon height={25} width={25} fill={theme.colors.primary} />}
             />
           )}
         />
@@ -258,6 +274,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
+              icon={() => <PostcodeIcon height={25} width={25} fill={theme.colors.primary} />}
             />
           )}
         />
@@ -271,6 +288,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
               multiline={true}
               onBlur={onBlur}
               onChangeText={onChange}
+              icon={() => <AboutMeIcon height={25} width={25} fill={theme.colors.primary} />}
             />
           )}
         />
@@ -384,9 +402,16 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
               </View>
             : null
         }
-        <Button mode="contained" onPress={handleSubmit(onSubmit)}>
-          Save Changes
-        </Button>
+        <View style={styles.buttonContainer}>
+          <Button 
+            mode="contained" 
+            labelStyle={styles.button} 
+            style={{ width: "65%" }}
+            onPress={handleSubmit(onSubmit)}
+          > 
+            Save Changes
+          </Button>
+        </View>
       </View>
     </ScrollView>
   );
@@ -414,6 +439,15 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Medium",
     color: "#777777",
   },
+  buttonContainer: {
+    marginTop: 30,
+    display: "flex",
+    alignItems: "center",
+  },
+  button: {
+    fontFamily: "Montserrat-SemiBold",
+    fontSize: 16,
+  }
 });
 
 export default EditProfileForm;

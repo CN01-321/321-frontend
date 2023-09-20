@@ -1,16 +1,14 @@
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import { View } from "react-native";
-import { SegmentedButtons, Text, TextInput } from "react-native-paper";
+import { ReactNode, useEffect, useState } from "react";
+import { useWindowDimensions } from "react-native";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import { useAuth } from "../../../contexts/auth";
 import axios from "axios";
-import Header from "../../../components/Header";
 import { UserType } from "../../../types/types";
-import DynamicAvatar from "../../../components/DynamicAvatar";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
-
-const icon = require("../../../assets/icon.png");
+import UserProfileInfoView from "../../../components/UserProfileInfoView";
+import { SceneMap, TabView, TabBar } from "react-native-tab-view";
+import { useTheme } from "react-native-paper";
 
 interface User {
   _id: string;
@@ -24,15 +22,32 @@ interface User {
   pfp?: string;
 }
 
-type ProfileViewType = "profile" | "reviews";
+const renderTabBar = (props: any): ReactNode => {
+  const theme = useTheme();
+
+  return (
+    <TabBar
+      {...props}
+      indicatorStyle={{ backgroundColor: theme.colors.primary }}
+      style={{ elevation:0, backgroundColor: "#FCFCFC" }}
+      labelStyle={{ 
+        color: "#1D1B20",
+        fontFamily: "Montserrat-Medium"
+      }}
+    /> 
+  );
+}
 
 export default function Profile() {
+  const layout = useWindowDimensions();
+
+  const [index, setIndex] = useState(0);
+
   const { profileId, isSelf } = useLocalSearchParams<{
     profileId: string;
     isSelf?: string;
   }>();
   const { getTokenUser } = useAuth();
-  const [currentView, setCurrentView] = useState<ProfileViewType>("profile");
   const [user, setUser] = useState<User>({
     _id: "",
     name: "",
@@ -94,73 +109,38 @@ export default function Profile() {
       await updateReviews();
     };
     updateFeedback();
-  }, [currentView]);
+  }, [index]);
 
-  return (
-    <View>
-      <Header
-        title={user.name + (currentView === "reviews" ? " Reviews" : "")}
-      />
-      <SegmentedButtons
-        value={currentView}
-        onValueChange={(value) => {
-          console.log(value);
-          setCurrentView(value as ProfileViewType);
-        }}
-        buttons={[
-          {
-            value: "profile",
-            icon: "account",
-            label: "Profile",
-          },
-          {
-            value: "reviews",
-            icon: "comment-outline",
-            label: "Reviews",
-          },
-        ]}
-      />
-      {currentView === "profile" ? (
-        <ProfileInfoView user={user} />
-      ) : (
-        <ReviewsView
-          profile={user}
-          isSelf={isSelf === "true"}
-          reviews={reviews}
-          updateReviews={updateReviews}
-        />
-      )}
-    </View>
+  const FirstRoute = () => (
+    <UserProfileInfoView user={user} />
   );
-}
 
-interface ProfileInfoViewProps {
-  user: User;
-}
+  const SecondRoute = () => (
+    <ReviewsView
+      profile={user}
+      isSelf={isSelf === "true"}
+      reviews={reviews}
+      updateReviews={updateReviews}
+    />
+  );
 
-function ProfileInfoView({ user }: ProfileInfoViewProps) {
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+  });
+
+  const [routes] = useState([
+    { key: 'first', title: 'Profile' },
+    { key: 'second', title: 'Reviews' },
+  ]);
+
   return (
-    <View>
-      <DynamicAvatar pfp={user.pfp} defaultPfp={icon} />
-      <Text>Profile</Text>
-      <TextInput
-        label="Name"
-        mode="outlined"
-        value={user.name}
-        editable={false}
-      />
-      <TextInput
-        label="Email"
-        mode="outlined"
-        value={user.email}
-        editable={false}
-      />
-      <TextInput
-        label="Phone"
-        mode="outlined"
-        value={user.phone}
-        editable={false}
-      />
-    </View>
+    <TabView
+      navigationState={{ index, routes }}
+      renderScene={renderScene}
+      renderTabBar={renderTabBar}
+      onIndexChange={setIndex}
+      initialLayout={{ width: layout.width }}
+    />
   );
 }
