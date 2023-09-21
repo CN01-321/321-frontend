@@ -14,10 +14,12 @@ import ContactUsIcon from "../../assets/icons/settings/contactus.svg";
 import AboutUsIcon from "../../assets/icons/settings/aboutus.svg";
 import TermsOfServiceIcon from "../../assets/icons/settings/termsofservice.svg";
 import PrivacyPolicyIcon from "../../assets/icons/settings/privacypolicy.svg";
+import { useRouter } from "expo-router";
 
 export default function Settings() {
   const theme = useTheme();
   const { logOut } = useAuth();
+  const router = useRouter();
   return (
     <View>
       <Header title="Settings" />
@@ -33,6 +35,7 @@ export default function Settings() {
                 fill={theme.colors.primary}
               />
             )}
+            onPress={() => router.push("/profile/edit")}
           />
           <SettingsOption
             name="Edit Location"

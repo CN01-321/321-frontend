@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
-import { Text, Checkbox, Avatar, Button } from "react-native-paper";
+import { Text, Checkbox, Button } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
@@ -9,12 +9,13 @@ import DynamicAvatar from "./DynamicAvatar";
 import EditableTextbox from "./EditableTextbox";
 import { pickImage, uploadImage } from "../utilities/image";
 import axios from "axios";
+import { ImagePickerAsset } from "expo-image-picker";
 
 const icon = require("../assets/icon.png");
 
 type EditProfileFormProp = {
   user: Owner | Carer;
-}
+};
 
 interface FormData {
   name: string;
@@ -30,12 +31,12 @@ interface FormData {
   bio: string;
   preferredTravelDistance: string;
   hourlyRate: string;
-  willServiceBirds: boolean; 
-  willServiceCats: boolean; 
-  willServiceDogs: boolean; 
-  willServiceRabbits: boolean; 
-  willServiceSmall: boolean; 
-  willServiceMedium: boolean; 
+  willServiceBirds: boolean;
+  willServiceCats: boolean;
+  willServiceDogs: boolean;
+  willServiceRabbits: boolean;
+  willServiceSmall: boolean;
+  willServiceMedium: boolean;
   willServiceLarge: boolean;
 }
 
@@ -43,55 +44,69 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
   const router = useRouter();
 
   const { control, handleSubmit, reset } = useForm<FormData>({
-    defaultValues: user.userType == "owner" ? {
-      name: user.name || "",
-      email: user.email,
-      phone: user.phone || "",
-      location: {
-        street: user.location?.street || "",
-        city: user.location?.city || "",
-        state: user.location?.state || "",
-        postcode: user.location?.postcode || "",
-      },
-      bio: user.bio || "",
-    } : {
-      name: user.name || "",
-      email: user.email,
-      phone: user.phone || "",
-      location: {
-        street: user.location?.street || "",
-        city: user.location?.city || "",
-        state: user.location?.state || "",
-        postcode: user.location?.postcode || "",
-      },
-      bio: user.bio || "",
-      preferredTravelDistance: (user as Carer).preferredTravelDistance.toString() || "",
-      hourlyRate: (user as Carer).hourlyRate.toString() || "",
-      willServiceBirds: (user as Carer).preferredPetTypes.includes("bird"),
-      willServiceCats: (user as Carer).preferredPetTypes.includes("cat"),
-      willServiceDogs: (user as Carer).preferredPetTypes.includes("dog"), 
-      willServiceRabbits: (user as Carer).preferredPetTypes.includes("rabbit"), 
-      willServiceSmall: (user as Carer).preferredPetSizes.includes("small"),
-      willServiceMedium: (user as Carer).preferredPetSizes.includes("medium"), 
-      willServiceLarge: (user as Carer).preferredPetSizes.includes("large"),
-    }
+    defaultValues:
+      user.userType == "owner"
+        ? {
+            name: user.name || "",
+            email: user.email,
+            phone: user.phone || "",
+            location: {
+              street: user.location?.street || "",
+              city: user.location?.city || "",
+              state: user.location?.state || "",
+              postcode: user.location?.postcode || "",
+            },
+            bio: user.bio || "",
+          }
+        : {
+            name: user.name || "",
+            email: user.email,
+            phone: user.phone || "",
+            location: {
+              street: user.location?.street || "",
+              city: user.location?.city || "",
+              state: user.location?.state || "",
+              postcode: user.location?.postcode || "",
+            },
+            bio: user.bio || "",
+            preferredTravelDistance:
+              (user as Carer).preferredTravelDistance.toString() || "",
+            hourlyRate: (user as Carer).hourlyRate.toString() || "",
+            willServiceBirds: (user as Carer).preferredPetTypes.includes(
+              "bird"
+            ),
+            willServiceCats: (user as Carer).preferredPetTypes.includes("cat"),
+            willServiceDogs: (user as Carer).preferredPetTypes.includes("dog"),
+            willServiceRabbits: (user as Carer).preferredPetTypes.includes(
+              "rabbit"
+            ),
+            willServiceSmall: (user as Carer).preferredPetSizes.includes(
+              "small"
+            ),
+            willServiceMedium: (user as Carer).preferredPetSizes.includes(
+              "medium"
+            ),
+            willServiceLarge: (user as Carer).preferredPetSizes.includes(
+              "large"
+            ),
+          },
   });
 
-  const [profilePicture, setProfilePicture] = useState<string | undefined>(user.pfp);
+  const [profilePicture, setProfilePicture] = useState<ImagePickerAsset>();
 
   const editProfilePicture = async () => {
     const image = await pickImage();
-    
+
     if (image) {
       setProfilePicture(image);
     }
-  }
+  };
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
+    const { granted } = await Location.requestForegroundPermissionsAsync();
 
-    if (status !== "granted") {
-      console.log("Location permission was not granted")
+    if (!granted) {
+      console.log("Location permission was not granted");
       return;
     }
 
@@ -119,7 +134,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
           postcode: data.location.postcode,
         },
         bio: data.bio,
-      }
+      };
     } else {
       const preferredPetTypes = [];
       if (data.willServiceBirds) preferredPetTypes.push("bird");
@@ -148,32 +163,43 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
         hourlyRate: parseInt(data.hourlyRate),
         preferredPetTypes: preferredPetTypes,
         preferredPetSizes: preferredPetSizes,
-      }
+      };
     }
 
     try {
-      user.userType == "owner" ? await axios.put("/owners", submittedData) : await axios.put("/carers", submittedData)
-      if (profilePicture != undefined) await uploadImage("/users/pfp", profilePicture);
+      user.userType == "owner"
+        ? await axios.put("/owners", submittedData)
+        : await axios.put("/carers", submittedData);
+
+      if (profilePicture) {
+        console.log("setting pfp");
+        await uploadImage("/users/pfp", profilePicture);
+      }
     } catch (error) {
       console.log(error);
     }
-    
+
     reset();
     router.back();
-  }
-  
+  };
+
   return (
     <ScrollView>
       <View style={styles.form}>
         <View style={styles.pfpEdit}>
-          {user.pfp ? (
-            <DynamicAvatar pfp={user.pfp} defaultPfp={icon} />
+          {profilePicture ? (
+            <DynamicAvatar
+              pfp={{ uri: profilePicture.uri }}
+              defaultPfp={icon}
+            />
           ) : (
-            profilePicture 
-              ? <Avatar.Image source={{ uri: profilePicture }} size={150} /> 
-              : <Avatar.Image source={icon} size={150} /> 
+            <DynamicAvatar pfp={user.pfp} defaultPfp={icon} />
           )}
-          <Button mode="text" labelStyle={styles.pfpEditDescription} onPress={editProfilePicture}>
+          <Button
+            mode="text"
+            labelStyle={styles.pfpEditDescription}
+            onPress={editProfilePicture}
+          >
             Tap Here to Change Photo
           </Button>
         </View>
@@ -274,116 +300,113 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
             />
           )}
         />
-        {
-          user.userType == "carer"
-            ? 
-              <View>
-                <Controller
-                  control={control}
-                  name="preferredTravelDistance"
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <EditableTextbox
-                      label="Maximum Travel Distance"
-                      value={value}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                    />
-                  )}
+        {user.userType == "carer" ? (
+          <View>
+            <Controller
+              control={control}
+              name="preferredTravelDistance"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <EditableTextbox
+                  label="Maximum Travel Distance"
+                  value={value}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
                 />
-                <Controller
-                  control={control}
-                  name="hourlyRate"
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <EditableTextbox
-                      label="Hourly Rate"
-                      value={value}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                    />
-                  )}
+              )}
+            />
+            <Controller
+              control={control}
+              name="hourlyRate"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <EditableTextbox
+                  label="Hourly Rate"
+                  value={value}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
                 />
-                <Text variant="titleMedium">Types of Pets to Service</Text>
-                <Text>Birds</Text>
-                <Controller
-                  control={control}
-                  name="willServiceBirds"
-                  render={({ field: { onChange, value } }) => (
-                    <Checkbox
-                      status={value ? "checked" : "unchecked"}
-                      onPress={() => onChange(!value)}
-                    />
-                  )}
+              )}
+            />
+            <Text variant="titleMedium">Types of Pets to Service</Text>
+            <Text>Birds</Text>
+            <Controller
+              control={control}
+              name="willServiceBirds"
+              render={({ field: { onChange, value } }) => (
+                <Checkbox
+                  status={value ? "checked" : "unchecked"}
+                  onPress={() => onChange(!value)}
                 />
-                <Text>Cats</Text>
-                <Controller
-                  control={control}
-                  name="willServiceCats"
-                  render={({ field: { onChange, value } }) => (
-                    <Checkbox
-                      status={value ? "checked" : "unchecked"}
-                      onPress={() => onChange(!value)}
-                    />
-                  )}
+              )}
+            />
+            <Text>Cats</Text>
+            <Controller
+              control={control}
+              name="willServiceCats"
+              render={({ field: { onChange, value } }) => (
+                <Checkbox
+                  status={value ? "checked" : "unchecked"}
+                  onPress={() => onChange(!value)}
                 />
-                <Text>Dogs</Text>
-                <Controller
-                  control={control}
-                  name="willServiceDogs"
-                  render={({ field: { onChange, value } }) => (
-                    <Checkbox
-                      status={value ? "checked" : "unchecked"}
-                      onPress={() => onChange(!value)}
-                    />
-                  )}
+              )}
+            />
+            <Text>Dogs</Text>
+            <Controller
+              control={control}
+              name="willServiceDogs"
+              render={({ field: { onChange, value } }) => (
+                <Checkbox
+                  status={value ? "checked" : "unchecked"}
+                  onPress={() => onChange(!value)}
                 />
-                <Text>Rabbits</Text>
-                <Controller
-                  control={control}
-                  name="willServiceRabbits"
-                  render={({ field: { onChange, value } }) => (
-                    <Checkbox
-                      status={value ? "checked" : "unchecked"}
-                      onPress={() => onChange(!value)}
-                    />
-                  )}
+              )}
+            />
+            <Text>Rabbits</Text>
+            <Controller
+              control={control}
+              name="willServiceRabbits"
+              render={({ field: { onChange, value } }) => (
+                <Checkbox
+                  status={value ? "checked" : "unchecked"}
+                  onPress={() => onChange(!value)}
                 />
-                <Text variant="titleMedium">Size of Pets to Service</Text>
-                <Text>Small</Text>
-                <Controller
-                  control={control}
-                  name="willServiceSmall"
-                  render={({ field: { onChange, value } }) => (
-                    <Checkbox
-                      status={value ? "checked" : "unchecked"}
-                      onPress={() => onChange(!value)}
-                    />
-                  )}
+              )}
+            />
+            <Text variant="titleMedium">Size of Pets to Service</Text>
+            <Text>Small</Text>
+            <Controller
+              control={control}
+              name="willServiceSmall"
+              render={({ field: { onChange, value } }) => (
+                <Checkbox
+                  status={value ? "checked" : "unchecked"}
+                  onPress={() => onChange(!value)}
                 />
-                <Text>Medium</Text>
-                <Controller
-                  control={control}
-                  name="willServiceMedium"
-                  render={({ field: { onChange, value } }) => (
-                    <Checkbox
-                      status={value ? "checked" : "unchecked"}
-                      onPress={() => onChange(!value)}
-                    />
-                  )}
+              )}
+            />
+            <Text>Medium</Text>
+            <Controller
+              control={control}
+              name="willServiceMedium"
+              render={({ field: { onChange, value } }) => (
+                <Checkbox
+                  status={value ? "checked" : "unchecked"}
+                  onPress={() => onChange(!value)}
                 />
-                <Text>Large</Text>
-                <Controller
-                  control={control}
-                  name="willServiceLarge"
-                  render={({ field: { onChange, value } }) => (
-                    <Checkbox
-                      status={value ? "checked" : "unchecked"}
-                      onPress={() => onChange(!value)}
-                    />
-                  )}
+              )}
+            />
+            <Text>Large</Text>
+            <Controller
+              control={control}
+              name="willServiceLarge"
+              render={({ field: { onChange, value } }) => (
+                <Checkbox
+                  status={value ? "checked" : "unchecked"}
+                  onPress={() => onChange(!value)}
                 />
-              </View>
-            : null
-        }
+              )}
+            />
+          </View>
+        ) : null}
         <Button mode="contained" onPress={handleSubmit(onSubmit)}>
           Save Changes
         </Button>

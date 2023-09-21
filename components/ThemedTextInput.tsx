@@ -1,3 +1,4 @@
+import { StyleProp, TextStyle } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
 
@@ -8,6 +9,7 @@ interface ThemedTextInputProps {
   onChangeText?: (s: string) => void;
   multiline?: boolean;
   editable?: boolean;
+  style?: StyleProp<TextStyle>;
 }
 
 export default function ThemedTextInput({
@@ -17,6 +19,7 @@ export default function ThemedTextInput({
   onChangeText,
   multiline,
   editable,
+  style,
 }: ThemedTextInputProps) {
   const theme = useTheme();
 
@@ -37,9 +40,7 @@ export default function ThemedTextInput({
           <TextInput.Icon icon={icon} iconColor={theme.colors.primary} />
         ) : null
       }
-      style={{
-        backgroundColor: "white",
-      }}
+      style={[style, { backgroundColor: "white" }]}
     />
   );
 }

@@ -87,7 +87,7 @@ export default function Profile() {
     })();
 
     return () => (ignore = true);
-  }, []);
+  }, [profileId]);
 
   useEffect(() => {
     const updateFeedback = async () => {
