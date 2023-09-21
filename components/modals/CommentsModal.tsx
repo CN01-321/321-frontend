@@ -39,7 +39,8 @@ export function CommentsModal({
             onPress={() => {
               if (message) {
                 onComment(message);
-                setMessage(undefined);
+                setMessage("");
+                onDismiss();
               }
             }}
           />

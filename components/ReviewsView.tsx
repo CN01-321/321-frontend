@@ -1,15 +1,11 @@
 import { useState } from "react";
 import { FlatList, View } from "react-native";
 import ShowModalFab from "./ShowModalFab";
-import { Card, IconButton, Text } from "react-native-paper";
-import { StarRating } from "./StarRating";
 import axios from "axios";
-import DynamicAvatar from "./DynamicAvatar";
 import { CommentsModal } from "./modals/CommentsModal";
 import NewReviewModal from "./modals/NewReviewModal";
-
-const icon = require("../assets/icon.png");
-const image = require("../assets/splash.png");
+import ReviewCard from "./cards/ReviewCard";
+import { useMessageSnackbar } from "../contexts/messageSnackbar";
 
 export interface Profile {
   _id: string;
@@ -27,6 +23,7 @@ export interface Review {
   message: string;
   image?: string;
   likes: number;
+  liked: boolean;
   comments: Comment[];
 }
 
@@ -54,6 +51,39 @@ export default function ReviewsView({
   updateReviews,
 }: ProfileReviewsViewProps) {
   const [newReviewVisible, setNewReviewVisible] = useState(false);
+  const [commentsVisible, setCommentsVisible] = useState(false);
+  const [currentReview, setCurrentReview] = useState<Review>();
+  const { pushError } = useMessageSnackbar();
+
+  const handleLike = async (reviewId: string) => {
+    const prefix = `/${isPet ? "pets" : "users"}`;
+    try {
+      await axios.post(`${prefix}/${profile._id}/feedback/${reviewId}/likes`);
+      await updateReviews();
+    } catch (err) {
+      console.error(err);
+      pushError("Could not like message");
+    }
+  };
+
+  const showComments = (review: Review) => {
+    setCurrentReview(review);
+    setCommentsVisible(true);
+  };
+
+  const submitComment = async (message: string) => {
+    console.log("adding comment ", message);
+    try {
+      const prefix = `/${isPet ? "pets" : "users"}`;
+      await axios.post(
+        `${prefix}/${profile._id}/feedback/${currentReview?._id}/comments`,
+        { message }
+      );
+      await updateReviews();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <>
@@ -63,15 +93,22 @@ export default function ReviewsView({
           renderItem={({ item }) => (
             <ReviewCard
               review={item}
-              profile={profile}
-              isPet={isPet ?? false}
-              updateReviews={updateReviews}
+              onLike={() => handleLike(item._id)}
+              onShowComments={() => showComments(item)}
             />
           )}
           keyExtractor={(item) => item._id}
           contentContainerStyle={{ paddingBottom: 70 }}
         />
-
+        {currentReview ? (
+          <CommentsModal
+            title="Comments"
+            comments={currentReview.comments}
+            onComment={submitComment}
+            visible={commentsVisible}
+            onDismiss={() => setCommentsVisible(false)}
+          />
+        ) : null}
         <NewReviewModal
           title="Rate & Review"
           visible={newReviewVisible}
@@ -88,85 +125,5 @@ export default function ReviewsView({
         />
       )}
     </>
-  );
-}
-
-interface ReviewCardProps {
-  review: Review;
-  profile: Profile;
-  isPet: boolean;
-  updateReviews: () => Promise<void>;
-}
-
-function ReviewCard({
-  review,
-  profile,
-  isPet,
-  updateReviews,
-}: ReviewCardProps) {
-  const [showComments, setShowComments] = useState(false);
-
-  const handleLike = async () => {
-    const prefix = `/${isPet ? "pets" : "users"}`;
-    const url = `${prefix}/${profile._id}/feedback/${review._id}/likes`;
-    console.log(url);
-    try {
-      const { data } = await axios.post(
-        `${prefix}/${profile._id}/feedback/${review._id}/likes`
-      );
-
-      console.log(url, `liked comment by ${review.authorName}, got `, data);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const submitComment = async (message: string) => {
-    console.log("adding comment ", message);
-    try {
-      const prefix = `/${isPet ? "pets" : "users"}`;
-      await axios.post(
-        `${prefix}/${profile._id}/feedback/${review._id}/comments`,
-        { message }
-      );
-      await updateReviews();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  return (
-    <Card>
-      {review.image ? <Card.Cover source={image} /> : null}
-      <Card.Content>
-        <DynamicAvatar pfp={review.authorIcon} defaultPfp={icon} />
-        <View>
-          <Text variant="titleSmall">{review.authorName}</Text>
-          {review.rating ? <StarRating stars={review.rating} /> : null}
-          <Text variant="bodySmall">{review.message}</Text>
-          <View style={{ flexDirection: "row" }}>
-            <IconButton
-              icon="thumb-up-outline"
-              size={20}
-              onPress={handleLike}
-            />
-            <Text>{review.likes}</Text>
-            <IconButton
-              icon="comment-outline"
-              size={20}
-              onPress={() => setShowComments(true)}
-            />
-            <Text>{review.comments.length}</Text>
-          </View>
-        </View>
-        <CommentsModal
-          title="Comments"
-          comments={review.comments}
-          onComment={submitComment}
-          visible={showComments}
-          onDismiss={() => setShowComments(false)}
-        />
-      </Card.Content>
-    </Card>
   );
 }
