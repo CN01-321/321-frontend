@@ -5,6 +5,7 @@ import DynamicAvatar from "./DynamicAvatar";
 import ProfileListItem from "./ProfileListItem";
 import { Pet } from "../types/types";
 
+import EditIcon from "../assets/icons/edit.svg";
 import PawIcon from "../assets/icons/pet/paw.svg";
 import ScalesIcon from "../assets/icons/pet/scale.svg";
 import StatusIcon from "../assets/icons/pet/status.svg";
@@ -30,7 +31,14 @@ const PetInfoView = ({ pet }: PetInfoViewProp) => {
         <View style={styles.pfpAndNameContainer}>
           <DynamicAvatar pfp={pet.pfp} defaultPfp={icon} size={120} />
           <Text style={styles.petName}>{pet.name}</Text>
-          <Button mode="text" labelStyle={styles.editButtonStyle} onPress={() => router.push(editHref)}>Tap Here to Edit Profile</Button>
+          <Button 
+            mode="text" 
+            labelStyle={styles.editButtonStyle} 
+            contentStyle={{ flexDirection: "row-reverse" }}
+            onPress={() => router.push(editHref)}
+            icon={() => <EditIcon height={22} width={22} fill={theme.colors.primary} />}>
+            Tap Here to Edit Profile
+          </Button>
         </View>
         <List.Section>
           <List.Subheader style={styles.subheadingStyle}>PET INFORMATION</List.Subheader>
@@ -95,8 +103,6 @@ const styles = StyleSheet.create({
     color: "#000000"
   },
   editButtonStyle: {
-    marginTop: 0,
-    paddingTop: 0,
     color: "#777777",
     fontFamily: "Montserrat-Medium",
   },

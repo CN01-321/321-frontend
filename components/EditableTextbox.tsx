@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
 
@@ -24,22 +24,24 @@ const EditableTextbox = ({
   const theme = useTheme();
 
   return (
-    <TextInput 
-      contentStyle={styles.text}
-      textColor="#505050"
-      outlineColor={theme.colors.primary}
-      activeOutlineColor={theme.colors.primary}
-      outlineStyle={styles.box}
-      mode="outlined"
-      label={label}
-      value={value}
-      left={icon ? <TextInput.Icon icon={icon} /> : null}
-      editable={true}
-      multiline={multiline}
-      onBlur={onBlur}
-      onChangeText={onChangeText}
-      secureTextEntry={secureTextEntry}
-    />
+    <View style={{ marginBottom: 15 }}>
+      <TextInput 
+        contentStyle={styles.text}
+        textColor="#505050"
+        outlineColor={theme.colors.primary}
+        activeOutlineColor={theme.colors.primary}
+        outlineStyle={styles.box}
+        mode="outlined"
+        label={label}
+        value={value}
+        left={icon ? <TextInput.Icon icon={icon} /> : null}
+        editable={true}
+        multiline={multiline}
+        onBlur={onBlur}
+        onChangeText={onChangeText}
+        secureTextEntry={secureTextEntry}
+      />
+    </View>
   );
 }
 

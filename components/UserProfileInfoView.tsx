@@ -1,9 +1,11 @@
 import { View, StyleSheet } from "react-native";
-import { User } from "../types/types";
+import { useRouter } from "expo-router"
 import { Text, List, Divider, Button, useTheme } from "react-native-paper";
 import DynamicAvatar from "./DynamicAvatar";
 import ProfileListItem from "./ProfileListItem";
+import { User } from "../types/types";
 
+import EditIcon from "../assets/icons/edit.svg";
 import EmailIcon from "../assets/icons/profile/email.svg";
 import PhoneIcon from "../assets/icons/profile/phone.svg";
 import AddressIcon from "../assets/icons/profile/address.svg";
@@ -19,14 +21,23 @@ type UserProfileInfoViewProp = {
 
 const UserProfileInfoView = ({ user }: UserProfileInfoViewProp) => {
   const theme = useTheme();
+  const router = useRouter();
 
   return (
     <View style={styles.view}>
       <View style={styles.pfpAndNameContainer}>
         <DynamicAvatar pfp={user.pfp} defaultPfp={icon} size={120} />
         <Text style={styles.fullName}>{user.name}</Text>
-        <Button mode="text" labelStyle={styles.editButtonStyle}>Tap Here to Edit Profile</Button>
-      H</View>
+        <Button
+          mode="text" 
+          labelStyle={styles.editButtonStyle} 
+          contentStyle={{ flexDirection: "row-reverse" }}
+          onPress={() => router.push(`/profile/edit`)}
+          icon={() => <EditIcon height={22} width={22} fill={theme.colors.primary} />}
+        >
+          Tap Here to Edit Profile
+        </Button>
+      </View>
       <List.Section>
         <List.Subheader style={styles.subheadingStyle}>CONTACT DETAILS & ADDRESS</List.Subheader>
         <ProfileListItem
@@ -86,8 +97,6 @@ const styles = StyleSheet.create({
     color: "#000000"
   },
   editButtonStyle: {
-    marginTop: 0,
-    paddingTop: 0,
     color: "#777777",
     fontFamily: "Montserrat-Medium",
   },

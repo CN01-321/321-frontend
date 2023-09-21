@@ -18,6 +18,10 @@ import CityIcon from "../assets/icons/profile/city.svg";
 import StateIcon from "../assets/icons/profile/map.svg";
 import PostcodeIcon from "../assets/icons/profile/mailbox.svg";
 import AboutMeIcon from "../assets/icons/profile/aboutme.svg";
+import CarIcon from "../assets/icons/profile/car.svg";
+import DollarIcon from "../assets/icons/profile/dollar.svg";
+import PawIcon from "../assets/icons/pet/paw.svg";
+import ScalesIcon from "../assets/icons/pet/scale.svg";
 
 const icon = require("../assets/icon.png");
 
@@ -177,11 +181,11 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
       <View style={styles.form}>
         <View style={styles.pfpEdit}>
           {user.pfp ? (
-            <DynamicAvatar pfp={user.pfp} defaultPfp={icon} />
+            <DynamicAvatar pfp={user.pfp} defaultPfp={icon} size={120} />
           ) : (
             profilePicture 
-              ? <Avatar.Image source={{ uri: profilePicture }} size={150} /> 
-              : <Avatar.Image source={icon} size={150} /> 
+              ? <Avatar.Image source={{ uri: profilePicture }} size={120} /> 
+              : <Avatar.Image source={icon} size={120} /> 
           )}
           <Button mode="text" labelStyle={styles.pfpEditDescription} onPress={editProfilePicture}>
             Tap Here to Change Photo
@@ -305,6 +309,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
                       value={value}
                       onBlur={onBlur}
                       onChangeText={onChange}
+                      icon={() => <CarIcon height={25} width={25} fill={theme.colors.primary} />}
                     />
                   )}
                 />
@@ -317,6 +322,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
                       value={value}
                       onBlur={onBlur}
                       onChangeText={onChange}
+                      icon={() => <DollarIcon height={25} width={25} fill={theme.colors.primary} />}
                     />
                   )}
                 />
@@ -421,7 +427,6 @@ const styles = StyleSheet.create({
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: 15,
     paddingTop: 15,
     paddingLeft: 20,
     paddingRight: 20,

@@ -71,11 +71,11 @@ const EditPetForm = ({ pet }: EditPetFormProp ) => {
     <View style={styles.form}>
       <View style={styles.pfpEdit}>
         {pet.pfp ? (
-          <DynamicAvatar pfp={pet.pfp} defaultPfp={icon} />
+          <DynamicAvatar pfp={pet.pfp} defaultPfp={icon} size={120} />
         ) : (
           profilePicture 
-            ? <Avatar.Image source={{ uri: profilePicture }} size={150} /> 
-            : <Avatar.Image source={icon} size={150} /> 
+            ? <Avatar.Image source={{ uri: profilePicture }} size={120} /> 
+            : <Avatar.Image source={icon} size={120} /> 
         )}
         <Button mode="text" labelStyle={styles.pfpEditDescription} onPress={editProfilePicture}>
           Tap Here to Change Photo
@@ -267,7 +267,6 @@ const styles = StyleSheet.create({
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: 15,
     paddingTop: 15,
     paddingLeft: 20,
     paddingRight: 20,
@@ -299,6 +298,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 12,
     padding: 15,
+    marginBottom: 15,
   },
   optionBoxHeadingContainer: {
     display: "flex",
