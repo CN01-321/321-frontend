@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Text, TextInput, useTheme } from "react-native-paper";
+import { TextInput, useTheme } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
 
 type EditableTextboxProps = {

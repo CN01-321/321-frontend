@@ -26,7 +26,7 @@ const UserProfileInfoView = ({ user }: UserProfileInfoViewProp) => {
         <DynamicAvatar pfp={user.pfp} defaultPfp={icon} size={120} />
         <Text style={styles.fullName}>{user.name}</Text>
         <Button mode="text" labelStyle={styles.editButtonStyle}>Tap Here to Edit Profile</Button>
-      </View>
+      H</View>
       <List.Section>
         <List.Subheader style={styles.subheadingStyle}>CONTACT DETAILS & ADDRESS</List.Subheader>
         <ProfileListItem

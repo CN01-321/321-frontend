@@ -95,10 +95,10 @@ const EditPetForm = ({ pet }: EditPetFormProp ) => {
           />
         )}
       />
-      <View style={styles.optionBox}>
+      <View style={[ styles.optionBox, { borderColor: theme.colors.primary }]}>
         <View style={styles.optionBoxHeadingContainer}>
           <PawIcon height={25} width={25} fill={theme.colors.primary} />
-          <Text style={styles.optionBoxHeading}>  Pet Type</Text>
+          <Text style={styles.optionBoxHeading}>Pet Type</Text>
         </View>
         <View style={styles.selectionsContainer}> 
           <Controller
@@ -151,10 +151,10 @@ const EditPetForm = ({ pet }: EditPetFormProp ) => {
           />
         </View>
       </View>
-      <View style={styles.optionBox}>
+      <View style={[ styles.optionBox, { borderColor: theme.colors.primary }]}>
         <View style={styles.optionBoxHeadingContainer}>
           <ScalesIcon height={25} width={25} fill={theme.colors.primary} />
-          <Text style={styles.optionBoxHeading}>  Pet Size</Text>
+          <Text style={styles.optionBoxHeading}>Pet Size</Text>
         </View>
         <View style={styles.selectionsContainer}>
           <Controller
@@ -197,10 +197,10 @@ const EditPetForm = ({ pet }: EditPetFormProp ) => {
         />
         </View>
       </View>
-      <View style={styles.optionBox}>
+      <View style={[ styles.optionBox, { borderColor: theme.colors.primary }]}>
         <View style={styles.optionBoxHeadingContainer}>
           <StatusIcon height={25} width={25} fill={theme.colors.primary} />
-          <Text style={styles.optionBoxHeading}>  Pet Status</Text>
+          <Text style={styles.optionBoxHeading}>Pet Status</Text>
         </View>
         <View style={styles.selectionsContainer}>
           <View style={styles.selectionOption}>
@@ -294,17 +294,17 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-SemiBold",
     fontSize: 16,
   },
-  optionBox: { // TODO: make border color match theme
+  optionBox: {
     border: "solid",
     borderWidth: 1,
     borderRadius: 12,
-    borderColor: "black",
     padding: 15,
   },
   optionBoxHeadingContainer: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    gap: 15,
   },
   optionBoxHeading: {
     fontFamily: "Montserrat-SemiBold",

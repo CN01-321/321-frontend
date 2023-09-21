@@ -9,6 +9,7 @@ import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import UserProfileInfoView from "../../../components/UserProfileInfoView";
 import { SceneMap, TabView, TabBar } from "react-native-tab-view";
 import { useTheme } from "react-native-paper";
+import Header from "../../../components/Header";
 
 interface User {
   _id: string;
@@ -135,12 +136,15 @@ export default function Profile() {
   ]);
 
   return (
-    <TabView
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      renderTabBar={renderTabBar}
-      onIndexChange={setIndex}
-      initialLayout={{ width: layout.width }}
-    />
+    <>
+      <Header title={user.name} />
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        renderTabBar={renderTabBar}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+      />
+    </>
   );
 }
