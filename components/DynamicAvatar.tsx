@@ -1,9 +1,9 @@
-import { ImageSourcePropType } from "react-native";
+import { ImageSourcePropType, ImageURISource } from "react-native";
 import { Avatar } from "react-native-paper";
 import { AXIOS_BASE_URL } from "@env";
 
 interface DynamicAvatarProps {
-  pfp?: string;
+  pfp?: string | ImageURISource;
   defaultPfp: ImageSourcePropType;
   size?: number;
 }
@@ -13,7 +13,13 @@ export default function DynamicAvatar({
   defaultPfp,
   size,
 }: DynamicAvatarProps) {
-  const getImageSource = (): ImageSourcePropType => {
+  const getImageSource = (): ImageURISource => {
+    // return pfp as is if it is a ImageURISource
+    if (typeof pfp === "object") {
+      return pfp;
+    }
+
+    // otherwise convert it to an ImageUriSource
     return {
       uri: AXIOS_BASE_URL + "/images/" + pfp,
     };

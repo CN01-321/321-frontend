@@ -16,7 +16,7 @@ import CheckboxSelectorCard from "../cards/CheckboxSelectorCard";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
-import { Buffer } from "buffer";
+import { pickImage, uploadImage } from "../../utilities/image";
 
 const icon = require("../../assets/icon.png");
 
@@ -58,52 +58,6 @@ export default function NewPetModal({
   });
   const { pushMessage, pushError } = useMessageSnackbar();
 
-  const getImage: () => Promise<
-    ImagePicker.ImagePickerAsset | undefined
-  > = async () => {
-    const pickerRes = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      base64: true,
-      allowsEditing: true,
-      aspect: [3, 4],
-    });
-
-    if (!pickerRes.canceled) {
-      return pickerRes.assets[0];
-    }
-  };
-
-  // take image is disabled as there is a bug in expo-image-picker which
-  // prevents the camera from opening
-  // const takeImage: () => Promise<
-  //   ImagePicker.ImagePickerAsset | undefined
-  // > = async () => {
-  //   const permissions = await ImagePicker.requestCameraPermissionsAsync();
-
-  //   if (!permissions.granted) {
-  //     pushError("Camera permissions have not been granted");
-  //     return;
-  //   }
-
-  //   try {
-  //     console.log("taking image");
-  //     const pickerRes = await ImagePicker.launchCameraAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //       allowsEditing: true,
-  //       aspect: [3, 4],
-  //     });
-
-  //     if (!pickerRes.canceled) {
-  //       return pickerRes.assets[0];
-  //     }
-
-  //     console.log("taking image cancelled");
-  //   } catch (err) {
-  //     console.error(err);
-  //     pushError("Could not access camera");
-  //   }
-  // };
-
   const onSubmit: SubmitHandler<NewPetForm> = async (formData) => {
     const petData = {
       name: formData.name,
@@ -124,20 +78,11 @@ export default function NewPetModal({
       const petId = data;
       console.log(petId);
 
-      if (formData.image?.base64) {
-        const imageBuffer = Buffer.from(formData.image.base64, "base64");
-
-        // console.log("uploading image", imageBuffer);
-
+      if (formData.image) {
         try {
-          await axios.post(`/owners/pets/${petId}/pfp`, imageBuffer.buffer, {
-            headers: {
-              "Content-Type": "image/png",
-            },
-          });
+          await uploadImage(`/owners/pets/${petId}/pfp`, formData.image);
         } catch (err) {
-          console.error(err);
-          pushError("Could not upload pet profile image");
+          if (err instanceof Error) pushError(err.message);
         }
       }
 
@@ -256,19 +201,11 @@ export default function NewPetModal({
               <View>
                 <Button
                   mode="outlined"
-                  onPress={async () => onChange(await getImage())}
+                  onPress={async () => onChange(await pickImage())}
                   style={{ marginTop: 5 }}
                 >
                   Upload Image
                 </Button>
-                {/* Taking image disabled due to bug in expo-image-picker */}
-                {/* <Button
-                  mode="contained"
-                  onPress={async () => onChange(await takeImage())}
-                  style={{ marginTop: 5 }}
-                >
-                  Snap a Pic
-                </Button> */}
               </View>
             </View>
           )}

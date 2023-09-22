@@ -1,7 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { List, useTheme } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
-import { useRouter } from "expo-router";
 
 import { useAuth } from "../../contexts/auth";
 import Header from "../../components/Header";
@@ -15,6 +14,7 @@ import ContactUsIcon from "../../assets/icons/settings/contactus.svg";
 import AboutUsIcon from "../../assets/icons/settings/aboutus.svg";
 import TermsOfServiceIcon from "../../assets/icons/settings/termsofservice.svg";
 import PrivacyPolicyIcon from "../../assets/icons/settings/privacypolicy.svg";
+import { useRouter } from "expo-router";
 
 export default function Settings() {
   const theme = useTheme();
