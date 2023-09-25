@@ -371,7 +371,7 @@ const EditProfileForm = ({ user }: EditProfileFormProp) => {
                     />
                   )}
                 />
-                <Text variant="titleMedium">Size of Pets to Service</Text>
+                <Text variant="titleMedium">Size of Pets</Text>
                 <Text>Small</Text>
                 <Controller
                   control={control}

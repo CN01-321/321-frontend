@@ -1,11 +1,16 @@
 import { View, ScrollView } from "react-native";
 import axios from "axios";
-import EditProfileForm from "../../../components/EditProfileForm";
+import EditOwnerProfileForm from "../../../components/EditOwnerProfileForm";
+import EditCarerProfileForm from "../../../components/EditCarerProfileForm";
 import Header from "../../../components/Header";
 import { Owner, Carer } from "../../../types/types";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../contexts/auth";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
+
+function isOwner(object: any): object is Owner {
+  return object.userType === 'owner';
+}
 
 const EditProfile = () => {
   const [user, setUser] = useState<Owner | Carer>();
@@ -28,11 +33,17 @@ const EditProfile = () => {
     return () => (ignore = true);
   }, []);
 
+  if (!user) return null;
+
   return (
     <View>
       <Header title="Edit Profile" />
       <ScrollView>
-        {user == null ? null : <EditProfileForm user={user} />}
+        {
+          isOwner(user)
+          ? <EditOwnerProfileForm owner={user} />
+          : <EditCarerProfileForm carer={user} />
+        }
       </ScrollView>
     </View>
   );
