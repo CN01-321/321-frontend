@@ -2,25 +2,17 @@ import { useLocalSearchParams } from "expo-router";
 import { ReactNode, useEffect, useState } from "react";
 import { useWindowDimensions } from "react-native";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
-import { useAuth } from "../../../contexts/auth";
 import axios from "axios";
-import { UserType } from "../../../types/types";
+import { Owner, Carer } from "../../../types/types";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
-import UserProfileInfoView from "../../../components/UserProfileInfoView";
 import { SceneMap, TabView, TabBar } from "react-native-tab-view";
 import { useTheme } from "react-native-paper";
 import Header from "../../../components/Header";
+import OwnerProfileInfoView from "../../../components/OwnerProfileInfoView";
+import CarerProfileInfoView from "../../../components/CarerProfileInfoView";
 
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  userType: UserType;
-  bio: string;
-  phone: string;
-  preferredTravelDistance?: number;
-  hourlyRate?: number;
-  pfp?: string;
+function isOwner(object: any): object is Owner {
+  return object.userType === 'owner';
 }
 
 const renderTabBar = (props: any): ReactNode => {
@@ -48,21 +40,13 @@ export default function Profile() {
     profileId: string;
     isSelf?: string;
   }>();
-  const { getTokenUser } = useAuth();
-  const [user, setUser] = useState<User>({
-    _id: "",
-    name: "",
-    email: getTokenUser()!.email,
-    userType: getTokenUser()!.type,
-    bio: "",
-    phone: "",
-  });
+  const [user, setUser] = useState<Owner | Carer>();
   const [reviews, setReviews] = useState<Review[]>([]);
   const { pushError } = useMessageSnackbar();
 
-  const getProfile = async (profileId: string): Promise<User> => {
+  const getProfile = async (profileId: string): Promise<Owner | Carer> => {
     console.log("profile id is ", profileId);
-    const { data } = await axios.get<User>(`/users/${profileId}`);
+    const { data } = await axios.get(`/users/${profileId}`);
     console.log("user is ", data);
     return data;
   };
@@ -112,8 +96,12 @@ export default function Profile() {
     updateFeedback();
   }, [index]);
 
+  if (!user) return null;
+
   const FirstRoute = () => (
-    <UserProfileInfoView user={user} />
+    isOwner(user)
+    ? <OwnerProfileInfoView owner={user} />
+    : <CarerProfileInfoView carer={user} />
   );
 
   const SecondRoute = () => (
