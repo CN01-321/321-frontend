@@ -10,6 +10,7 @@ type EditableTextboxProps = {
   onBlur?: (args: any) => void;
   onChangeText?: (args: any) => void;
   secureTextEntry?: boolean;
+  autoCapitalize?: "none" | "sentences" | "words" | "characters"
 }
 
 const EditableTextbox = ({ 
@@ -20,6 +21,7 @@ const EditableTextbox = ({
   onBlur, 
   onChangeText,
   secureTextEntry, 
+  autoCapitalize
 }: EditableTextboxProps) => {
   const theme = useTheme();
 
@@ -40,6 +42,7 @@ const EditableTextbox = ({
         onBlur={onBlur}
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
+        autoCapitalize={autoCapitalize ? autoCapitalize : "sentences"}
       />
     </View>
   );
