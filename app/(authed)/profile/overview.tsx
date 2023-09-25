@@ -1,41 +1,28 @@
 import { useLocalSearchParams } from "expo-router";
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWindowDimensions } from "react-native";
 import ReviewsView, { Review } from "../../../components/ReviewsView";
 import axios from "axios";
 import { Owner, Carer } from "../../../types/types";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
-import { SceneMap, TabView, TabBar } from "react-native-tab-view";
-import { useTheme } from "react-native-paper";
+import UserProfileInfoView from "../../../components/UserProfileInfoView";
 import Header from "../../../components/Header";
-import OwnerProfileInfoView from "../../../components/OwnerProfileInfoView";
-import CarerProfileInfoView from "../../../components/CarerProfileInfoView";
+import ThemedTabView from "../../../components/ThemedTabView";
 
-function isOwner(object: any): object is Owner {
-  return object.userType === 'owner';
-}
-
-const renderTabBar = (props: any): ReactNode => {
-  const theme = useTheme();
-
-  return (
-    <TabBar
-      {...props}
-      indicatorStyle={{ backgroundColor: theme.colors.primary }}
-      style={{ elevation:0, backgroundColor: "#FCFCFC" }}
-      labelStyle={{ 
-        color: "#1D1B20",
-        fontFamily: "Montserrat-Medium"
-      }}
-    /> 
-  );
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  userType: UserType;
+  bio: string;
+  phone: string;
+  preferredTravelDistance?: number;
+  hourlyRate?: number;
+  pfp?: string;
 }
 
 export default function Profile() {
   const layout = useWindowDimensions();
-
-  const [index, setIndex] = useState(0);
-
   const { profileId, isSelf } = useLocalSearchParams<{
     profileId: string;
     isSelf?: string;
@@ -89,27 +76,9 @@ export default function Profile() {
     return () => (ignore = true);
   }, [profileId]);
 
-  useEffect(() => {
-    const updateFeedback = async () => {
-      await updateReviews();
-    };
-    updateFeedback();
-  }, [index]);
+  const profileRoute = () => <UserProfileInfoView user={user} />;
 
-  const [routes] = useState([
-    { key: 'first', title: 'Profile' },
-    { key: 'second', title: 'Reviews' },
-  ]);
-
-  if (!user) return null;
-
-  const FirstRoute = () => (
-    isOwner(user)
-    ? <OwnerProfileInfoView owner={user} />
-    : <CarerProfileInfoView carer={user} />
-  );
-
-  const SecondRoute = () => (
+  const reviewsRoute = () => (
     <ReviewsView
       profile={user}
       isSelf={isSelf === "true"}
@@ -118,21 +87,15 @@ export default function Profile() {
     />
   );
 
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-  });
+  const scenes = [
+    { key: "first", title: "Profile", scene: profileRoute },
+    { key: "second", title: "Reviews", scene: reviewsRoute },
+  ];
 
   return (
     <>
       <Header title={user.name} />
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        renderTabBar={renderTabBar}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-      />
+      <ThemedTabView scenes={scenes} />
     </>
   );
 }

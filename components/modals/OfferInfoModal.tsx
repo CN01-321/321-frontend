@@ -4,10 +4,11 @@ import BaseOfferInfoModal, {
 } from "./BaseOfferInfoModal";
 import { Text, Button, Dialog, Portal, useTheme } from "react-native-paper";
 import { useState } from "react";
+import { OfferType } from "../../types/types";
 
 interface OfferInfoModalProps
   extends Omit<BaseOfferInfoModalProps, "children"> {
-  offerType: "direct" | "broad";
+  offerType: OfferType;
   onAccept: () => Promise<void>;
   onReject: () => Promise<void>;
 }

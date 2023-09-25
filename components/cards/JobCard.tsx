@@ -9,6 +9,7 @@ import axios from "axios";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 
 const icon = require("../../assets/icon.png");
+const paw = require("../../assets/icons/pet/carerPaws.png");
 
 interface JobCardProps {
   job: Job;
@@ -19,7 +20,7 @@ export default function JobCard({ job, updateJobs }: JobCardProps) {
   const [visible, setVisible] = useState(false);
   const { pushMessage, pushError } = useMessageSnackbar();
 
-  const cardTitle = () => job.pets.map((p) => p.name).join(", ");
+  const cardTitle = job.pets.map((p) => p.name).join(", ");
   const whenRequested = () => `Requested ${sinceRequested(job.requestedOn)}`;
 
   const handleComplete = async () => {
@@ -37,14 +38,15 @@ export default function JobCard({ job, updateJobs }: JobCardProps) {
 
   return (
     <BaseRequestCard
+      title={cardTitle}
+      name={`Owner: ${job.ownerName}`}
       pfp={job.ownerIcon}
       defaultPfp={icon}
       onPress={() => setVisible(true)}
+      paw={paw}
     >
-      <Text variant="titleLarge">{cardTitle()}</Text>
-      <Text variant="bodyMedium">{job.ownerName}</Text>
-      <Text variant="bodySmall">{whenRequested()}</Text>
-      <Text variant="bodySmall">
+      <Text variant="bodyMedium">{whenRequested()}</Text>
+      <Text variant="bodyMedium">
         Status: <RequestStatusText status={job.status} />
       </Text>
       <Button mode="contained">View Details</Button>

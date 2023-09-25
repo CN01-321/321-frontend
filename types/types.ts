@@ -105,6 +105,7 @@ export interface Request extends RequestInfo {
 }
 
 export type JobType = "direct" | "broad" | "job";
+export type OfferType = Omit<JobType, "job">;
 
 export interface Job extends RequestInfo {
   ownerId: string;

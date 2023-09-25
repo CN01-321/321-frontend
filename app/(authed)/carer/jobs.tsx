@@ -1,34 +1,22 @@
-import { View } from "react-native";
-import JobsListView from "../../../components/JobsListView";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Job } from "../../../types/types";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
-import { SegmentedButtons } from "react-native-paper";
+import ThemedTabView from "../../../components/ThemedTabView";
+import { fetchRequestInfo } from "../../../utils";
+import { FlatList, StyleSheet } from "react-native";
+import JobCard from "../../../components/cards/JobCard";
 
 export default function Jobs() {
   const [currentJobs, setCurrentJobs] = useState<Job[]>([]);
   const [pastJobs, setPastJobs] = useState<Job[]>([]);
-  const [currentView, setCurrentView] = useState<"current" | "past">("current");
-
+  const [refreshing, setRefreshing] = useState(false);
   const { pushError } = useMessageSnackbar();
 
   const updateJobs = async () => {
+    setRefreshing(true);
     try {
-      const { data } = await axios.get<Job[]>(`/carers/jobs`);
-
-      // map all date strings to date objects
-      const jobs = data.map((o) => {
-        return {
-          ...o,
-          requestedOn: new Date(o.requestedOn),
-          dateRange: {
-            startDate: new Date(o.dateRange.startDate),
-            endDate: new Date(o.dateRange.endDate),
-          },
-        };
-      });
+      const jobs = await fetchRequestInfo<Job>("/carers/jobs");
 
       const isPastJob = (j: Job) =>
         j.status === "rejected" || j.status === "completed";
@@ -39,6 +27,8 @@ export default function Jobs() {
       console.error(e);
       pushError("Could not fetch Jobs");
     }
+
+    setRefreshing(false);
   };
 
   useEffect((): (() => void) => {
@@ -49,27 +39,43 @@ export default function Jobs() {
     return () => (ignore = true);
   }, []);
 
+  const currentJobsScene = () => (
+    <FlatList
+      data={currentJobs}
+      renderItem={({ item }) => <JobCard job={item} updateJobs={updateJobs} />}
+      keyExtractor={(item) => item._id}
+      contentContainerStyle={styles.jobListContainer}
+      onRefresh={updateJobs}
+      refreshing={refreshing}
+    />
+  );
+
+  const pastJobsScene = () => (
+    <FlatList
+      data={pastJobs}
+      renderItem={({ item }) => <JobCard job={item} updateJobs={updateJobs} />}
+      keyExtractor={(item) => item._id}
+      contentContainerStyle={styles.jobListContainer}
+      onRefresh={updateJobs}
+      refreshing={refreshing}
+    />
+  );
+
+  const scenes = [
+    { key: "current", title: "Current", scene: currentJobsScene },
+    { key: "past", title: "Past", scene: pastJobsScene },
+  ];
+
   return (
-    <View>
+    <>
       <Header title="Jobs" />
-      <SegmentedButtons
-        value={currentView}
-        onValueChange={(v) => setCurrentView(v as "current" | "past")}
-        buttons={[
-          {
-            value: "current",
-            label: "Current",
-          },
-          {
-            value: "past",
-            label: "Past",
-          },
-        ]}
-      />
-      <JobsListView
-        jobs={currentView === "current" ? currentJobs : pastJobs}
-        updateJobs={updateJobs}
-      />
-    </View>
+      <ThemedTabView scenes={scenes} />
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  jobListContainer: {
+    paddingBottom: 100,
+  },
+});

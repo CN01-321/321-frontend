@@ -1,7 +1,28 @@
-import { RequestInfoLocation } from "./types/types";
+import axios from "axios";
+import { RequestInfo, RequestInfoLocation } from "./types/types";
+
+export async function fetchRequestInfo<T extends RequestInfo>(
+  endpoint: string
+) {
+  const { data } = await axios.get<T[]>(endpoint);
+
+  const info = data.map((i) => {
+    i.requestedOn = new Date(i.requestedOn);
+    i.dateRange.startDate = new Date(i.dateRange.startDate);
+    i.dateRange.endDate = new Date(i.dateRange.endDate);
+    return i;
+  });
+
+  return info;
+}
 
 export function sinceRequested(date: Date) {
-  return `${getDuration(new Date(), date)} ago`;
+  const duration = getDuration(new Date(), date);
+  if (duration === "now") {
+    return duration;
+  }
+
+  return `${duration} ago`;
 }
 
 export function toDDMMYYYY(date: Date) {

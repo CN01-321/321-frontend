@@ -129,7 +129,7 @@ export default function Search() {
   }, [carers, filters]);
 
   return (
-    <View style={{ backgroundColor: theme.colors.background }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <Header title="Search" />
       {/* <Button
         mode="contained"

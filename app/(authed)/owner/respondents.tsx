@@ -1,13 +1,12 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import CarerResultsView, {
-  CarerResult,
-} from "../../../components/CarerResultsView";
+import CarerResultsView from "../../../components/CarerResultsView";
 import axios from "axios";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import PaymentModal from "../../../components/modals/PaymentModal";
+import { CarerResult } from "../../../types/types";
 
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();

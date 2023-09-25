@@ -1,11 +1,10 @@
 import { Button, Text } from "react-native-paper";
 import BaseModal, { BaseModalProps } from "./BaseModal";
 import { useEffect, useState } from "react";
-import { Pet } from "../../types/types";
+import { CarerResult, Pet } from "../../types/types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { DatePickerInput } from "../DatePickerInput";
 import axios from "axios";
-import { CarerResult } from "../CarerResultsView";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 import CheckboxSelectorCard from "../cards/CheckboxSelectorCard";
 import { View } from "react-native";
@@ -100,7 +99,12 @@ export default function NewRequestModal({
   };
   return (
     <BaseModal title={title} visible={visible} onDismiss={onDismiss}>
-      <Text variant="bodySmall">Please provide the following details</Text>
+      <Text
+        variant="bodySmall"
+        style={{ textAlign: "center", paddingBottom: 10 }}
+      >
+        Please provide the following details
+      </Text>
       <View>
         <View>
           <Controller

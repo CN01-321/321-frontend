@@ -42,8 +42,8 @@ export default function BaseModal({
         contentContainerStyle={[
           styles.container,
           {
-            marginBottom: keyboardShown ? 50 : 240,
-            top: keyboardShown ? "10%" : "20%",
+            // marginBottom: keyboardShown ? 50 : 240,
+            top: keyboardShown ? "10%" : "15%",
           },
         ]}
       >
@@ -53,9 +53,9 @@ export default function BaseModal({
           </Text>
           <Divider style={styles.divider} />
         </View>
-        <View style={{ maxHeight: "80%" }}>
-          <ScrollView style={styles.contentContainer}>{children}</ScrollView>
-        </View>
+        <ScrollView style={styles.contentContainer}>
+          <View style={{ paddingBottom: 50 }}>{children}</View>
+        </ScrollView>
       </Modal>
     </Portal>
   );
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
   },
   titleContainer: {
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   title: {
     padding: 10,
@@ -81,7 +81,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     backgroundColor: "white",
-    flexGrow: 1,
     paddingHorizontal: 15,
   },
 });

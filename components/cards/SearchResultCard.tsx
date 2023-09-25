@@ -35,7 +35,13 @@ export default function SearchResultCard({
         })
       }
     >
-      <View style={{ flex: 1, justifyContent: "space-evenly", padding: 20 }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "space-evenly",
+          paddingHorizontal: 15,
+        }}
+      >
         <View style={styles.infoArea}>
           <View
             style={{

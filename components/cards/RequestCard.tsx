@@ -6,6 +6,7 @@ import RequestStatusText from "../RequestStatusText";
 import { useRouter } from "expo-router";
 
 const icon = require("../../assets/icon.png");
+const paws = require("../../assets/icons/pet/ownerPaws.png");
 
 interface RequestCardProps {
   request: Request;
@@ -18,7 +19,8 @@ export default function RequestCard({ request }: RequestCardProps) {
     return pfps[0];
   };
 
-  const cardTitle = () => request.pets.map((p) => p.name).join(", ");
+  const cardTitle = request.pets.map((p) => p.name).join(", ");
+  const carerName = `Carer: ${request.carer ? request.carer.name : "Pending"}`;
   const requestedOn = `Requested ${sinceRequested(request.requestedOn)}`;
 
   const handleViewRespondents = () => {
@@ -29,10 +31,16 @@ export default function RequestCard({ request }: RequestCardProps) {
   };
 
   return (
-    <BaseRequestCard pfp={randPetPfp()} defaultPfp={icon}>
-      <Text variant="titleLarge">{cardTitle()}</Text>
-      <Text>{request.carer ? request.carer.name : "Pending"}</Text>
-      <Text variant="bodySmall">{requestedOn}</Text>
+    <BaseRequestCard
+      title={cardTitle}
+      name={carerName}
+      pfp={randPetPfp()}
+      defaultPfp={icon}
+      paw={paws}
+    >
+      <Text variant="bodySmall" style={{ fontWeight: "600" }}>
+        {requestedOn}
+      </Text>
       <Text variant="bodySmall">
         Status: <RequestStatusText status={request.status} />
       </Text>

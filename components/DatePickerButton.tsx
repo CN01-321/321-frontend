@@ -1,0 +1,35 @@
+import { Button, Text } from "react-native-paper";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { useState } from "react";
+
+interface DatePickerButtonProps {
+  label?: string;
+  date?: Date | null;
+  updateDate: (date: Date) => void;
+}
+
+export function DatePickerButton({
+  label,
+  date,
+  updateDate,
+}: DatePickerButtonProps) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <>
+      {label ? <Text>{label}</Text> : null}
+      <Button
+        mode={date ? "contained" : "outlined"}
+        onPress={() => setVisible(true)}
+      >
+        {date ? date.toDateString() : "Set Date"}
+      </Button>
+      <DateTimePickerModal
+        isVisible={visible}
+        mode="datetime"
+        onConfirm={updateDate}
+        onCancel={() => setVisible(false)}
+      />
+    </>
+  );
+}

@@ -1,45 +1,26 @@
-import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
-import { SegmentedButtons } from "react-native-paper";
-import axios from "axios";
 import { Job } from "../../../types/types";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import OffersListView from "../../../components/OfferListView";
-
-type OfferType = "direct" | "broad";
+import ThemedTabView from "../../../components/ThemedTabView";
+import { fetchRequestInfo } from "../../../utils";
 
 export default function Offers() {
-  const { initOfferType } = useLocalSearchParams<{
-    initOfferType?: OfferType;
-  }>();
-  const [offerType, setOfferType] = useState<OfferType>(
-    initOfferType ?? "direct"
-  );
-  const [offers, setOffers] = useState<Job[]>([]);
+  const [direct, setDirect] = useState<Job[]>([]);
+  const [broad, setBroad] = useState<Job[]>([]);
   const { pushError } = useMessageSnackbar();
 
   const updateOffers = async () => {
     try {
-      const { data } = await axios.get<Job[]>(`/carers/${offerType}`);
+      const direct = await fetchRequestInfo<Job>("/carers/direct");
+      setDirect(direct);
 
-      // map all date strings to date objects
-      const offers = data.map((o) => {
-        return {
-          ...o,
-          requestedOn: new Date(o.requestedOn),
-          dateRange: {
-            startDate: new Date(o.dateRange.startDate),
-            endDate: new Date(o.dateRange.endDate),
-          },
-        };
-      });
-
-      setOffers(offers);
+      const broad = await fetchRequestInfo<Job>("/carers/broad");
+      setBroad(broad);
     } catch (e) {
       console.error(e);
-      pushError("Could not fetch offers");
+      pushError(`Could not fetch offers`);
     }
   };
 
@@ -49,30 +30,33 @@ export default function Offers() {
     if (!ignore) updateOffers();
 
     return () => (ignore = true);
-  }, [offerType]);
+  }, []);
+
+  const directOffersScene = () => (
+    <OffersListView
+      offers={direct}
+      offerType="direct"
+      updateOffers={updateOffers}
+    />
+  );
+
+  const broadOffersScene = () => (
+    <OffersListView
+      offers={broad}
+      offerType={"broad"}
+      updateOffers={updateOffers}
+    />
+  );
+
+  const scenes = [
+    { key: "direct", title: "My Offers", scene: directOffersScene },
+    { key: "broad", title: "Jobs List", scene: broadOffersScene },
+  ];
 
   return (
-    <View>
+    <>
       <Header title="Offers" />
-      <SegmentedButtons
-        value={offerType}
-        onValueChange={(value) => setOfferType(value as OfferType)}
-        buttons={[
-          {
-            value: "direct",
-            label: "My Offers",
-          },
-          {
-            value: "broad",
-            label: "Jobs List",
-          },
-        ]}
-      />
-      <OffersListView
-        offers={offers}
-        offerType={offerType}
-        updateOffers={updateOffers}
-      />
-    </View>
+      <ThemedTabView scenes={scenes} />
+    </>
   );
 }

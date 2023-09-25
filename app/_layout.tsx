@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { Slot } from "expo-router";
 import {
   MD3LightTheme,
@@ -114,14 +113,7 @@ export default function Layout() {
     "Montserrat-Bold": require("../assets/fonts/Montserrat-Bold.ttf"),
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
   if (!fontsLoaded) return null;
-
   return (
     <AuthProvider>
       <LayoutWithTheme />
