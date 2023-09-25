@@ -1,17 +1,17 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
-import CarerResultsView from "../../../components/CarerResultsView";
+import { FlatList, View } from "react-native";
 import axios from "axios";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import PaymentModal from "../../../components/modals/PaymentModal";
-import { CarerResult } from "../../../types/types";
+import { Respondent } from "../../../types/types";
+import RespondentCard from "../../../components/cards/RespondentCard";
 
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();
-  const [respodentId, setRespondentId] = useState("");
-  const [respondents, setRespondents] = useState<CarerResult[]>([]);
+  const [currentRespondent, setCurrentRespondent] = useState<Respondent>();
+  const [respondents, setRespondents] = useState<Respondent[]>([]);
   const [visible, setVisible] = useState(false);
   const { pushMessage, pushError } = useMessageSnackbar();
   const router = useRouter();
@@ -21,11 +21,9 @@ export default function Respondents() {
 
     (async () => {
       try {
-        const { data } = await axios.get<CarerResult[]>(
+        const { data } = await axios.get<Respondent[]>(
           `/owners/requests/${requestId}/respondents`
         );
-
-        console.log(JSON.stringify(data, null, 2));
 
         if (!ignore) {
           setRespondents(data);
@@ -42,7 +40,7 @@ export default function Respondents() {
   const handleAccept = async () => {
     try {
       await axios.post(
-        `/owners/requests/${requestId}/respondents/${respodentId}`
+        `/owners/requests/${requestId}/respondents/${currentRespondent?._id}`
       );
       pushMessage("Your request has been successfully made!");
       setVisible(false);
@@ -61,15 +59,20 @@ export default function Respondents() {
         requestId={requestId ?? ""}
         onAccept={handleAccept}
         onDismiss={() => setVisible(false)}
-        respondent={respondents.find((r) => r._id === respodentId)}
+        respondent={currentRespondent}
       />
-      <CarerResultsView
-        carerResults={respondents}
-        handleRequest={(carerResult) => {
-          setRespondentId(carerResult._id);
-          setVisible(true);
-        }}
-        cardButtonLabel="Hire"
+      <FlatList
+        data={respondents}
+        renderItem={({ item }) => (
+          <RespondentCard
+            respondent={item}
+            onHire={() => {
+              setCurrentRespondent(item);
+              setVisible(true);
+            }}
+          />
+        )}
+        keyExtractor={(item) => item._id}
       />
     </View>
   );

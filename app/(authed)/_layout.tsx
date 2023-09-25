@@ -41,7 +41,7 @@ const carerRoutes = [
     unfocusedIcon: () => <JobsIcon height={25} fill={"#49454F"} />,
   },
   {
-    key: "profile",
+    key: "profile/overview",
     title: "Profile",
     focusedIcon: () => <ProfileIcon height={25} fill={"#FFFFFF"} />,
     unfocusedIcon: () => <ProfileIcon height={25} fill={"#49454F"} />,
@@ -74,7 +74,7 @@ const ownerRoutes = [
     unfocusedIcon: () => <PetsIcon height={25} fill={"#49454F"} />,
   },
   {
-    key: "profile",
+    key: "profile/overview",
     title: "Profile",
     focusedIcon: () => <ProfileIcon height={25} fill={"#FFFFFF"} />,
     unfocusedIcon: () => <ProfileIcon height={25} fill={"#49454F"} />,
@@ -108,7 +108,7 @@ export default function UserLayout() {
           setIndex(routes.findIndex((r) => r.key === route.key));
 
           const href: Href =
-            route.key === "profile"
+            route.key === "profile/overview"
               ? {
                   pathname: `/profile/overview`,
                   params: { profileId: getTokenUser()?._id, isSelf: "true" },

@@ -92,90 +92,105 @@ export default function PaymentModal({
 
   return (
     <BaseModal title="Payment" visible={visible} onDismiss={onDismiss}>
-      <Text variant="displaySmall" style={styles.sectionTextHeader}>
-        SUMMARY OF THE JOB REQUEST
-      </Text>
-      <RequestItem icon="calendar-outline" title="Date">
-        <Text variant="bodySmall">
-          {toDDMMYYYY(request?.dateRange.startDate ?? new Date())}
+      <View style={{ marginBottom: 200 }}>
+        <Text variant="displaySmall" style={styles.sectionTextHeader}>
+          SUMMARY OF THE JOB REQUEST
         </Text>
-      </RequestItem>
+        <RequestItem icon="calendar-outline" title="Date">
+          <Text variant="bodySmall">
+            {toDDMMYYYY(request?.dateRange.startDate ?? new Date())}
+          </Text>
+        </RequestItem>
 
-      <RequestItem icon="clock-outline" title="Time">
-        <Text variant="bodySmall">
-          {request?.dateRange.startDate.toTimeString()}
-        </Text>
-      </RequestItem>
+        <RequestItem icon="clock-outline" title="Time">
+          <Text variant="bodySmall">
+            {request?.dateRange.startDate.toTimeString()}
+          </Text>
+        </RequestItem>
 
-      <RequestItem icon="timer-sand" title="Duration">
-        <Text variant="bodySmall">
-          {getDuration(request.dateRange.startDate, request.dateRange.endDate)}
-        </Text>
-      </RequestItem>
+        <RequestItem icon="timer-sand" title="Duration">
+          <Text variant="bodySmall">
+            {getDuration(
+              request.dateRange.startDate,
+              request.dateRange.endDate
+            )}
+          </Text>
+        </RequestItem>
 
-      <RequestItem icon="crosshairs-gps" title="Location">
-        <Text variant="bodySmall">{locationToString(request.location)}</Text>
-      </RequestItem>
-
-      {request.carer ? (
-        <RequestItem icon="account-outline" title="Carer's Name">
+        <RequestItem icon="crosshairs-gps" title="Location">
           <Text variant="bodySmall">{locationToString(request.location)}</Text>
         </RequestItem>
-      ) : null}
 
-      <View style={{ marginTop: -20, padding: 10 }}>
-        <CheckboxSelectorCard
-          title="Pets"
-          icon="dog-side"
-          items={pets}
-          keyExtractor={(item) => item._id}
-          nameExtractor={(item) => item.name}
-        />
-        <Divider />
-      </View>
+        {request.carer ? (
+          <RequestItem icon="account-outline" title="Carer's Name">
+            <Text variant="bodySmall">
+              {locationToString(request.location)}
+            </Text>
+          </RequestItem>
+        ) : null}
 
-      <RequestItem icon="information" title="Additional Info">
-        <Text variant="bodySmall">{request.additionalInfo}</Text>
-      </RequestItem>
+        <View style={{ marginTop: -20, padding: 10 }}>
+          <CheckboxSelectorCard
+            title="Pets"
+            icon="dog-side"
+            items={pets}
+            keyExtractor={(item) => item._id}
+            nameExtractor={(item) => item.name}
+          />
+          <Divider />
+        </View>
 
-      <Text variant="displaySmall" style={styles.sectionTextHeader}>
-        COST BREAKDOWN
-      </Text>
+        <RequestItem icon="information" title="Additional Info">
+          <Text variant="bodySmall">{request.additionalInfo}</Text>
+        </RequestItem>
 
-      <RequestItem icon="cash-fast" title="Hourly Rate">
-        <Text variant="bodySmall">$ {respondent?.hourlyRate ?? "0"}</Text>
-      </RequestItem>
-
-      <RequestItem icon="cash" title="Total Cost">
-        <Text variant="bodySmall">
-          ${" "}
-          {calculateTotalCost(
-            respondent?.hourlyRate ?? 1,
-            request.dateRange.startDate,
-            request.dateRange.endDate
-          )}
+        <Text variant="displaySmall" style={styles.sectionTextHeader}>
+          COST BREAKDOWN
         </Text>
-      </RequestItem>
 
-      <Text variant="displaySmall" style={styles.sectionTextHeader}>
-        PAYMENT DETAILS
-      </Text>
+        <RequestItem icon="cash-fast" title="Hourly Rate">
+          <Text variant="bodySmall">$ {respondent?.hourlyRate ?? "0"}</Text>
+        </RequestItem>
 
-      <PaymentDetails />
+        <RequestItem icon="cash" title="Total Cost">
+          <Text variant="bodySmall">
+            ${" "}
+            {calculateTotalCost(
+              respondent?.hourlyRate ?? 1,
+              request.dateRange.startDate,
+              request.dateRange.endDate
+            )}
+          </Text>
+        </RequestItem>
 
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-        }}
-      >
-        <Button style={styles.actionButton} mode="outlined" onPress={onDismiss}>
-          Cancel
-        </Button>
-        <Button style={styles.actionButton} mode="contained" onPress={onAccept}>
-          Pay now
-        </Button>
+        <Text variant="displaySmall" style={styles.sectionTextHeader}>
+          PAYMENT DETAILS
+        </Text>
+
+        <PaymentDetails />
+
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <Button
+            style={styles.actionButton}
+            mode="outlined"
+            onPress={onDismiss}
+          >
+            Cancel
+          </Button>
+          <Button
+            style={styles.actionButton}
+            mode="contained"
+            onPress={onAccept}
+          >
+            Pay now
+          </Button>
+        </View>
       </View>
     </BaseModal>
   );

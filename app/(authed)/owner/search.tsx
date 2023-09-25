@@ -131,13 +131,6 @@ export default function Search() {
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <Header title="Search" />
-      {/* <Button
-        mode="contained"
-        // style={{ borderColor: theme.colors.primary, backgroundColor: "white" }}
-        onPress={() => setFilterVisible(true)}
-      >
-        Filters
-      </Button> */}
       <Pressable onPress={() => setFilterVisible(true)}>
         <Searchbar placeholder="Search" value="" editable={false} />
       </Pressable>

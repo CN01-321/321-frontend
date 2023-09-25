@@ -62,7 +62,7 @@ export default function Requests() {
       data={pastRequests}
       renderItem={({ item }) => <RequestCard request={item} />}
       keyExtractor={(item) => item._id}
-      contentContainerStyle={{ backgroundColor: theme.colors.primary }}
+      contentContainerStyle={{ backgroundColor: theme.colors.background }}
     />
   );
 

@@ -47,6 +47,10 @@ export interface CarerResult {
   hourlyRate?: number;
 }
 
+export interface Respondent extends CarerResult {
+  totalReviews: number;
+}
+
 export interface NearbyCarer extends CarerResult {
   distance: number;
   totalReviews: number;

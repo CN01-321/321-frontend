@@ -67,6 +67,5 @@ export function calculateTotalCost(
   end: Date
 ): number {
   const hours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
-  console.log(hours);
   return hours * hourlyRate;
 }

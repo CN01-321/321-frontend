@@ -1,8 +1,7 @@
-import { ImageSourcePropType } from "react-native";
+import { Image, ImageProps, ImageSourcePropType } from "react-native";
 import { AXIOS_BASE_URL } from "@env";
-import { Card, CardCoverProps } from "react-native-paper";
 
-interface DynamicCardCoverProps extends Omit<CardCoverProps, "source"> {
+interface DynamicCardCoverProps extends Omit<ImageProps, "source"> {
   imageId?: string;
   defaultImage: ImageSourcePropType;
 }
@@ -20,6 +19,6 @@ export default function DynamicCardCover({
   };
 
   return (
-    <Card.Cover {...props} source={imageId ? getImageSource() : defaultImage} />
+    <Image {...props} source={imageId ? getImageSource() : defaultImage} />
   );
 }

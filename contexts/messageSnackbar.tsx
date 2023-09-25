@@ -69,6 +69,7 @@ export function MessageSnackbarProvider({ children }: PropsWithChildren) {
         style={{
           backgroundColor:
             message?.type === "message" ? theme.colors.primary : ERROR_COLOUR,
+          marginBottom: 100,
         }}
       >
         {message?.message}

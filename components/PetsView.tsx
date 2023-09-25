@@ -1,5 +1,5 @@
-import { ScrollView, View, StyleSheet } from "react-native";
-import { Pet } from "../types/types";
+import { FlatList, StyleSheet, View } from "react-native";
+import { Pet, petSelectorTypes } from "../types/types";
 import { useRouter } from "expo-router";
 import { Card, Text } from "react-native-paper";
 import DynamicCardCover from "./DynamicCardCover";
@@ -12,18 +12,24 @@ type PetsViewProp = {
 
 const PetsView = ({ pets }: PetsViewProp) => {
   return (
-    <ScrollView contentContainerStyle={styles.petsArea}>
-      {pets.map((p) => (
-        <View key={p._id} style={styles.petCardContainer}>
-          <PetCard pet={p} />
-        </View>
-      ))}
-    </ScrollView>
+    <View style={{ width: "100%" }}>
+      <FlatList
+        data={pets}
+        renderItem={({ item }) => <PetCard pet={item} />}
+        numColumns={2}
+        contentContainerStyle={styles.container}
+        keyExtractor={(item) => item._id}
+      />
+    </View>
   );
 };
 
 function PetCard({ pet }: { pet: Pet }) {
   const router = useRouter();
+
+  const petType = petSelectorTypes.find(
+    (petType) => petType.key == pet.petType
+  )?.name;
 
   return (
     <Card
@@ -41,7 +47,8 @@ function PetCard({ pet }: { pet: Pet }) {
         style={styles.petCardImg}
       />
       <Card.Content>
-        <Text variant="titleSmall">{pet.name}</Text>
+        <Text variant="titleMedium">{pet.name}</Text>
+        <Text variant="bodyMedium">{petType}</Text>
       </Card.Content>
     </Card>
   );
@@ -49,22 +56,16 @@ function PetCard({ pet }: { pet: Pet }) {
 
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
-  },
-  petsArea: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "flex-start",
+    alignItems: "center",
   },
   petCard: {
-    width: "90%",
-    margin: "2.5%",
+    margin: "2%",
+    overflow: "hidden",
   },
-  petCardContainer: {
-    width: "50%",
-    display: "flex",
+  petCardImg: {
+    width: 175,
+    height: 175,
   },
-  petCardImg: {},
 });
 
 export default PetsView;
