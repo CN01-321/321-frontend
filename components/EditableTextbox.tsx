@@ -51,6 +51,7 @@ const EditableTextbox = ({
 const styles = StyleSheet.create({
   text: {
     fontFamily: "Montserrat-Medium",
+    fontSize: 15,
   },
   box: {
     backgroundColor: "transparent",

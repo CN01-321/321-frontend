@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 import { useRouter } from "expo-router"
 import { Text, List, Divider, Button, useTheme } from "react-native-paper";
 import DynamicAvatar from "./DynamicAvatar";
@@ -22,49 +22,51 @@ const OwnerProfileInfoView = ({ owner }: OwnerProfileInfoViewProp) => {
   const router = useRouter();
 
   return (
-    <View style={styles.view}>
-      <View style={styles.pfpAndNameContainer}>
-        <DynamicAvatar pfp={owner.pfp} defaultPfp={icon} size={120} />
-        <Text style={styles.fullName}>{owner.name}</Text>
-        <Button
-          mode="text" 
-          labelStyle={styles.editButtonStyle} 
-          contentStyle={{ flexDirection: "row-reverse" }}
-          onPress={() => router.push(`/profile/edit`)}
-          icon={() => <EditIcon height={22} width={22} fill={theme.colors.primary} />}
-        >
-          Tap Here to Edit Profile
-        </Button>
+    <ScrollView>
+      <View style={styles.view}>
+        <View style={styles.pfpAndNameContainer}>
+          <DynamicAvatar pfp={owner.pfp} defaultPfp={icon} size={120} />
+          <Text style={styles.fullName}>{owner.name}</Text>
+          <Button
+            mode="text" 
+            labelStyle={styles.editButtonStyle} 
+            contentStyle={{ flexDirection: "row-reverse" }}
+            onPress={() => router.push(`/profile/edit`)}
+            icon={() => <EditIcon height={22} width={22} fill={theme.colors.primary} />}
+          >
+            Tap Here to Edit Profile
+          </Button>
+        </View>
+        <List.Section>
+          <List.Subheader style={styles.subheadingStyle}>CONTACT DETAILS & ADDRESS</List.Subheader>
+          <ProfileListItem
+            title="Email Address"
+            description={owner.email}
+            icon={() => <EmailIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+          <Divider />
+          <ProfileListItem
+            title="Phone Number" 
+            description={owner.phone} 
+            icon={() => <PhoneIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+          <Divider />
+          <ProfileListItem
+            title="Address" 
+            description={`${owner.location?.street}, ${owner.location?.city}, ${owner.location?.state} ${owner.location?.postcode}`} 
+            icon={() => <AddressIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+        </List.Section>
+        <List.Section>
+          <List.Subheader style={styles.subheadingStyle}>OWNER DETAILS</List.Subheader>
+          <ProfileListItem 
+            title="About Me" 
+            description={owner.bio} 
+            icon={() => <AboutMeIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+        </List.Section>
       </View>
-      <List.Section>
-        <List.Subheader style={styles.subheadingStyle}>CONTACT DETAILS & ADDRESS</List.Subheader>
-        <ProfileListItem
-          title="Email Address"
-          description={owner.email}
-          icon={() => <EmailIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-        <Divider />
-        <ProfileListItem
-          title="Phone Number" 
-          description={owner.phone} 
-          icon={() => <PhoneIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-        <Divider />
-        <ProfileListItem
-          title="Address" 
-          description={`${owner.location?.street}, ${owner.location?.city}, ${owner.location?.state} ${owner.location?.postcode}`} 
-          icon={() => <AddressIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-      </List.Section>
-      <List.Section>
-        <List.Subheader style={styles.subheadingStyle}>OWNER DETAILS</List.Subheader>
-        <ProfileListItem 
-          title="About Me" 
-          description={owner.bio} 
-          icon={() => <AboutMeIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-      </List.Section>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -75,7 +77,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingLeft: 20,
     paddingRight: 20,
-    paddingBottom: 30,
+    marginBottom: 30,
   },
   pfpAndNameContainer: {
     display: "flex",

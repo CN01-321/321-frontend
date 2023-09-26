@@ -96,6 +96,11 @@ export default function Profile() {
     updateFeedback();
   }, [index]);
 
+  const [routes] = useState([
+    { key: 'first', title: 'Profile' },
+    { key: 'second', title: 'Reviews' },
+  ]);
+
   if (!user) return null;
 
   const FirstRoute = () => (
@@ -117,11 +122,6 @@ export default function Profile() {
     first: FirstRoute,
     second: SecondRoute,
   });
-
-  const [routes] = useState([
-    { key: 'first', title: 'Profile' },
-    { key: 'second', title: 'Reviews' },
-  ]);
 
   return (
     <>

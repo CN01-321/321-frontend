@@ -293,85 +293,113 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
             />
           )}
         />
-        <Text variant="titleMedium">Types of Pets to Service</Text>
-        <Text>Birds</Text>
-        <Controller
-          control={control}
-          name="willServiceBirds"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
-        <Text>Cats</Text>
-        <Controller
-          control={control}
-          name="willServiceCats"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
-        <Text>Dogs</Text>
-        <Controller
-          control={control}
-          name="willServiceDogs"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
-        <Text>Rabbits</Text>
-        <Controller
-          control={control}
-          name="willServiceRabbits"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
-        <Text variant="titleMedium">Size of Pets</Text>
-        <Text>Small</Text>
-        <Controller
-          control={control}
-          name="willServiceSmall"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
-        <Text>Medium</Text>
-        <Controller
-          control={control}
-          name="willServiceMedium"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
-        <Text>Large</Text>
-        <Controller
-          control={control}
-          name="willServiceLarge"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
+        <View style={[ styles.optionBox, { borderColor: theme.colors.primary }]}>
+          <View style={styles.optionBoxHeadingContainer}>
+            <PawIcon height={25} width={25} fill={theme.colors.primary} />
+            <Text style={styles.optionBoxHeading}>Types of Pets to Service</Text>
+          </View>
+          <View style={styles.selectionsContainer}>
+            <View style={styles.selectionOption}>
+              <Text style={styles.selectionOptionLabel}>Birds</Text>
+              <Controller
+                control={control}
+                name="willServiceBirds"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    status={value ? "checked" : "unchecked"}
+                    onPress={() => onChange(!value)}
+                  />
+                )}
+              />
+            </View>
+            <View style={styles.selectionOption}>
+              <Text style={styles.selectionOptionLabel}>Cats</Text>
+              <Controller
+                control={control}
+                name="willServiceCats"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    status={value ? "checked" : "unchecked"}
+                    onPress={() => onChange(!value)}
+                  />
+                )}
+              />
+            </View>
+            <View style={styles.selectionOption}>
+              <Text style={styles.selectionOptionLabel}>Dogs</Text>
+              <Controller
+                control={control}
+                name="willServiceDogs"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    status={value ? "checked" : "unchecked"}
+                    onPress={() => onChange(!value)}
+                  />
+                )}
+              />
+            </View>
+            <View style={styles.selectionOption}>
+              <Text style={styles.selectionOptionLabel}>Rabbits</Text>
+              <Controller
+                control={control}
+                name="willServiceRabbits"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    status={value ? "checked" : "unchecked"}
+                    onPress={() => onChange(!value)}
+                  />
+                )}
+              />
+            </View>
+          </View>
+        </View>
+        <View style={[ styles.optionBox, { borderColor: theme.colors.primary }]}>
+          <View style={styles.optionBoxHeadingContainer}>
+            <ScalesIcon height={25} width={25} fill={theme.colors.primary} />
+            <Text style={styles.optionBoxHeading}>Size of Pets to Service</Text>
+          </View>
+          <View style={styles.selectionsContainer}>
+            <View style={styles.selectionOption}>
+              <Text style={styles.selectionOptionLabel}>Small</Text>
+              <Controller
+                control={control}
+                name="willServiceSmall"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    status={value ? "checked" : "unchecked"}
+                    onPress={() => onChange(!value)}
+                  />
+                )}
+              />
+            </View>
+            <View style={styles.selectionOption}>
+              <Text style={styles.selectionOptionLabel}>Medium</Text>
+              <Controller
+                control={control}
+                name="willServiceMedium"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    status={value ? "checked" : "unchecked"}
+                    onPress={() => onChange(!value)}
+                  />
+                )}
+              />
+            </View>
+            <View style={styles.selectionOption}>
+              <Text style={styles.selectionOptionLabel}>Large</Text>
+              <Controller
+                control={control}
+                name="willServiceLarge"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    status={value ? "checked" : "unchecked"}
+                    onPress={() => onChange(!value)}
+                  />
+                )}
+              />
+            </View>
+          </View>
+        </View>
         <View style={styles.buttonContainer}>
           <Button 
             mode="contained" 
@@ -416,6 +444,37 @@ const styles = StyleSheet.create({
   button: {
     fontFamily: "Montserrat-SemiBold",
     fontSize: 16,
+  },
+  optionBox: {
+    border: "solid",
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15,
+  },
+  optionBoxHeadingContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+  },
+  optionBoxHeading: {
+    fontFamily: "Montserrat-SemiBold",
+  },
+  selectionsContainer: {
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  selectionOption: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  selectionOptionLabel: {
+    fontFamily: "Montserrat-Medium",
+    color: "#505050"
   }
 });
 

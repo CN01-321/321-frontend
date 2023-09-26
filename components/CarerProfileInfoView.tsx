@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 import { useRouter } from "expo-router"
 import { Text, List, Divider, Button, useTheme } from "react-native-paper";
 import DynamicAvatar from "./DynamicAvatar";
@@ -26,73 +26,75 @@ const CarerProfileInfoView = ({ carer }: CarerProfileInfoViewProp) => {
   const router = useRouter();
 
   return (
-    <View style={styles.view}>
-      <View style={styles.pfpAndNameContainer}>
-        <DynamicAvatar pfp={carer.pfp} defaultPfp={icon} size={120} />
-        <Text style={styles.fullName}>{carer.name}</Text>
-        <Button
-          mode="text" 
-          labelStyle={styles.editButtonStyle} 
-          contentStyle={{ flexDirection: "row-reverse" }}
-          onPress={() => router.push(`/profile/edit`)}
-          icon={() => <EditIcon height={22} width={22} fill={theme.colors.primary} />}
-        >
-          Tap Here to Edit Profile
-        </Button>
+    <ScrollView>
+      <View style={styles.view}>
+        <View style={styles.pfpAndNameContainer}>
+          <DynamicAvatar pfp={carer.pfp} defaultPfp={icon} size={120} />
+          <Text style={styles.fullName}>{carer.name}</Text>
+          <Button
+            mode="text" 
+            labelStyle={styles.editButtonStyle} 
+            contentStyle={{ flexDirection: "row-reverse" }}
+            onPress={() => router.push(`/profile/edit`)}
+            icon={() => <EditIcon height={22} width={22} fill={theme.colors.primary} />}
+          >
+            Tap Here to Edit Profile
+          </Button>
+        </View>
+        <List.Section>
+          <List.Subheader style={styles.subheadingStyle}>CONTACT DETAILS & ADDRESS</List.Subheader>
+          <ProfileListItem
+            title="Email Address"
+            description={carer.email}
+            icon={() => <EmailIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+          <Divider />
+          <ProfileListItem
+            title="Phone Number" 
+            description={carer.phone} 
+            icon={() => <PhoneIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+          <Divider />
+          <ProfileListItem
+            title="Address" 
+            description={`${carer.location?.street}, ${carer.location?.city}, ${carer.location?.state} ${carer.location?.postcode}`} 
+            icon={() => <AddressIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+        </List.Section>
+        <List.Section>
+          <List.Subheader style={styles.subheadingStyle}>SERVICE DETAILS</List.Subheader>
+          <ProfileListItem 
+            title="About Me" 
+            description={carer.bio} 
+            icon={() => <AboutMeIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+          <Divider />
+          <ProfileListItem
+            title="Maximum Travel Distance" 
+            description={`${carer.preferredTravelDistance} km`} 
+            icon={() => <CarIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+          <Divider />
+          <ProfileListItem
+            title="Types of Pets" 
+            description={carer.preferredPetTypes.join(" ")} 
+            icon={() => <PawIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+          <Divider />
+          <ProfileListItem
+            title="Size of Pets" 
+            description={carer.preferredPetSizes.join(" ")} 
+            icon={() => <ScalesIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+          <Divider />
+          <ProfileListItem
+            title="Hourly Rate" 
+            description={`$${carer.hourlyRate}/hr`} 
+            icon={() => <DollarIcon height={25} width={25} fill={theme.colors.primary} />}
+          />
+        </List.Section>
       </View>
-      <List.Section>
-        <List.Subheader style={styles.subheadingStyle}>CONTACT DETAILS & ADDRESS</List.Subheader>
-        <ProfileListItem
-          title="Email Address"
-          description={carer.email}
-          icon={() => <EmailIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-        <Divider />
-        <ProfileListItem
-          title="Phone Number" 
-          description={carer.phone} 
-          icon={() => <PhoneIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-        <Divider />
-        <ProfileListItem
-          title="Address" 
-          description={`${carer.location?.street}, ${carer.location?.city}, ${carer.location?.state} ${carer.location?.postcode}`} 
-          icon={() => <AddressIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-      </List.Section>
-      <List.Section>
-        <List.Subheader style={styles.subheadingStyle}>SERVICE DETAILS</List.Subheader>
-        <ProfileListItem 
-          title="About Me" 
-          description={carer.bio} 
-          icon={() => <AboutMeIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-        <Divider />
-        <ProfileListItem
-          title="Maximum Travel Distance" 
-          description={`${carer.preferredTravelDistance} km`} 
-          icon={() => <CarIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-        <Divider />
-        <ProfileListItem
-          title="Types of Pets" 
-          description={carer.preferredPetTypes.join(" ")} 
-          icon={() => <PawIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-        <Divider />
-        <ProfileListItem
-          title="Size of Pets" 
-          description={carer.preferredPetSizes.join(" ")} 
-          icon={() => <ScalesIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-        <Divider />
-        <ProfileListItem
-          title="Hourly Rate" 
-          description={`$${carer.hourlyRate}/hr`} 
-          icon={() => <DollarIcon height={25} width={25} fill={theme.colors.primary} />}
-        />
-      </List.Section>
-    </View>
+    </ScrollView>
   );
 }
 
