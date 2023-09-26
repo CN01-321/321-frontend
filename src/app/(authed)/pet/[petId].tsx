@@ -1,38 +1,16 @@
 import { useLocalSearchParams } from "expo-router";
-import { useTheme } from "react-native-paper";
-import { useWindowDimensions } from "react-native";
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, useState } from "react";
 import ReviewsView, { Review } from "../../../components/views/ReviewsView";
 import axios from "axios";
 import { Pet } from "../../../types/types";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import PetInfoView from "../../../components/views/PetInfoView";
-import { TabView, TabBar, SceneMap } from "react-native-tab-view";
+import ThemedTabView from "../../../components/views/ThemedTabView";
 
 type OwnPet = "true" | undefined;
 
-const renderTabBar = (props: any): ReactNode => {
-  const theme = useTheme();
-
-  return (
-    <TabBar
-      {...props}
-      indicatorStyle={{ backgroundColor: theme.colors.primary }}
-      style={{ elevation: 0, backgroundColor: "#FCFCFC" }}
-      labelStyle={{
-        color: "#1D1B20",
-        fontFamily: "Montserrat-Medium",
-      }}
-    />
-  );
-};
-
 export default function PetView() {
-  const layout = useWindowDimensions();
-
-  const [index, setIndex] = useState(0);
-
   const { petId, ownPet } = useLocalSearchParams<{
     petId: string;
     ownPet?: OwnPet;
@@ -79,9 +57,9 @@ export default function PetView() {
     return () => (ignore = true);
   }, []);
 
-  const FirstRoute = () => <PetInfoView pet={pet} />;
+  const profileScene = () => <PetInfoView pet={pet} />;
 
-  const SecondRoute = () => (
+  const reviewsScene = () => (
     <ReviewsView
       profile={pet}
       isSelf={ownPet !== undefined}
@@ -93,26 +71,15 @@ export default function PetView() {
     />
   );
 
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-  });
-
-  const [routes] = useState([
-    { key: "first", title: "Profile" },
-    { key: "second", title: "Reviews" },
-  ]);
+  const scenes = [
+    { key: "first", title: "Profile", scene: profileScene },
+    { key: "second", title: "Reviews", scene: reviewsScene },
+  ];
 
   return (
     <>
       <Header title={pet.name} />
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        renderTabBar={renderTabBar}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-      />
+      <ThemedTabView scenes={scenes} />
     </>
   );
 }
