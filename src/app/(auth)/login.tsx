@@ -7,7 +7,7 @@ import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
 import axios from "axios";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Header from "../../components/Header";
-import EditableTextbox from "../../components/EditableTextbox";
+import ThemedTextInput from "../../components/ThemedTextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type GetToken = {
@@ -44,9 +44,9 @@ export default function Login() {
     <SafeAreaView>
       <View style={styles.graphicContainer}>
         <Image
-          style={styles.graphicImage} 
+          style={styles.graphicImage}
           source={
-            userType == "owner" 
+            userType == "owner"
               ? require("../../../assets/illustrations/catpaw-yellow.png")
               : require("../../../assets/illustrations/dogpaw-brown.png")
           }
@@ -62,7 +62,7 @@ export default function Login() {
           name="email"
           rules={{ required: true }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Email"
               value={value}
               onBlur={onBlur}
@@ -77,7 +77,7 @@ export default function Login() {
           name="password"
           rules={{ required: true }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Password"
               value={value}
               onBlur={onBlur}
@@ -105,10 +105,42 @@ export default function Login() {
           <Text style={styles.loginWithText}>- Or Login With -</Text>
         </View>
         <View style={[styles.centeredTextContainer, { marginBottom: 50 }]}>
-          <Text style={styles.bottomText}>Don&apos;t have an account? <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Sign Up</Text></Text>
+          <Text style={styles.bottomText}>
+            Don&apos;t have an account?{" "}
+            <Text
+              style={[
+                styles.bottomText,
+                styles.highlightedText,
+                { color: colour },
+              ]}
+            >
+              Sign Up
+            </Text>
+          </Text>
         </View>
         <View style={styles.centeredTextContainer}>
-          <Text style={styles.bottomText}>By signing in, I agree with <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Terms of Use</Text> and <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Privacy Policy</Text></Text>
+          <Text style={styles.bottomText}>
+            By signing in, I agree with{" "}
+            <Text
+              style={[
+                styles.bottomText,
+                styles.highlightedText,
+                { color: colour },
+              ]}
+            >
+              Terms of Use
+            </Text>{" "}
+            and{" "}
+            <Text
+              style={[
+                styles.bottomText,
+                styles.highlightedText,
+                { color: colour },
+              ]}
+            >
+              Privacy Policy
+            </Text>
+          </Text>
         </View>
       </View>
     </SafeAreaView>
@@ -141,7 +173,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     flexDirection: "row",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
   graphicImage: {
     height: "30%",
@@ -186,7 +218,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Montserrat-Medium",
     fontSize: 14,
-    color: "#00000094"
+    color: "#00000094",
   },
   highlightedText: {
     fontFamily: "Montserrat-Bold",

@@ -1,5 +1,5 @@
 import { View, StyleSheet } from "react-native";
-import { Text, RadioButton, Divider } from "react-native-paper";
+import { Text, RadioButton, Divider, useTheme } from "react-native-paper";
 import BaseFormCard, { BaseFormCardProps } from "./BaseFormCard";
 
 interface RadioSelectorCardProps<T> extends BaseFormCardProps {
@@ -48,6 +48,8 @@ interface RadioListItemProps {
 }
 
 function RadioListItem({ name, checked, onCheck }: RadioListItemProps) {
+  const theme = useTheme();
+
   return (
     <View style={styles.radioItemContainer}>
       <View style={styles.radioItem}>
@@ -56,7 +58,7 @@ function RadioListItem({ name, checked, onCheck }: RadioListItemProps) {
         </Text>
         <RadioButton value="" status={checked} onPress={onCheck} />
       </View>
-      <Divider />
+      <Divider style={{ backgroundColor: theme.colors.primary }} />
     </View>
   );
 }

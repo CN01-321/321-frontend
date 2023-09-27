@@ -7,6 +7,7 @@ import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import PetInfoView from "../../../components/views/PetInfoView";
 import ThemedTabView from "../../../components/views/ThemedTabView";
 import { fetchData } from "../../../utilities/fetch";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function PetProfile() {
   const { petId, ownPet } = useLocalSearchParams<{
@@ -21,6 +22,7 @@ export default function PetProfile() {
   });
   const [reviews, setReviews] = useState<Review[]>([]);
   const { pushError } = useMessageSnackbar();
+  const isFocused = useIsFocused();
 
   const updatePetInfo = async () => {
     await fetchData(`/pets/${petId}/`, setPet, () =>
@@ -32,9 +34,11 @@ export default function PetProfile() {
     );
   };
 
-  useEffect(() => {
-    updatePetInfo();
-  }, []);
+  useEffect((): (() => void) => {
+    let ignore = false;
+    if (!ignore && isFocused) updatePetInfo();
+    return () => (ignore = true);
+  }, [isFocused]);
 
   const profileScene = () => <PetInfoView pet={pet} />;
 

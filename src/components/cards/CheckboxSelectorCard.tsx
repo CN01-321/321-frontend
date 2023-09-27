@@ -1,5 +1,5 @@
 import { View, StyleSheet } from "react-native";
-import { Text, Checkbox, Divider } from "react-native-paper";
+import { Text, Checkbox, Divider, useTheme } from "react-native-paper";
 import BaseFormCard, { BaseFormCardProps } from "./BaseFormCard";
 
 interface CheckboxSelectorCardProps<T> extends BaseFormCardProps {
@@ -42,8 +42,6 @@ export default function CheckboxSelectorCard<T>({
     onItemSelect(new Map([...values]));
   };
 
-  console.log(values);
-
   return (
     <BaseFormCard
       title={title}
@@ -69,6 +67,8 @@ interface CheckboxListItem {
   onCheck?: () => void;
 }
 function CheckboxListItem({ name, checked, onCheck }: CheckboxListItem) {
+  const theme = useTheme();
+
   return (
     <View style={styles.checkboxItemContainer}>
       <View style={styles.checkboxItem}>
@@ -77,7 +77,7 @@ function CheckboxListItem({ name, checked, onCheck }: CheckboxListItem) {
         </Text>
         <Checkbox status={checked} onPress={onCheck} />
       </View>
-      <Divider />
+      <Divider style={{ backgroundColor: theme.colors.primary }} />
     </View>
   );
 }

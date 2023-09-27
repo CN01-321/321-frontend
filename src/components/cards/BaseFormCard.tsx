@@ -25,9 +25,10 @@ export default function BaseFormCard({
         borderWidth: 1,
         marginTop: 5,
         shadowColor: "white",
+        flex: 1,
       }}
     >
-      <Card.Content style={{ paddingLeft: 0, flex: 1, flexDirection: "row" }}>
+      <Card.Content style={{ flex: 1, paddingLeft: 0, flexDirection: "row" }}>
         {icon ? (
           <IconButton
             style={{ margin: 3 }}

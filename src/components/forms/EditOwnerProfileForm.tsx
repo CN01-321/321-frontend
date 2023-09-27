@@ -7,7 +7,6 @@ import * as Location from "expo-location";
 import axios from "axios";
 import { pickImage, uploadImage } from "../../utilities/image";
 import DynamicAvatar from "../DynamicAvatar";
-import EditableTextbox from "../EditableTextbox";
 import { OwnerProfile } from "../../types/types";
 
 import PersonIcon from "../../../assets/icons/profile/person.svg";
@@ -19,6 +18,7 @@ import StateIcon from "../../../assets/icons/profile/map.svg";
 import PostcodeIcon from "../../../assets/icons/profile/mailbox.svg";
 import AboutMeIcon from "../../../assets/icons/profile/aboutme.svg";
 import { ImagePickerAsset } from "expo-image-picker";
+import ThemedTextInput from "../ThemedTextInput";
 
 type EditOwnerProfileFormProp = {
   owner: OwnerProfile;
@@ -131,7 +131,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
           control={control}
           name="name"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Full Name"
               value={value}
               onBlur={onBlur}
@@ -150,7 +150,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
           control={control}
           name="email"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Email"
               value={value}
               onBlur={onBlur}
@@ -165,7 +165,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
           control={control}
           name="phone"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Phone Number"
               value={value}
               onBlur={onBlur}
@@ -180,7 +180,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
           control={control}
           name="location.street"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Street Name"
               value={value}
               onBlur={onBlur}
@@ -199,7 +199,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
           control={control}
           name="location.city"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="City"
               value={value}
               onBlur={onBlur}
@@ -214,7 +214,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
           control={control}
           name="location.state"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="State"
               value={value}
               onBlur={onBlur}
@@ -229,7 +229,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
           control={control}
           name="location.postcode"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Postcode"
               value={value}
               onBlur={onBlur}
@@ -248,7 +248,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
           control={control}
           name="bio"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="About Me (Max 200 Characters)"
               value={value}
               multiline={true}

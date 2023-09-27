@@ -9,6 +9,7 @@ import {
   SelectorItem,
   petSelectorSizes,
   petSelectorTypes,
+  petStatuses,
 } from "../../types/types";
 import ErrorText from "../ErrorText";
 import RadioSelectorCard from "../cards/RadioSelectorCard";
@@ -19,12 +20,6 @@ import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 import { pickImage, uploadImage } from "../../utilities/image";
 
 const icon = require("../../../assets/icon.png");
-
-const petStatuses = [
-  { key: "isVaccinated", name: "Vaccinated" },
-  { key: "isFriendly", name: "Friendly" },
-  { key: "isNeutered", name: "Neutered" },
-];
 
 interface NewPetModalProps extends BaseModalProps {
   updatePets: () => Promise<void>;

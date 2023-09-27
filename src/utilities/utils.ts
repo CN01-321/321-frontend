@@ -3,10 +3,31 @@ import {
   Job,
   NearbyCarer,
   OwnerProfile,
+  Pet,
+  PetSize,
+  PetType,
   Request,
   RequestInfoLocation,
+  petSelectorSizes,
+  petSelectorTypes,
 } from "../types/types";
 import { Filters } from "../app/(authed)/owner/search";
+
+export function getSelectorPetType(petType: PetType) {
+  return petSelectorTypes.find((p) => p.key === petType);
+}
+
+export function getSelectorPetSize(petSize: PetSize) {
+  return petSelectorSizes.find((p) => p.key === petSize);
+}
+
+export function getPetStatuses(pet: Pet) {
+  return new Map([
+    ["isVaccinated", pet.isVaccinated ?? false],
+    ["isFriendly", pet.isFriendly ?? false],
+    ["isNeutered", pet.isNeutered ?? false],
+  ]);
+}
 
 export function isOwner(
   user: OwnerProfile | CarerProfile

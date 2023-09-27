@@ -142,3 +142,9 @@ export const petSelectorSizes: SelectorItem<PetSize>[] = [
   { key: "medium", name: "20-40 kg" },
   { key: "large", name: "40+ kg" },
 ];
+
+export const petStatuses = [
+  { key: "isVaccinated", name: "Vaccinated" },
+  { key: "isFriendly", name: "Friendly" },
+  { key: "isNeutered", name: "Neutered" },
+];

@@ -1,74 +1,77 @@
-import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { Pet, PetSize, PetType } from "../../types/types";
-import EditableTextbox from "../EditableTextbox";
 import {
-  Text,
-  Checkbox,
-  RadioButton,
-  Button,
-  useTheme,
-  Divider,
-} from "react-native-paper";
+  Pet,
+  PetSize,
+  PetType,
+  SelectorItem,
+  petSelectorSizes,
+  petSelectorTypes,
+  petStatuses,
+} from "../../types/types";
+import { Button, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import axios from "axios";
 import DynamicAvatar from "../DynamicAvatar";
 import { pickImage, uploadImage } from "../../utilities/image";
 
 import PersonIcon from "../../../assets/icons/profile/person.svg";
-import PawIcon from "../../../assets/icons/pet/paw.svg";
-import ScalesIcon from "../../../assets/icons/pet/scale.svg";
-import StatusIcon from "../../../assets/icons/pet/status.svg";
 import { ImagePickerAsset } from "expo-image-picker";
+import {
+  getPetStatuses,
+  getSelectorPetSize,
+  getSelectorPetType,
+} from "../../utilities/utils";
+import RadioSelectorCard from "../cards/RadioSelectorCard";
+import CheckboxSelectorCard from "../cards/CheckboxSelectorCard";
+import ThemedTextInput from "../ThemedTextInput";
+import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 
-type EditPetFormProp = {
+interface EditPetFormProp {
   pet: Pet;
-};
+}
 
-type FormData = {
+interface FormData {
   name: string;
-  petType: PetType;
-  petSize: PetSize;
-  isVaccinated: boolean;
-  isFriendly: boolean;
-  isNeutered: boolean;
-};
+  petType: SelectorItem<PetType>;
+  petSize: SelectorItem<PetSize>;
+  statuses: Map<string, boolean>;
+  image?: ImagePickerAsset;
+}
 
-const EditPetForm = ({ pet }: EditPetFormProp) => {
-  console.log(pet);
-  const router = useRouter();
-  const theme = useTheme();
-
+export default function EditPetForm({ pet }: EditPetFormProp) {
   const { control, handleSubmit, reset } = useForm<FormData>({
     defaultValues: {
       name: pet.name,
-      petType: pet.petType,
-      petSize: pet.petSize,
-      isVaccinated: pet.isVaccinated,
-      isFriendly: pet.isFriendly,
-      isNeutered: pet.isNeutered,
+      petType: getSelectorPetType(pet.petType),
+      petSize: getSelectorPetSize(pet.petSize),
+      statuses: getPetStatuses(pet),
     },
   });
-
-  const [profilePicture, setProfilePicture] = useState<ImagePickerAsset>();
-
-  const editProfilePicture = async () => {
-    const image = await pickImage();
-
-    if (image) {
-      setProfilePicture(image);
-    }
-  };
+  const router = useRouter();
+  const theme = useTheme();
+  const { pushError, pushMessage } = useMessageSnackbar();
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log(data);
+    const petData = {
+      name: data.name,
+      petType: data.petType.key,
+      petSize: data.petSize.key,
+      isVaccinated: data.statuses.get("isVaccinated") ?? false,
+      isFriendly: data.statuses.get("isFriendly") ?? false,
+      isNeutered: data.statuses.get("isNeutered") ?? false,
+    };
+    console.log(petData);
     try {
-      await axios.put(`/owners/pets/${pet._id}`, data);
-      if (profilePicture != null)
-        await uploadImage(`/owner/pets/${pet._id}/pfp`, profilePicture);
-    } catch (error) {
-      console.log(error);
+      await axios.put(`/owners/pets/${pet._id}`, petData);
+
+      if (data.image)
+        await uploadImage(`/owners/pets/${pet._id}/pfp`, data.image);
+
+      pushMessage("Successfully updated pet");
+    } catch (err) {
+      console.error(err);
+      pushError("Failed to update pet");
     }
     reset();
     router.back();
@@ -77,188 +80,102 @@ const EditPetForm = ({ pet }: EditPetFormProp) => {
   return (
     <View style={styles.form}>
       <View style={styles.pfpEdit}>
-        {profilePicture ? (
-          <DynamicAvatar pfp={profilePicture} defaultPfp="user" size={120} />
-        ) : (
-          <DynamicAvatar pfp={pet.pfp} defaultPfp="user" size={120} />
-        )}
-        <Button
-          mode="text"
-          labelStyle={styles.pfpEditDescription}
-          onPress={editProfilePicture}
-        >
-          Tap Here to Change Photo
-        </Button>
+        <Controller
+          control={control}
+          name="image"
+          render={({ field: { value, onChange } }) => (
+            <>
+              {value ? (
+                <DynamicAvatar pfp={value} defaultPfp="user" size={120} />
+              ) : (
+                <DynamicAvatar pfp={pet.pfp} defaultPfp="user" size={120} />
+              )}
+              <Button
+                mode="text"
+                labelStyle={styles.pfpEditDescription}
+                onPress={async () => onChange(await pickImage())}
+              >
+                Tap Here to Change Photo
+              </Button>
+            </>
+          )}
+        />
       </View>
       <Controller
         control={control}
         name="name"
         rules={{ required: true }}
         render={({ field: { onChange, onBlur, value } }) => (
-          <EditableTextbox
-            label="Pet Name"
-            value={value}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            icon={() => (
-              <PersonIcon height={25} width={25} fill={theme.colors.primary} />
-            )}
-          />
+          <>
+            <ThemedTextInput
+              label="Pet Name"
+              value={value}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              icon={() => (
+                <PersonIcon
+                  height={25}
+                  width={25}
+                  fill={theme.colors.primary}
+                />
+              )}
+            />
+          </>
         )}
       />
-      <View style={[styles.optionBox, { borderColor: theme.colors.primary }]}>
-        <View style={styles.optionBoxHeadingContainer}>
-          <PawIcon height={25} width={25} fill={theme.colors.primary} />
-          <Text style={styles.optionBoxHeading}>Pet Type</Text>
-        </View>
-        <View style={styles.selectionsContainer}>
-          <Controller
-            control={control}
-            name="petType"
-            rules={{ required: true }}
-            render={({ field: { onChange, value } }) => (
-              <View>
-                <View style={styles.selectionOption}>
-                  <Text style={styles.selectionOptionLabel}>Dog</Text>
-                  <RadioButton
-                    value="Dog"
-                    status={value == "dog" ? "checked" : "unchecked"}
-                    onPress={() => onChange("dog")}
-                    uncheckedColor={theme.colors.primary}
-                  />
-                </View>
-                <Divider style={{ backgroundColor: theme.colors.primary }} />
-                <View style={styles.selectionOption}>
-                  <Text style={styles.selectionOptionLabel}>Cat</Text>
-                  <RadioButton
-                    value="Cat"
-                    status={value == "cat" ? "checked" : "unchecked"}
-                    onPress={() => onChange("cat")}
-                    uncheckedColor={theme.colors.primary}
-                  />
-                </View>
-                <Divider style={{ backgroundColor: theme.colors.primary }} />
-                <View style={styles.selectionOption}>
-                  <Text style={styles.selectionOptionLabel}>Bird</Text>
-                  <RadioButton
-                    value="Bird"
-                    status={value == "bird" ? "checked" : "unchecked"}
-                    onPress={() => onChange("bird")}
-                    uncheckedColor={theme.colors.primary}
-                  />
-                </View>
-                <Divider style={{ backgroundColor: theme.colors.primary }} />
-                <View style={styles.selectionOption}>
-                  <Text style={styles.selectionOptionLabel}>Rabbit</Text>
-                  <RadioButton
-                    value="Rabbit"
-                    status={value == "rabbit" ? "checked" : "unchecked"}
-                    onPress={() => onChange("rabbit")}
-                    uncheckedColor={theme.colors.primary}
-                  />
-                </View>
-              </View>
-            )}
-          />
-        </View>
+      <View style={styles.inputArea}>
+        <Controller
+          control={control}
+          name="petType"
+          render={({ field: { value, onChange } }) => (
+            <RadioSelectorCard
+              title="Pet Type"
+              icon="dog-side"
+              border={true}
+              items={petSelectorTypes}
+              value={value}
+              onItemSelect={onChange}
+              keyExtractor={(item) => item.key}
+              nameExtractor={(item) => item.name}
+            />
+          )}
+        />
       </View>
-      <View style={[styles.optionBox, { borderColor: theme.colors.primary }]}>
-        <View style={styles.optionBoxHeadingContainer}>
-          <ScalesIcon height={25} width={25} fill={theme.colors.primary} />
-          <Text style={styles.optionBoxHeading}>Pet Size</Text>
-        </View>
-        <View style={styles.selectionsContainer}>
-          <Controller
-            control={control}
-            name="petSize"
-            rules={{ required: true }}
-            render={({ field: { onChange, value } }) => (
-              <View>
-                <View style={styles.selectionOption}>
-                  <Text style={styles.selectionOptionLabel}>Small</Text>
-                  <RadioButton
-                    value="Small"
-                    status={value == "small" ? "checked" : "unchecked"}
-                    onPress={() => onChange("small")}
-                    uncheckedColor={theme.colors.primary}
-                  />
-                </View>
-                <Divider style={{ backgroundColor: theme.colors.primary }} />
-                <View style={styles.selectionOption}>
-                  <Text style={styles.selectionOptionLabel}>Medium</Text>
-                  <RadioButton
-                    value="Medium"
-                    status={value == "medium" ? "checked" : "unchecked"}
-                    onPress={() => onChange("medium")}
-                    uncheckedColor={theme.colors.primary}
-                  />
-                </View>
-                <Divider style={{ backgroundColor: theme.colors.primary }} />
-                <View style={styles.selectionOption}>
-                  <Text style={styles.selectionOptionLabel}>Large</Text>
-                  <RadioButton
-                    value="Large"
-                    status={value == "large" ? "checked" : "unchecked"}
-                    onPress={() => onChange("large")}
-                    uncheckedColor={theme.colors.primary}
-                  />
-                </View>
-              </View>
-            )}
-          />
-        </View>
+      <View style={styles.inputArea}>
+        <Controller
+          control={control}
+          name="petSize"
+          render={({ field: { value, onChange } }) => (
+            <RadioSelectorCard
+              title="Pet Size"
+              icon="scale"
+              border={true}
+              items={petSelectorSizes}
+              value={value}
+              onItemSelect={onChange}
+              keyExtractor={(item) => item.key}
+              nameExtractor={(item) => item.name}
+            />
+          )}
+        />
       </View>
-      <View style={[styles.optionBox, { borderColor: theme.colors.primary }]}>
-        <View style={styles.optionBoxHeadingContainer}>
-          <StatusIcon height={25} width={25} fill={theme.colors.primary} />
-          <Text style={styles.optionBoxHeading}>Pet Status</Text>
-        </View>
-        <View style={styles.selectionsContainer}>
-          <View style={styles.selectionOption}>
-            <Text style={styles.selectionOptionLabel}>Vaccinated</Text>
-            <Controller
-              control={control}
-              name="isVaccinated"
-              render={({ field: { onChange, value } }) => (
-                <Checkbox
-                  status={value ? "checked" : "unchecked"}
-                  onPress={() => onChange(!value)}
-                  uncheckedColor={theme.colors.primary}
-                />
-              )}
+      <View style={styles.inputArea}>
+        <Controller
+          control={control}
+          name="statuses"
+          render={({ field: { value, onChange } }) => (
+            <CheckboxSelectorCard
+              title="Pet Status"
+              icon="list-status"
+              border={true}
+              items={petStatuses}
+              values={value}
+              onItemSelect={onChange}
+              keyExtractor={(item) => item.key}
+              nameExtractor={(item) => item.name}
             />
-          </View>
-          <Divider style={{ backgroundColor: theme.colors.primary }} />
-          <View style={styles.selectionOption}>
-            <Text style={styles.selectionOptionLabel}>Friendly</Text>
-            <Controller
-              control={control}
-              name="isFriendly"
-              render={({ field: { onChange, value } }) => (
-                <Checkbox
-                  status={value ? "checked" : "unchecked"}
-                  onPress={() => onChange(!value)}
-                  uncheckedColor={theme.colors.primary}
-                />
-              )}
-            />
-          </View>
-          <Divider style={{ backgroundColor: theme.colors.primary }} />
-          <View style={styles.selectionOption}>
-            <Text style={styles.selectionOptionLabel}>Neutered</Text>
-            <Controller
-              control={control}
-              name="isNeutered"
-              render={({ field: { onChange, value } }) => (
-                <Checkbox
-                  status={value ? "checked" : "unchecked"}
-                  onPress={() => onChange(!value)}
-                  uncheckedColor={theme.colors.primary}
-                />
-              )}
-            />
-          </View>
-        </View>
+          )}
+        />
       </View>
       <View style={styles.buttonContainer}>
         <Button
@@ -272,20 +189,18 @@ const EditPetForm = ({ pet }: EditPetFormProp) => {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   form: {
-    display: "flex",
-    flexDirection: "column",
+    flex: 1,
     paddingTop: 15,
     paddingLeft: 20,
     paddingRight: 20,
     paddingBottom: 30,
+    backgroundColor: "white",
   },
   pfpEdit: {
-    display: "flex",
-    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     gap: 5,
@@ -294,6 +209,9 @@ const styles = StyleSheet.create({
   pfpEditDescription: {
     fontFamily: "Montserrat-Medium",
     color: "#777777",
+  },
+  inputArea: {
+    paddingVertical: 10,
   },
   buttonContainer: {
     marginTop: 30,
@@ -304,37 +222,4 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-SemiBold",
     fontSize: 16,
   },
-  optionBox: {
-    border: "solid",
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 15,
-  },
-  optionBoxHeadingContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 15,
-  },
-  optionBoxHeading: {
-    fontFamily: "Montserrat-SemiBold",
-  },
-  selectionsContainer: {
-    paddingTop: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  selectionOption: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  selectionOptionLabel: {
-    fontFamily: "Montserrat-Medium",
-    color: "#505050",
-  },
 });
-
-export default EditPetForm;

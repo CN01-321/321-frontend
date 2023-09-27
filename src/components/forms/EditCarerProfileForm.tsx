@@ -7,7 +7,6 @@ import * as Location from "expo-location";
 import axios from "axios";
 import { pickImage, uploadImage } from "../../utilities/image";
 import DynamicAvatar from "../DynamicAvatar";
-import EditableTextbox from "../EditableTextbox";
 import { CarerProfile } from "../../types/types";
 
 import PersonIcon from "../../../assets/icons/profile/person.svg";
@@ -21,6 +20,7 @@ import AboutMeIcon from "../../../assets/icons/profile/aboutme.svg";
 import CarIcon from "../../../assets/icons/profile/car.svg";
 import DollarIcon from "../../../assets/icons/profile/dollar.svg";
 import { ImagePickerAsset } from "expo-image-picker";
+import ThemedTextInput from "../ThemedTextInput";
 
 type EditCarerProfileForm = {
   carer: CarerProfile;
@@ -166,7 +166,7 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
           control={control}
           name="name"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Full Name"
               value={value}
               onBlur={onBlur}
@@ -185,7 +185,7 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
           control={control}
           name="email"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Email"
               value={value}
               onBlur={onBlur}
@@ -200,7 +200,7 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
           control={control}
           name="phone"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Phone Number"
               value={value}
               onBlur={onBlur}
@@ -215,7 +215,7 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
           control={control}
           name="location.street"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Street Name"
               value={value}
               onBlur={onBlur}
@@ -234,7 +234,7 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
           control={control}
           name="location.city"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="City"
               value={value}
               onBlur={onBlur}
@@ -249,7 +249,7 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
           control={control}
           name="location.state"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="State"
               value={value}
               onBlur={onBlur}
@@ -264,7 +264,7 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
           control={control}
           name="location.postcode"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Postcode"
               value={value}
               onBlur={onBlur}
@@ -283,7 +283,7 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
           control={control}
           name="bio"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="About Me (Max 200 Characters)"
               value={value}
               multiline={true}
@@ -303,7 +303,7 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
           control={control}
           name="preferredTravelDistance"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Maximum Travel Distance"
               value={value}
               onBlur={onBlur}
@@ -318,7 +318,7 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
           control={control}
           name="hourlyRate"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Hourly Rate"
               value={value}
               onBlur={onBlur}

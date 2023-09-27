@@ -6,7 +6,7 @@ import { View, StyleSheet } from "react-native";
 import { Button, Text, IconButton } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import Header from "../../components/Header";
-import EditableTextbox from "../../components/EditableTextbox";
+import ThemedTextInput from "../../components/ThemedTextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type FormData = {
@@ -39,10 +39,10 @@ export default function SignUp() {
     <SafeAreaView>
       <View style={styles.graphicContainer}>
         <Image
-          style={styles.graphicImage} 
+          style={styles.graphicImage}
           contentFit="contain"
           source={
-            userType == "owner" 
+            userType == "owner"
               ? require("../../../assets/illustrations/paws-yellow.png")
               : require("../../../assets/illustrations/paws-brown.png")
           }
@@ -58,7 +58,7 @@ export default function SignUp() {
           name="email"
           rules={{ required: true }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Email"
               value={value}
               onBlur={onBlur}
@@ -73,7 +73,7 @@ export default function SignUp() {
           name="password"
           rules={{ required: true }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Password"
               value={value}
               onBlur={onBlur}
@@ -98,7 +98,28 @@ export default function SignUp() {
           <Text style={styles.connectWithText}>- Or Connect With -</Text>
         </View>
         <View style={styles.centeredTextContainer}>
-          <Text style={styles.bottomText}>By signing up, I agree with <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Terms of Use</Text> and <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Privacy Policy</Text></Text>
+          <Text style={styles.bottomText}>
+            By signing up, I agree with{" "}
+            <Text
+              style={[
+                styles.bottomText,
+                styles.highlightedText,
+                { color: colour },
+              ]}
+            >
+              Terms of Use
+            </Text>{" "}
+            and{" "}
+            <Text
+              style={[
+                styles.bottomText,
+                styles.highlightedText,
+                { color: colour },
+              ]}
+            >
+              Privacy Policy
+            </Text>
+          </Text>
         </View>
       </View>
     </SafeAreaView>
@@ -131,7 +152,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   graphicImage: {
     width: "45%",
@@ -164,7 +185,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Montserrat-Medium",
     fontSize: 14,
-    color: "#00000094"
+    color: "#00000094",
   },
   highlightedText: {
     fontFamily: "Montserrat-Bold",
