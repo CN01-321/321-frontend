@@ -3,7 +3,6 @@ import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
 import { Text, BottomNavigation, Portal } from "react-native-paper";
 import { StyleSheet } from "react-native";
-import { Href } from "expo-router/build/link/href";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
 
 import HomeIcon from "../../../assets/icons/navbar/home.svg";
@@ -107,15 +106,14 @@ export default function UserLayout() {
           console.log(route);
           setIndex(routes.findIndex((r) => r.key === route.key));
 
-          const href: Href =
+          router.push(
             route.key === "profile/overview"
               ? {
                   pathname: `/profile/overview`,
                   params: { profileId: getTokenUser()?._id, isSelf: "true" },
                 }
-              : route.key;
-
-          router.push(href);
+              : route.key
+          );
         }}
       />
     </MessageSnackbarProvider>
@@ -142,7 +140,6 @@ function UserBottomNav({ routes, index, onChange }: UserBottomNavProps) {
 
 const styles = StyleSheet.create({
   navbarLabel: {
-    // fontFamily: "Montserrat-Medium",
     textAlign: "center",
     fontSize: 12,
   },

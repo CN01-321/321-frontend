@@ -54,7 +54,7 @@ export default function BaseModal({
           <Divider style={styles.divider} />
         </View>
         <ScrollView style={styles.contentContainer}>
-          <View style={{ paddingBottom: 50 }}>{children}</View>
+          <View style={{ marginBottom: 250 }}>{children}</View>
         </ScrollView>
       </Modal>
     </Portal>

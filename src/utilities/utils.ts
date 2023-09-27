@@ -1,19 +1,71 @@
-import axios from "axios";
-import { RequestInfo, RequestInfoLocation } from "../types/types";
+import {
+  CarerProfile,
+  Job,
+  NearbyCarer,
+  OwnerProfile,
+  Request,
+  RequestInfoLocation,
+} from "../types/types";
+import { Filters } from "../app/(authed)/owner/search";
 
-export async function fetchRequestInfo<T extends RequestInfo>(
-  endpoint: string
-) {
-  const { data } = await axios.get<T[]>(endpoint);
+export function isOwner(
+  user: OwnerProfile | CarerProfile
+): user is OwnerProfile {
+  return user.userType === "owner";
+}
 
-  const info = data.map((i) => {
-    i.requestedOn = new Date(i.requestedOn);
-    i.dateRange.startDate = new Date(i.dateRange.startDate);
-    i.dateRange.endDate = new Date(i.dateRange.endDate);
-    return i;
-  });
+export function filterCarers(filters: Filters, carers: NearbyCarer[]) {
+  const selectedPetTypes = Array.from(filters.petTypes.entries())
+    .filter(([, selected]) => selected)
+    .map(([petType]) => petType);
 
-  return info;
+  const selectedPetSizes = Array.from(filters.petSizes.entries())
+    .filter(([, selected]) => selected)
+    .map(([petSize]) => petSize);
+
+  const results = [];
+
+  for (const carer of carers) {
+    // check if carer's hourly rate is less than then max price
+    if (filters.maxPrice && carer.hourlyRate > filters.maxPrice) {
+      continue;
+    }
+
+    // check that the carer can care for all selected pets
+    if (
+      !selectedPetTypes.every((petType) =>
+        carer.preferredPetTypes.includes(petType)
+      )
+    ) {
+      continue;
+    }
+
+    // check the carer can care for all selected sizes
+    if (
+      !selectedPetSizes.every((petSize) =>
+        carer.preferredPetSizes.includes(petSize)
+      )
+    ) {
+      continue;
+    }
+
+    // check the carer meets the minimum rating
+    if (filters.minRating && filters.minRating > (carer.rating ?? -1)) {
+      continue;
+    }
+
+    results.push(carer);
+  }
+
+  return results;
+}
+
+export function isPastJob(job: Job) {
+  return job.status === "rejected" || job.status === "completed";
+}
+
+export function isPastRequest(request: Request) {
+  return request.status === "rejected" || request.status === "completed";
 }
 
 export function sinceRequested(date: Date) {

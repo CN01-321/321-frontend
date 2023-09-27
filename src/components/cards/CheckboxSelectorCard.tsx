@@ -42,6 +42,8 @@ export default function CheckboxSelectorCard<T>({
     onItemSelect(new Map([...values]));
   };
 
+  console.log(values);
+
   return (
     <BaseFormCard
       title={title}

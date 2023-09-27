@@ -3,9 +3,10 @@ import { Job } from "../../../types/types";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import ThemedTabView from "../../../components/views/ThemedTabView";
-import { fetchRequestInfo } from "../../../utilities/utils";
+import { isPastJob } from "../../../utilities/utils";
 import { FlatList, StyleSheet } from "react-native";
 import JobCard from "../../../components/cards/JobCard";
+import { fetchRequestInfo } from "../../../utilities/fetch";
 
 export default function Jobs() {
   const [currentJobs, setCurrentJobs] = useState<Job[]>([]);
@@ -18,9 +19,6 @@ export default function Jobs() {
     try {
       const jobs = await fetchRequestInfo<Job>("/carers/jobs");
 
-      const isPastJob = (j: Job) =>
-        j.status === "rejected" || j.status === "completed";
-
       setCurrentJobs(jobs.filter((j) => !isPastJob(j)));
       setPastJobs(jobs.filter(isPastJob));
     } catch (e) {
@@ -31,12 +29,8 @@ export default function Jobs() {
     setRefreshing(false);
   };
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    if (!ignore) updateJobs();
-
-    return () => (ignore = true);
+  useEffect(() => {
+    updateJobs();
   }, []);
 
   const currentJobsScene = () => (

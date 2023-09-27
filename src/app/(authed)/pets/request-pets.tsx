@@ -1,10 +1,11 @@
 import { View } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Pet } from "../../../types/types";
 import PetsView from "../../../components/views/PetsView";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
+import Header from "../../../components/Header";
+import { fetchData } from "../../../utilities/fetch";
 
 const RequestPets = () => {
   const { requestId } = useLocalSearchParams<{
@@ -13,32 +14,15 @@ const RequestPets = () => {
   const [pets, setPets] = useState<Pet[]>([]);
   const { pushError } = useMessageSnackbar();
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    (async () => {
-      try {
-        const { data } = await axios.get<Pet[]>(
-          `/owners/requests/${requestId}/pets`
-        );
-
-        if (!ignore) setPets(data);
-      } catch (e) {
-        console.error(e);
-        pushError("Could not fetch pet");
-      }
-    })();
-
-    return () => (ignore = true);
+  useEffect(() => {
+    fetchData(`owners/requests/${requestId}/pets`, setPets, () =>
+      pushError("Could not fetch pet")
+    );
   }, []);
 
   return (
     <View>
-      <Stack.Screen
-        options={{
-          headerTitle: "Pets in Request",
-        }}
-      />
+      <Header title="Pets in Request" />
       <View>{pets.length > 0 ? <PetsView pets={pets} /> : <></>}</View>
     </View>
   );

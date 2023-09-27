@@ -2,9 +2,9 @@ import { ScrollView, StyleSheet } from "react-native";
 import { Card, Text } from "react-native-paper";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import DynamicAvatar from "../../components/DynamicAvatar";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
+import { fetchNotifications } from "../../utilities/fetch";
 
 type NotificationType =
   | "recievedDirect"
@@ -12,7 +12,7 @@ type NotificationType =
   | "acceptedDirect"
   | "acceptedBroad";
 
-interface Notification {
+export interface Notification {
   notificationType: NotificationType;
   subjectName: string;
   subjectPfp?: string;
@@ -23,33 +23,15 @@ export default function Notifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { pushError } = useMessageSnackbar();
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-
+  useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.get<Notification[]>(
-          "/users/notifications"
-        );
-
-        // set notifications as decending in time
-        if (!ignore)
-          setNotifications(
-            data
-              .map((n) => {
-                return { ...n, notifiedOn: new Date(n.notifiedOn) };
-              })
-              .sort(
-                (n1, n2) => n2.notifiedOn.getTime() - n1.notifiedOn.getTime()
-              )
-          );
+        setNotifications(await fetchNotifications());
       } catch (err) {
         console.error(err);
         pushError("Could not fetch notifications");
       }
     })();
-
-    return () => (ignore = true);
   }, []);
 
   return (

@@ -97,127 +97,125 @@ export default function NewPetModal({
 
   return (
     <BaseModal title={title} visible={visible} onDismiss={onDismiss}>
-      <View style={{ marginBottom: 200 }}>
-        <Text variant="titleMedium">
-          Welcoming the newest member of your furry family
+      <Text variant="titleMedium">
+        Welcoming the newest member of your furry family
+      </Text>
+      <Text variant="bodySmall">Add a new pet profile</Text>
+
+      <View style={styles.inputArea}>
+        <Controller
+          control={control}
+          rules={{ required: "A pet name is required" }}
+          name="name"
+          render={({ field: { value, onChange } }) => (
+            <ThemedTextInput
+              label="Pet Name"
+              value={value}
+              onChangeText={onChange}
+              icon="shield-account-outline"
+            />
+          )}
+        />
+        {errors.name ? <ErrorText errMsg={errors.name.message} /> : null}
+      </View>
+
+      <View style={styles.inputArea}>
+        <Controller
+          control={control}
+          name="petType"
+          render={({ field: { value, onChange } }) => (
+            <RadioSelectorCard
+              title="Pet Type"
+              icon="dog-side"
+              border={true}
+              items={petSelectorTypes}
+              value={value}
+              onItemSelect={onChange}
+              keyExtractor={(item) => item.key}
+              nameExtractor={(item) => item.name}
+            />
+          )}
+        />
+      </View>
+
+      <View style={styles.inputArea}>
+        <Controller
+          control={control}
+          name="petSize"
+          render={({ field: { value, onChange } }) => (
+            <RadioSelectorCard
+              title="Pet Size"
+              icon="scale"
+              border={true}
+              items={petSelectorSizes}
+              value={value}
+              onItemSelect={onChange}
+              keyExtractor={(item) => item.key}
+              nameExtractor={(item) => item.name}
+            />
+          )}
+        />
+      </View>
+
+      <View style={styles.inputArea}>
+        <Controller
+          control={control}
+          name="statuses"
+          render={({ field: { value, onChange } }) => (
+            <CheckboxSelectorCard
+              title="Pet Status"
+              icon="list-status"
+              border={true}
+              items={petStatuses}
+              values={value}
+              onItemSelect={(event) => {
+                console.log(event);
+                onChange(event);
+              }}
+              keyExtractor={(item) => item.key}
+              nameExtractor={(item) => item.name}
+            />
+          )}
+        />
+      </View>
+
+      <View style={styles.inputArea}>
+        <Text variant="titleMedium">Snap a Picture!</Text>
+        <Text variant="bodySmall">
+          Add a picture of your pet to share with the PetCarer community
         </Text>
-        <Text variant="bodySmall">Add a new pet profile</Text>
-
-        <View style={styles.inputArea}>
-          <Controller
-            control={control}
-            rules={{ required: "A pet name is required" }}
-            name="name"
-            render={({ field: { value, onChange } }) => (
-              <ThemedTextInput
-                label="Pet Name"
-                value={value}
-                onChangeText={onChange}
-                icon="shield-account-outline"
-              />
-            )}
-          />
-          {errors.name ? <ErrorText errMsg={errors.name.message} /> : null}
-        </View>
-
-        <View style={styles.inputArea}>
-          <Controller
-            control={control}
-            name="petType"
-            render={({ field: { value, onChange } }) => (
-              <RadioSelectorCard
-                title="Pet Type"
-                icon="dog-side"
-                border={true}
-                items={petSelectorTypes}
-                value={value}
-                onItemSelect={onChange}
-                keyExtractor={(item) => item.key}
-                nameExtractor={(item) => item.name}
-              />
-            )}
-          />
-        </View>
-
-        <View style={styles.inputArea}>
-          <Controller
-            control={control}
-            name="petSize"
-            render={({ field: { value, onChange } }) => (
-              <RadioSelectorCard
-                title="Pet Size"
-                icon="scale"
-                border={true}
-                items={petSelectorSizes}
-                value={value}
-                onItemSelect={onChange}
-                keyExtractor={(item) => item.key}
-                nameExtractor={(item) => item.name}
-              />
-            )}
-          />
-        </View>
-
-        <View style={styles.inputArea}>
-          <Controller
-            control={control}
-            name="statuses"
-            render={({ field: { value, onChange } }) => (
-              <CheckboxSelectorCard
-                title="Pet Status"
-                icon="list-status"
-                border={true}
-                items={petStatuses}
-                values={value}
-                onItemSelect={(event) => {
-                  console.log(event);
-                  onChange(event);
+        <Controller
+          control={control}
+          name="image"
+          render={({ field: { value, onChange } }) => (
+            <View style={{ margin: 10 }}>
+              <Image
+                source={value ? value : icon}
+                style={{
+                  borderRadius: 14,
+                  alignSelf: "center",
+                  height: 400,
+                  width: 300,
                 }}
-                keyExtractor={(item) => item.key}
-                nameExtractor={(item) => item.name}
               />
-            )}
-          />
-        </View>
-
-        <View style={styles.inputArea}>
-          <Text variant="titleMedium">Snap a Picture!</Text>
-          <Text variant="bodySmall">
-            Add a picture of your pet to share with the PetCarer community
-          </Text>
-          <Controller
-            control={control}
-            name="image"
-            render={({ field: { value, onChange } }) => (
-              <View style={{ margin: 10 }}>
-                <Image
-                  source={value ? value : icon}
-                  style={{
-                    borderRadius: 14,
-                    alignSelf: "center",
-                    height: 400,
-                    width: 300,
-                  }}
-                />
-                <View>
-                  <Button
-                    mode="outlined"
-                    onPress={async () => onChange(await pickImage())}
-                    style={{ marginTop: 5 }}
-                  >
-                    Upload Image
-                  </Button>
-                </View>
+              <View>
+                <Button
+                  mode="outlined"
+                  onPress={async () => onChange(await pickImage())}
+                  style={{ marginTop: 5 }}
+                >
+                  Upload Image
+                </Button>
               </View>
-            )}
-          />
-        </View>
+            </View>
+          )}
+        />
+      </View>
 
-        <View style={styles.inputArea}>
-          <Button mode="contained" onPress={handleSubmit(onSubmit)}>
-            Finish
-          </Button>
-        </View>
+      <View style={styles.inputArea}>
+        <Button mode="contained" onPress={handleSubmit(onSubmit)}>
+          Finish
+        </Button>
       </View>
     </BaseModal>
   );

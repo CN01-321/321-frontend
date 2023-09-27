@@ -96,6 +96,7 @@ export default function SearchFilterModal({
           min={0}
           max={200}
           step={25}
+          value={filters.maxPrice}
           onChange={updatePriceFilter}
         />
       </View>
@@ -109,6 +110,7 @@ export default function SearchFilterModal({
           min={0}
           max={5}
           step={0.5}
+          value={filters.minRating}
           onChange={updateRatingFilter}
         />
       </View>

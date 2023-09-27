@@ -4,7 +4,7 @@ import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import OffersListView from "../../../components/views/OfferListView";
 import ThemedTabView from "../../../components/views/ThemedTabView";
-import { fetchRequestInfo } from "../../../utilities/utils";
+import { fetchRequestInfo } from "../../../utilities/fetch";
 
 export default function Offers() {
   const [direct, setDirect] = useState<Job[]>([]);
@@ -24,12 +24,8 @@ export default function Offers() {
     }
   };
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    if (!ignore) updateOffers();
-
-    return () => (ignore = true);
+  useEffect(() => {
+    updateOffers();
   }, []);
 
   const directOffersScene = () => (

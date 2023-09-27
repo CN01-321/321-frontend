@@ -7,6 +7,7 @@ import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import PaymentModal from "../../../components/modals/PaymentModal";
 import { Respondent } from "../../../types/types";
 import RespondentCard from "../../../components/cards/RespondentCard";
+import { fetchData } from "../../../utilities/fetch";
 
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();
@@ -16,25 +17,10 @@ export default function Respondents() {
   const { pushMessage, pushError } = useMessageSnackbar();
   const router = useRouter();
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    (async () => {
-      try {
-        const { data } = await axios.get<Respondent[]>(
-          `/owners/requests/${requestId}/respondents`
-        );
-
-        if (!ignore) {
-          setRespondents(data);
-        }
-      } catch (e) {
-        console.error(e);
-        pushError("Could not fetch respondents");
-      }
-    })();
-
-    return () => (ignore = true);
+  useEffect(() => {
+    fetchData(`/owners/requests/${requestId}/respondents`, setRespondents, () =>
+      pushError("Could not fetch respondents")
+    );
   }, []);
 
   const handleAccept = async () => {

@@ -22,7 +22,7 @@ export default function SearchResultCard({
     onRequest();
   };
 
-  console.log(JSON.stringify(carer, null, 2));
+  if (!carer.rating) console.log(JSON.stringify(carer, null, 2));
 
   return (
     <BaseProfileCard
