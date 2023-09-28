@@ -6,6 +6,7 @@ import { CommentsModal } from "../modals/CommentsModal";
 import NewReviewModal from "../modals/NewReviewModal";
 import ReviewCard from "../cards/ReviewCard";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
+import { Text } from "react-native-paper";
 
 export interface Profile {
   _id: string;
@@ -54,6 +55,14 @@ export default function ReviewsView({
   const [commentsVisible, setCommentsVisible] = useState(false);
   const [currentReview, setCurrentReview] = useState<Review>();
   const { pushError } = useMessageSnackbar();
+
+  if (reviews.length === 0) {
+    return (
+      <Text variant="titleLarge" style={{ padding: 20 }}>
+        No Reviews
+      </Text>
+    );
+  }
 
   const handleLike = async (reviewId: string) => {
     const prefix = `/${isPet ? "pets" : "users"}`;

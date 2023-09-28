@@ -20,6 +20,13 @@ export function CommentsModal({
 }: CommentsModalProps) {
   const [message, setMessage] = useState<string>();
   const theme = useTheme();
+
+  // sort comments by date decending
+  comments = comments.sort(
+    (c1, c2) =>
+      new Date(c2.postedOn).getTime() - new Date(c1.postedOn).getTime()
+  );
+
   return (
     <BaseModal title={title} visible={visible} onDismiss={onDismiss}>
       <TextInput
@@ -44,14 +51,15 @@ export function CommentsModal({
           />
         }
       />
-      {comments
-        .sort(
-          (c1, c2) =>
-            new Date(c2.postedOn).getTime() - new Date(c1.postedOn).getTime()
-        )
-        .map((c) => (
+      {comments.length > 0 ? (
+        comments.map((c) => (
           <CommentCard key={c.authorId + c.postedOn} comment={c} />
-        ))}
+        ))
+      ) : (
+        <Text variant="titleLarge" style={{ padding: 20 }}>
+          No Comments
+        </Text>
+      )}
     </BaseModal>
   );
 }

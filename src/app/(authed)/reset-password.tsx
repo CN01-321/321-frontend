@@ -6,8 +6,10 @@ import ErrorText from "../../components/ErrorText";
 import axios from "axios";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 
-import ResetPasswordSVG from "../../../assets/reset-password.svg";
+import ResetOwnerPasswordSVG from "../../../assets/ResetOwnerPassword.svg";
+import ResetCarerPasswordSVG from "../../../assets/ResetCarerPassword.svg";
 import { verifyPassword } from "../../utilities/utils";
+import { useAuth } from "../../contexts/auth";
 
 interface ResetPasswordForm {
   current: string;
@@ -24,6 +26,7 @@ export default function PasswordReset() {
     reset,
   } = useForm<ResetPasswordForm>();
   const { pushMessage, pushError } = useMessageSnackbar();
+  const { getTokenUser } = useAuth();
 
   const onSubmit: SubmitHandler<ResetPasswordForm> = async (data) => {
     try {
@@ -48,7 +51,11 @@ export default function PasswordReset() {
       <View
         style={{ padding: 40, justifyContent: "center", alignItems: "center" }}
       >
-        <ResetPasswordSVG />
+        {getTokenUser()?.type === "owner" ? (
+          <ResetOwnerPasswordSVG />
+        ) : (
+          <ResetCarerPasswordSVG />
+        )}
       </View>
       <Text
         variant="titleLarge"

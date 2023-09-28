@@ -33,6 +33,8 @@ export default function Offers() {
       offers={direct}
       offerType="direct"
       updateOffers={updateOffers}
+      emptyTitle="No Offers"
+      emptySubtitle="Come back later to check for new offers"
     />
   );
 
@@ -41,6 +43,8 @@ export default function Offers() {
       offers={broad}
       offerType={"broad"}
       updateOffers={updateOffers}
+      emptyTitle="No Nearby Offers"
+      emptySubtitle="Come back later to check for new offers"
     />
   );
 

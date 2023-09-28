@@ -5,8 +5,9 @@ import { useState } from "react";
 import axios from "axios";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 import OfferInfoModal from "../modals/OfferInfoModal";
+import EmptyListView, { EmptyListViewProps } from "./EmptyListView";
 
-interface OffersListViewProps {
+interface OffersListViewProps extends Omit<EmptyListViewProps, "userType"> {
   offers: Job[];
   offerType: OfferType;
   updateOffers: () => Promise<void>;
@@ -16,11 +17,23 @@ export default function OffersListView({
   offers,
   offerType,
   updateOffers,
+  emptyTitle,
+  emptySubtitle,
 }: OffersListViewProps) {
   const [visible, setVisible] = useState(false);
   const [currentOffer, setCurrentOffer] = useState<Job>();
   const [refreshing, setRefreshing] = useState(false);
   const { pushMessage, pushError } = useMessageSnackbar();
+
+  if (offers.length === 0) {
+    return (
+      <EmptyListView
+        userType="carer"
+        emptyTitle={emptyTitle}
+        emptySubtitle={emptySubtitle}
+      />
+    );
+  }
 
   const handleAccept = async () => {
     setRefreshing(true);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FlatList, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Searchbar, useTheme } from "react-native-paper";
 import NewRequestModal from "../../../components/modals/NewRequestModal";
 import Header from "../../../components/Header";
@@ -11,9 +11,9 @@ import {
   PetType,
 } from "../../../types/types";
 import SearchFilterModal from "../../../components/modals/SearchFilterModal";
-import SearchResultCard from "../../../components/cards/SearchResultCard";
 import { filterCarers } from "../../../utilities/utils";
 import { fetchData } from "../../../utilities/fetch";
+import SearchResultListView from "../../../components/views/SearchResultListView";
 
 export interface Filters {
   maxPrice?: number;
@@ -82,17 +82,14 @@ export default function Search() {
         onChange={updateFilters}
         onClear={clearFilters}
       />
-      <FlatList
-        data={searchResults}
-        renderItem={({ item }) => (
-          <SearchResultCard
-            carer={item}
-            onRequest={() => {
-              setSelectedCarer(item);
-              setRequestVisible(true);
-            }}
-          />
-        )}
+      <SearchResultListView
+        results={searchResults}
+        onRequest={(carer) => {
+          setSelectedCarer(carer);
+          setRequestVisible(true);
+        }}
+        emptyTitle="No Results"
+        emptySubtitle="Try broadening the filters"
       />
       <NewRequestModal
         title="Request Carer's Services"

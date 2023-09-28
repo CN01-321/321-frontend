@@ -1,13 +1,13 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
+import { View } from "react-native";
 import axios from "axios";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import PaymentModal from "../../../components/modals/PaymentModal";
 import { Respondent } from "../../../types/types";
-import RespondentCard from "../../../components/cards/RespondentCard";
 import { fetchData } from "../../../utilities/fetch";
+import RespondentListView from "../../../components/views/RespondentsListView";
 
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();
@@ -47,18 +47,14 @@ export default function Respondents() {
         onDismiss={() => setVisible(false)}
         respondent={currentRespondent}
       />
-      <FlatList
-        data={respondents}
-        renderItem={({ item }) => (
-          <RespondentCard
-            respondent={item}
-            onHire={() => {
-              setCurrentRespondent(item);
-              setVisible(true);
-            }}
-          />
-        )}
-        keyExtractor={(item) => item._id}
+      <RespondentListView
+        respondents={respondents}
+        onHire={(respondent) => {
+          setCurrentRespondent(respondent);
+          setVisible(true);
+        }}
+        emptyTitle="No Respondents"
+        emptySubtitle="Come back later to check for new respondents"
       />
     </View>
   );

@@ -1,21 +1,19 @@
 import { useEffect, useState } from "react";
-import { FlatList } from "react-native";
 import NewRequestModal from "../../../components/modals/NewRequestModal";
 import ShowModalFab from "../../../components/ShowModalFab";
 import { Request } from "../../../types/types";
-import RequestCard from "../../../components/cards/RequestCard";
-import { useIsFocused, useTheme } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import ThemedTabView from "../../../components/views/ThemedTabView";
 import { isPastRequest } from "../../../utilities/utils";
 import { fetchRequestInfo } from "../../../utilities/fetch";
+import RequestListView from "../../../components/views/RequestListView";
 
 export default function Requests() {
   const [currentRequests, setCurrentRequests] = useState<Request[]>([]);
   const [pastRequests, setPastRequests] = useState<Request[]>([]);
   const [visible, setVisible] = useState(false);
   const { pushError } = useMessageSnackbar();
-  const theme = useTheme();
 
   const isFocused = useIsFocused();
 
@@ -38,20 +36,18 @@ export default function Requests() {
   }, [isFocused]);
 
   const currentRequestsScene = () => (
-    <FlatList
-      data={currentRequests}
-      renderItem={({ item }) => <RequestCard request={item} />}
-      keyExtractor={(item) => item._id}
-      contentContainerStyle={{ backgroundColor: theme.colors.background }}
+    <RequestListView
+      requests={currentRequests}
+      emptyTitle="No Current Requests"
+      emptySubtitle="New requests will appear here"
     />
   );
 
   const pastRequestsScene = () => (
-    <FlatList
-      data={pastRequests}
-      renderItem={({ item }) => <RequestCard request={item} />}
-      keyExtractor={(item) => item._id}
-      contentContainerStyle={{ backgroundColor: theme.colors.background }}
+    <RequestListView
+      requests={pastRequests}
+      emptyTitle="No Past Requests"
+      emptySubtitle="Completed/rejected requests will appear here"
     />
   );
 
