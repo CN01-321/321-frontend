@@ -12,6 +12,7 @@ import {
   petSelectorTypes,
 } from "../types/types";
 import { Filters } from "../app/(authed)/owner/search";
+import { NotifTimeBucket, Notification } from "../app/(authed)/notifications";
 
 export function getSelectorPetType(petType: PetType) {
   return petSelectorTypes.find((p) => p.key === petType);
@@ -141,4 +142,66 @@ export function calculateTotalCost(
 ): number {
   const hours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
   return hours * hourlyRate;
+}
+
+export function getNotificationTitle(notification: Notification) {
+  switch (notification.notificationType) {
+    case "recievedDirect":
+      return "You Have a New Job Offer";
+    case "recievedFeedback":
+      return "You Have Some New Feedback";
+    case "acceptedDirect":
+      return "Your Request Has Been Accepted";
+    case "acceptedBroad":
+      return "You Have Been Accepted for a Job";
+  }
+}
+
+export function getNotificationSubject(notification: Notification) {
+  switch (notification.notificationType) {
+    case "recievedDirect":
+      return `${notification.subjectName} has offered you a job`;
+    case "recievedFeedback":
+      return `${notification.subjectName} has left some feedback`;
+    case "acceptedDirect":
+      return `${notification.subjectName} has accepted your request`;
+    case "acceptedBroad":
+      return `${notification.subjectName} has hired you for the job`;
+  }
+}
+
+export async function sortNotifications(
+  notifications: Notification[]
+): Promise<NotifTimeBucket[]> {
+  const today: Notification[] = [];
+  const thisMonth: Notification[] = [];
+  const older: Notification[] = [];
+
+  const now = new Date();
+
+  for (const notif of notifications) {
+    // if not in the same month of the same year as now then push to older
+    if (
+      !(
+        notif.notifiedOn.getMonth() === now.getMonth() &&
+        notif.notifiedOn.getFullYear() === now.getFullYear()
+      )
+    ) {
+      older.push(notif);
+      break;
+    }
+
+    // if the same day as today then push to today, otherwise push to last month
+    if (notif.notifiedOn.getDay() === now.getDay()) {
+      today.push(notif);
+    } else {
+      thisMonth.push(notif);
+    }
+  }
+
+  return [
+    { title: "TODAY", data: today },
+    { title: "THIS MONTH", data: thisMonth },
+    { title: "OLDER", data: older },
+  ];
 }
