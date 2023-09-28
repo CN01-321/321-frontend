@@ -34,7 +34,6 @@ export default function ThemedTextInput({
         {
           fontFamily: "Montserrat-Medium",
           fontSize: 15,
-          backgroundColor: "transparent",
         },
       ]}
     />

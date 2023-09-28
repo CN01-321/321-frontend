@@ -205,3 +205,19 @@ export async function sortNotifications(
     { title: "OLDER", data: older },
   ];
 }
+
+export function verifyPassword(password: string): true | string {
+  if (password.length < 8) {
+    return "Password should have at least 8 characters";
+  }
+
+  if (!password.match(/[A-Z]/)) {
+    return "Password should have an upper case letter";
+  }
+
+  if (!password.match(/[0-9]/)) {
+    return "Password should have a digit";
+  }
+
+  return true;
+}
