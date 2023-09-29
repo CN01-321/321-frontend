@@ -3,12 +3,6 @@ import { Avatar } from "react-native-paper";
 import { AXIOS_BASE_URL } from "@env";
 import { PetType, UserType } from "../types/types";
 
-const defaultUser = require("../../assets/icon.png");
-const defaultDog = require("../../assets/icon.png");
-const defaultCat = require("../../assets/icon.png");
-const defaultBird = require("../../assets/icon.png");
-const defaultRabbit = require("../../assets/icon.png");
-
 type DefaultPfpType = "user" | UserType | PetType;
 
 interface DynamicAvatarProps {
@@ -37,18 +31,17 @@ export default function DynamicAvatar({
   const getDefaultPfp = () => {
     switch (defaultPfp) {
       case "user":
-      case "owner":
-      case "carer":
-        return defaultUser;
+        return require("../../assets/icons/defaultuser.png");
       case "dog":
-        return defaultDog;
+        return require("../../assets/icons/defaultdog.png");
       case "cat":
-        return defaultCat;
+        return require("../../assets/icons/defaultcat.png");
       case "bird":
-        return defaultBird;
+        return require("../../assets/icons/defaultbird.png");
       case "rabbit":
-        return defaultRabbit;
+        return require("../../assets/icons/defaultrabbit.png");
       default:
+        return require("../../assets/icons/defaultuser.png");
     }
   };
 
