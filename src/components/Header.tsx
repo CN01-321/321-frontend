@@ -3,10 +3,11 @@ import { IconButton } from "react-native-paper";
 
 interface HeaderProps {
   title: string;
+  showHeader?: boolean;
   showButtons?: boolean;
 }
 
-export default function Header({ title, showButtons }: HeaderProps) {
+export default function Header({ title, showHeader, showButtons }: HeaderProps) {
   const router = useRouter();
   const buttons = showButtons
     ? () => (
@@ -28,6 +29,7 @@ export default function Header({ title, showButtons }: HeaderProps) {
       options={{
         headerTitle: title,
         headerRight: buttons,
+        headerShown: showHeader,
         headerStyle: {
           backgroundColor: "#ffffff",
         },
