@@ -65,6 +65,8 @@ export default function GetStarted() {
         </Text>
         <Button 
           mode="text" 
+          labelStyle={styles.highlightedText}
+          textColor={colour}
           onPress={() => router.push({ pathname: "/(auth)/login", params: { userType } })}
         >
           Sign In
@@ -130,4 +132,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#00000094"
   },
+  highlightedText: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 14,
+    textDecorationLine: "underline",
+  }
 });

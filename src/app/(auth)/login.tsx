@@ -107,7 +107,17 @@ export default function Login() {
           <Text style={styles.loginWithText}>- Or Login With -</Text>
         </View>
         <View style={[styles.centeredTextContainer, { marginBottom: 50 }]}>
-          <Text style={styles.bottomText}>Don&apos;t have an account? <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Sign Up</Text></Text>
+          <Text style={styles.bottomText}>Don&apos;t have an account? </Text>
+          <Button
+            mode="text"
+            labelStyle={styles.highlightedText}
+            textColor={colour}
+            onPress={
+              () => router.push({ pathname: "/(auth)/signup", params: { userType } })
+            }
+          >
+            Sign Up
+          </Button>
         </View>
         <View style={styles.centeredTextContainer}>
           <Text style={styles.bottomText}>By signing in, I agree with <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Terms of Use</Text> and <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Privacy Policy</Text></Text>
@@ -177,6 +187,8 @@ const styles = StyleSheet.create({
   centeredTextContainer: {
     display: "flex",
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   loginWithText: {
     fontFamily: "Montserrat-Medium",
@@ -193,5 +205,6 @@ const styles = StyleSheet.create({
   highlightedText: {
     fontFamily: "Montserrat-Bold",
     textDecorationLine: "underline",
+    fontSize: 14,
   },
 });
