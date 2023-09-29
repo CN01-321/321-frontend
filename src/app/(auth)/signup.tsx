@@ -65,6 +65,7 @@ export default function SignUp() {
               onChangeText={onChange}
               outlineColor="#9797975E"
               activeOutlineColor={colour}
+              autoCapitalize="none"
             />
           )}
         />
@@ -81,6 +82,7 @@ export default function SignUp() {
               secureTextEntry
               outlineColor="#9797975E"
               activeOutlineColor={colour}
+              autoCapitalize="none"
             />
           )}
         />

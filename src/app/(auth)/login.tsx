@@ -69,6 +69,7 @@ export default function Login() {
               onChangeText={onChange}
               outlineColor="#9797975E"
               activeOutlineColor={colour}
+              autoCapitalize="none"
             />
           )}
         />
@@ -85,6 +86,7 @@ export default function Login() {
               secureTextEntry
               outlineColor="#9797975E"
               activeOutlineColor={colour}
+              autoCapitalize="none"
             />
           )}
         />
