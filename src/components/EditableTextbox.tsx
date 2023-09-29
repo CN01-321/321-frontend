@@ -10,7 +10,9 @@ type EditableTextboxProps = {
   onBlur?: (args: any) => void;
   onChangeText?: (args: any) => void;
   secureTextEntry?: boolean;
-  autoCapitalize?: "none" | "sentences" | "words" | "characters"
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
+  outlineColor?: string;
+  activeOutlineColor?: string;
 }
 
 const EditableTextbox = ({ 
@@ -21,7 +23,9 @@ const EditableTextbox = ({
   onBlur, 
   onChangeText,
   secureTextEntry, 
-  autoCapitalize
+  autoCapitalize,
+  outlineColor,
+  activeOutlineColor,
 }: EditableTextboxProps) => {
   const theme = useTheme();
 
@@ -30,8 +34,8 @@ const EditableTextbox = ({
       <TextInput 
         contentStyle={styles.text}
         textColor="#505050"
-        outlineColor={theme.colors.primary}
-        activeOutlineColor={theme.colors.primary}
+        outlineColor={outlineColor ? outlineColor : theme.colors.primary}
+        activeOutlineColor={activeOutlineColor ? activeOutlineColor : theme.colors.primary}
         outlineStyle={styles.box}
         mode="outlined"
         label={label}
