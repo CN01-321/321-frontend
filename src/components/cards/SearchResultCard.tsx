@@ -22,8 +22,6 @@ export default function SearchResultCard({
     onRequest();
   };
 
-  console.log(JSON.stringify(carer, null, 2));
-
   return (
     <BaseProfileCard
       pfp={carer.pfp}

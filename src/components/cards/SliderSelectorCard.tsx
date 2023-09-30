@@ -7,6 +7,7 @@ interface SliderSelectorCardProps extends BaseFormCardProps {
   min: number;
   max: number;
   step?: number;
+  value?: number;
   onChange: (value: number) => void;
 }
 
@@ -18,6 +19,7 @@ export default function SliderSelectorCard({
   min,
   max,
   step,
+  value,
   onChange,
 }: SliderSelectorCardProps) {
   const theme = useTheme();
@@ -36,6 +38,7 @@ export default function SliderSelectorCard({
         style={{ padding: 10 }}
         minimumValue={min}
         maximumValue={max}
+        value={value ?? min}
         step={step}
         onValueChange={onChange}
       />

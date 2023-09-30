@@ -57,6 +57,7 @@ export default function Settings() {
                 fill={theme.colors.primary}
               />
             )}
+            onPress={() => router.push(`/reset-password`)}
           />
           <SettingsOption
             name="Delete Account"

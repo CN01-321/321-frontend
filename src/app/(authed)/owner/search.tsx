@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { FlatList, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Searchbar, useTheme } from "react-native-paper";
 import NewRequestModal from "../../../components/modals/NewRequestModal";
-import axios from "axios";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import {
@@ -12,35 +11,39 @@ import {
   PetType,
 } from "../../../types/types";
 import SearchFilterModal from "../../../components/modals/SearchFilterModal";
-import SearchResultCard from "../../../components/cards/SearchResultCard";
+import { filterCarers } from "../../../utilities/utils";
+import { fetchData } from "../../../utilities/fetch";
+import SearchResultListView from "../../../components/views/SearchResultListView";
 
-interface Filters {
+export interface Filters {
   maxPrice?: number;
   minRating?: number;
   petTypes: Map<PetType, boolean>;
   petSizes: Map<PetSize, boolean>;
 }
 
-const defaultFilters = {
-  petTypes: new Map(
-    Object.entries({
-      dog: true,
-      cat: true,
-      bird: true,
-      rabbit: true,
-    }) as [PetType, boolean][]
-  ),
-  petSizes: new Map(
-    Object.entries({
-      small: true,
-      medium: true,
-      large: true,
-    }) as [PetSize, boolean][]
-  ),
+const defaultFilters = () => {
+  return {
+    petTypes: new Map(
+      Object.entries({
+        dog: false,
+        cat: false,
+        bird: false,
+        rabbit: false,
+      }) as [PetType, boolean][]
+    ),
+    petSizes: new Map(
+      Object.entries({
+        small: false,
+        medium: false,
+        large: false,
+      }) as [PetSize, boolean][]
+    ),
+  };
 };
 
 export default function Search() {
-  const [filters, setFilters] = useState<Filters>(defaultFilters);
+  const [filters, setFilters] = useState<Filters>(defaultFilters());
   const [filterVisible, setFilterVisible] = useState(false);
   const [requestVisible, setRequestVisible] = useState(false);
   const [carers, setCarers] = useState<NearbyCarer[]>([]);
@@ -49,84 +52,21 @@ export default function Search() {
   const { pushError } = useMessageSnackbar();
   const theme = useTheme();
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    (async () => {
-      try {
-        const { data } = await axios.get<NearbyCarer[]>(
-          "/owners/requests/nearby"
-        );
-
-        if (!ignore) {
-          console.log("nearby carers are ", data);
-          setCarers(data);
-        }
-      } catch (e) {
-        console.error(e);
-        pushError("Could not fetch carers");
-      }
-    })();
-
-    return () => (ignore = true);
+  useEffect(() => {
+    fetchData("/owners/requests/nearby", setCarers, () =>
+      pushError("Could not fetch carers")
+    );
   }, []);
+
+  useEffect(() => {
+    setSearchResults(filterCarers(filters, carers));
+  }, [carers, filters]);
 
   const updateFilters = (filter: Filters) => {
     setFilters({ ...filter });
   };
 
-  const clearFilters = () => setFilters({ ...defaultFilters });
-
-  useEffect(() => {
-    const results = [];
-
-    const selectedPetTypes = Array.from(filters.petTypes.entries())
-      .filter(([, selected]) => selected)
-      .map(([petType]) => petType);
-
-    const selectedPetSizes = Array.from(filters.petSizes.entries())
-      .filter(([, selected]) => selected)
-      .map(([petSize]) => petSize);
-
-    console.log(selectedPetTypes, selectedPetSizes);
-
-    for (const carer of carers) {
-      if (filters.maxPrice && carer.hourlyRate > filters.maxPrice) {
-        continue;
-      }
-
-      if (
-        !carer.preferredPetTypes.every((petType) =>
-          selectedPetTypes.includes(petType)
-        )
-      ) {
-        continue;
-      }
-
-      if (
-        !carer.preferredPetSizes.every((petSize) =>
-          selectedPetSizes.includes(petSize)
-        )
-      ) {
-        continue;
-      }
-
-      if (
-        filters.minRating &&
-        carer.rating &&
-        filters.minRating > carer.rating
-      ) {
-        continue;
-      }
-
-      results.push(carer);
-    }
-
-    // console.log("search results are: ", res);
-    console.log("filters are:", filters);
-
-    setSearchResults(results);
-  }, [carers, filters]);
+  const clearFilters = () => setFilters(defaultFilters());
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
@@ -142,17 +82,14 @@ export default function Search() {
         onChange={updateFilters}
         onClear={clearFilters}
       />
-      <FlatList
-        data={searchResults}
-        renderItem={({ item }) => (
-          <SearchResultCard
-            carer={item}
-            onRequest={() => {
-              setSelectedCarer(item);
-              setRequestVisible(true);
-            }}
-          />
-        )}
+      <SearchResultListView
+        results={searchResults}
+        onRequest={(carer) => {
+          setSelectedCarer(carer);
+          setRequestVisible(true);
+        }}
+        emptyTitle="No Results"
+        emptySubtitle="Try broadening the filters"
       />
       <NewRequestModal
         title="Request Carer's Services"

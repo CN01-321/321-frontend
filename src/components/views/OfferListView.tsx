@@ -5,8 +5,10 @@ import { useState } from "react";
 import axios from "axios";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 import OfferInfoModal from "../modals/OfferInfoModal";
+import EmptyListView, { EmptyListViewProps } from "./EmptyListView";
+import { useTheme } from "react-native-paper";
 
-interface OffersListViewProps {
+interface OffersListViewProps extends Omit<EmptyListViewProps, "userType"> {
   offers: Job[];
   offerType: OfferType;
   updateOffers: () => Promise<void>;
@@ -16,11 +18,24 @@ export default function OffersListView({
   offers,
   offerType,
   updateOffers,
+  emptyTitle,
+  emptySubtitle,
 }: OffersListViewProps) {
   const [visible, setVisible] = useState(false);
   const [currentOffer, setCurrentOffer] = useState<Job>();
   const [refreshing, setRefreshing] = useState(false);
   const { pushMessage, pushError } = useMessageSnackbar();
+  const theme = useTheme();
+
+  if (offers.length === 0) {
+    return (
+      <EmptyListView
+        userType="carer"
+        emptyTitle={emptyTitle}
+        emptySubtitle={emptySubtitle}
+      />
+    );
+  }
 
   const handleAccept = async () => {
     setRefreshing(true);
@@ -58,7 +73,12 @@ export default function OffersListView({
   };
 
   return (
-    <View>
+    <View
+      style={{
+        height: "100%",
+        backgroundColor: theme.colors.background,
+      }}
+    >
       <FlatList
         data={offers}
         renderItem={({ item }) => (
@@ -71,7 +91,10 @@ export default function OffersListView({
           />
         )}
         keyExtractor={(item) => item._id}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{
+          paddingBottom: 100,
+          backgroundColor: theme.colors.background,
+        }}
         onRefresh={updateOffers}
         refreshing={refreshing}
       />

@@ -1,19 +1,18 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import ReviewsView, { Review } from "../../../components/views/ReviewsView";
-import axios from "axios";
 import { Pet } from "../../../types/types";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import PetInfoView from "../../../components/views/PetInfoView";
 import ThemedTabView from "../../../components/views/ThemedTabView";
+import { fetchData } from "../../../utilities/fetch";
+import { useIsFocused } from "@react-navigation/native";
 
-type OwnPet = "true" | undefined;
-
-export default function PetView() {
+export default function PetProfile() {
   const { petId, ownPet } = useLocalSearchParams<{
     petId: string;
-    ownPet?: OwnPet;
+    ownPet?: "true" | undefined;
   }>();
   const [pet, setPet] = useState<Pet>({
     _id: "",
@@ -23,51 +22,35 @@ export default function PetView() {
   });
   const [reviews, setReviews] = useState<Review[]>([]);
   const { pushError } = useMessageSnackbar();
+  const isFocused = useIsFocused();
 
-  const getPetProfile = async (): Promise<Pet> => {
-    const { data } = await axios.get<Pet>(`/pets/${petId}`);
-    return data;
-  };
+  const updatePetInfo = async () => {
+    await fetchData(`/pets/${petId}/`, setPet, () =>
+      pushError("Could not fetch pet profile")
+    );
 
-  const getPetReviews = async (): Promise<Review[]> => {
-    const { data } = await axios.get<Review[]>(`/pets/${petId}/feedback`);
-    return data;
+    await fetchData(`/pets/${petId}/feedback`, setReviews, () =>
+      pushError("Could not fetch pet reviews")
+    );
   };
 
   useEffect((): (() => void) => {
     let ignore = false;
-
-    (async () => {
-      try {
-        const [pet, reviews] = await Promise.all([
-          getPetProfile(),
-          getPetReviews(),
-        ]);
-
-        if (!ignore) {
-          setPet(pet);
-          setReviews(reviews);
-        }
-      } catch (e) {
-        console.error(e);
-        pushError("Could not fetch pet information");
-      }
-    })();
-
+    if (!ignore && isFocused) updatePetInfo();
     return () => (ignore = true);
-  }, []);
+  }, [isFocused]);
 
-  const profileScene = () => <PetInfoView pet={pet} />;
+  const profileScene = () => (
+    <PetInfoView pet={pet} ownPet={ownPet === "true"} />
+  );
 
   const reviewsScene = () => (
     <ReviewsView
       profile={pet}
-      isSelf={ownPet !== undefined}
+      isSelf={ownPet === "true"}
       reviews={reviews}
       isPet={true}
-      updateReviews={async () => {
-        setReviews(await getPetReviews());
-      }}
+      updateReviews={updatePetInfo}
     />
   );
 

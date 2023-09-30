@@ -18,28 +18,33 @@ import Star from "../Star";
 
 type CarerProfileInfoViewProp = {
   carer: CarerProfile;
+  isSelf: boolean;
 };
 
-const CarerProfileInfoView = ({ carer }: CarerProfileInfoViewProp) => {
+const CarerProfileInfoView = ({ carer, isSelf }: CarerProfileInfoViewProp) => {
   const theme = useTheme();
   const router = useRouter();
 
   return (
-    <ScrollView style={styles.view}>
+    <ScrollView
+      style={[styles.view, { backgroundColor: theme.colors.background }]}
+    >
       <View style={styles.pfpAndNameContainer}>
         <DynamicAvatar pfp={carer.pfp} defaultPfp="user" size={120} />
         <Text style={styles.fullName}>{carer.name}</Text>
-        <Button
-          mode="text"
-          labelStyle={styles.editButtonStyle}
-          contentStyle={{ flexDirection: "row-reverse" }}
-          onPress={() => router.push(`/profile/edit`)}
-          icon={() => (
-            <EditIcon height={22} width={22} fill={theme.colors.primary} />
-          )}
-        >
-          Tap Here to Edit Profile
-        </Button>
+        {isSelf ? (
+          <Button
+            mode="text"
+            labelStyle={styles.editButtonStyle}
+            contentStyle={{ flexDirection: "row-reverse" }}
+            onPress={() => router.push(`/profile/edit`)}
+            icon={() => (
+              <EditIcon height={22} width={22} fill={theme.colors.primary} />
+            )}
+          >
+            Tap Here to Edit Profile
+          </Button>
+        ) : null}
         <CarerStats
           totalReviews={carer.totalReviews}
           rating={carer.rating ?? 0}

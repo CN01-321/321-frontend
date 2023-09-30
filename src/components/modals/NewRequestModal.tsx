@@ -137,7 +137,7 @@ export default function NewRequestModal({
             )}
             name="dateRange.startDate"
           />
-          <ErrorText errMsg={errors.dateRange?.startDate?.message} />
+          <ErrorText>{errors.dateRange?.startDate?.message}</ErrorText>
         </View>
         <View>
           <Controller
@@ -166,7 +166,7 @@ export default function NewRequestModal({
             )}
             name="dateRange.endDate"
           />
-          <ErrorText errMsg={errors.dateRange?.endDate?.message} />
+          <ErrorText>{errors.dateRange?.endDate?.message}</ErrorText>
         </View>
         <Controller
           control={control}
@@ -203,7 +203,7 @@ export default function NewRequestModal({
             )}
             name="pets"
           />
-          <ErrorText errMsg={errors.pets?.message} />
+          <ErrorText>{errors.pets?.message}</ErrorText>
         </View>
       </View>
       <Button mode="contained" onPress={handleSubmit(onSubmit)}>

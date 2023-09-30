@@ -2,7 +2,7 @@
   "compilerOptions": {
     "strict": true,
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": true
   },
   "extends": "expo/tsconfig.base"
 }

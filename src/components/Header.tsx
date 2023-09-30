@@ -4,10 +4,16 @@ import { IconButton } from "react-native-paper";
 interface HeaderProps {
   title: string;
   showHeader?: boolean;
+  showBack?: boolean;
   showButtons?: boolean;
 }
 
-export default function Header({ title, showHeader, showButtons }: HeaderProps) {
+export default function Header({
+  title,
+  showHeader,
+  showBack,
+  showButtons,
+}: HeaderProps) {
   const router = useRouter();
   const buttons = showButtons
     ? () => (
@@ -30,6 +36,7 @@ export default function Header({ title, showHeader, showButtons }: HeaderProps) 
         headerTitle: title,
         headerRight: buttons,
         headerShown: showHeader,
+        headerBackVisible: showBack ?? true,
         headerStyle: {
           backgroundColor: "#ffffff",
         },

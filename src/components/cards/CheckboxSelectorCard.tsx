@@ -1,16 +1,17 @@
 import { View, StyleSheet } from "react-native";
-import { Text, Checkbox, Divider } from "react-native-paper";
+import { Text, Checkbox, Divider, useTheme } from "react-native-paper";
 import BaseFormCard, { BaseFormCardProps } from "./BaseFormCard";
 
-interface CheckboxSelectorCardProps<T> extends BaseFormCardProps {
+interface CheckboxSelectorCardProps<T, K extends string>
+  extends BaseFormCardProps {
   items: T[];
-  values?: Map<string, boolean>;
-  onItemSelect?: (event: Map<string, boolean>) => void;
-  keyExtractor: (item: T) => string;
+  values?: Map<K, boolean>;
+  onItemSelect?: (event: Map<K, boolean>) => void;
+  keyExtractor: (item: T) => K;
   nameExtractor: (item: T) => string;
 }
 
-export default function CheckboxSelectorCard<T>({
+export default function CheckboxSelectorCard<T, K extends string>({
   title,
   titleStyle,
   icon,
@@ -20,7 +21,7 @@ export default function CheckboxSelectorCard<T>({
   onItemSelect,
   keyExtractor,
   nameExtractor,
-}: CheckboxSelectorCardProps<T>) {
+}: CheckboxSelectorCardProps<T, K>) {
   const getValue = (item: T) => {
     if (!values) {
       return true;
@@ -67,6 +68,8 @@ interface CheckboxListItem {
   onCheck?: () => void;
 }
 function CheckboxListItem({ name, checked, onCheck }: CheckboxListItem) {
+  const theme = useTheme();
+
   return (
     <View style={styles.checkboxItemContainer}>
       <View style={styles.checkboxItem}>
@@ -75,7 +78,7 @@ function CheckboxListItem({ name, checked, onCheck }: CheckboxListItem) {
         </Text>
         <Checkbox status={checked} onPress={onCheck} />
       </View>
-      <Divider />
+      <Divider style={{ backgroundColor: theme.colors.primary }} />
     </View>
   );
 }

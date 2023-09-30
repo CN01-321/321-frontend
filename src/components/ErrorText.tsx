@@ -1,6 +1,13 @@
 import { Text, useTheme } from "react-native-paper";
 
-export default function ErrorText({ errMsg }: { errMsg?: string }) {
+interface ErrorTextProps {
+  children?: string;
+}
+
+export default function ErrorText({ children }: ErrorTextProps) {
   const theme = useTheme();
-  return <Text style={{ color: theme.colors.error }}>{errMsg ?? ""}</Text>;
+
+  if (!children) return null;
+
+  return <Text style={{ color: theme.colors.error }}>{children}</Text>;
 }

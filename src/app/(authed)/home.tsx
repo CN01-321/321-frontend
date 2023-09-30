@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import Header from "../../components/Header";
 import { Review } from "../../components/views/ReviewsView";
 import DynamicCardCover from "../../components/DynamicCardCover";
@@ -19,6 +19,7 @@ import { UserType } from "../../types/types";
 import { useRouter } from "expo-router";
 import Star from "../../components/Star";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
+import { fetchData } from "../../utilities/fetch";
 
 interface TopCarer {
   _id: string;
@@ -47,26 +48,15 @@ export default function Home() {
 
   const userType = getTokenUser()?.type ?? "owner";
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    (async () => {
-      try {
-        const { data } = await axios.get<HomeInfo>(`/${userType}s/home`);
-        console.log(data);
-        if (!ignore) setHomeInfo(data);
-      } catch (e) {
-        // if forbidden the user has not filled out their required information
-        if (e instanceof AxiosError && e.status === 403) {
-          router.replace("/more-info");
-          return;
-        }
-        console.error(e);
-        pushError("Could not fetch home page information");
+  useEffect(() => {
+    fetchData(`/${userType}s/home`, setHomeInfo, (err) => {
+      // if forbidden the user has not filled out their required information
+      if (err instanceof AxiosError && err.response?.status === 403) {
+        router.replace("/more-info");
+        return;
       }
-    })();
-
-    return () => (ignore = true);
+      pushError("Could not fetch home page information");
+    });
   }, []);
 
   return (
@@ -219,7 +209,7 @@ function TopCarerCard({ carer }: { carer: TopCarer }) {
     <View style={{ margin: 5 }}>
       <Pressable onPress={handlePress}>
         <DynamicCardCover
-          style={{ zIndex: 0, width: 180, height: 180 }}
+          style={{ borderRadius: 25, width: 180, height: 180 }}
           imageId={carer.pfp}
           defaultImage="carer"
         />

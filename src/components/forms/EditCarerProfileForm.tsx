@@ -1,14 +1,19 @@
 import { useState } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
-import { Text, Button, Checkbox, useTheme } from "react-native-paper";
+import { Button, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { useRouter } from "expo-router";
 import * as Location from "expo-location";
 import axios from "axios";
 import { pickImage, uploadImage } from "../../utilities/image";
 import DynamicAvatar from "../DynamicAvatar";
-import EditableTextbox from "../EditableTextbox";
-import { CarerProfile } from "../../types/types";
+import {
+  CarerProfile,
+  PetSize,
+  PetType,
+  petSelectorSizes,
+  petSelectorTypes,
+} from "../../types/types";
 
 import PersonIcon from "../../../assets/icons/profile/person.svg";
 import EmailIcon from "../../../assets/icons/profile/email.svg";
@@ -21,9 +26,14 @@ import AboutMeIcon from "../../../assets/icons/profile/aboutme.svg";
 import CarIcon from "../../../assets/icons/profile/car.svg";
 import DollarIcon from "../../../assets/icons/profile/dollar.svg";
 import { ImagePickerAsset } from "expo-image-picker";
+import ThemedTextInput from "../ThemedTextInput";
+import CheckboxSelectorCard from "../cards/CheckboxSelectorCard";
+import ErrorText from "../ErrorText";
+import { Href } from "expo-router/build/link/href";
 
 type EditCarerProfileForm = {
   carer: CarerProfile;
+  navigateOnComplete?: Href;
 };
 
 type FormData = {
@@ -40,20 +50,23 @@ type FormData = {
   bio: string;
   preferredTravelDistance: string;
   hourlyRate: string;
-  willServiceBirds: boolean;
-  willServiceCats: boolean;
-  willServiceDogs: boolean;
-  willServiceRabbits: boolean;
-  willServiceSmall: boolean;
-  willServiceMedium: boolean;
-  willServiceLarge: boolean;
+  preferredPetTypes: Map<PetType, boolean>;
+  preferredPetSizes: Map<PetSize, boolean>;
 };
 
-const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
+const EditCarerProfileForm = ({
+  carer,
+  navigateOnComplete,
+}: EditCarerProfileForm) => {
   const router = useRouter();
   const theme = useTheme();
 
-  const { control, handleSubmit, reset } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
     defaultValues: {
       name: carer.name || "",
       email: carer.email,
@@ -67,13 +80,8 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
       bio: carer.bio || "",
       preferredTravelDistance: carer.preferredTravelDistance.toString() || "",
       hourlyRate: carer.hourlyRate.toString() || "",
-      willServiceBirds: carer.preferredPetTypes.includes("bird"),
-      willServiceCats: carer.preferredPetTypes.includes("cat"),
-      willServiceDogs: carer.preferredPetTypes.includes("dog"),
-      willServiceRabbits: carer.preferredPetTypes.includes("rabbit"),
-      willServiceSmall: carer.preferredPetSizes.includes("small"),
-      willServiceMedium: carer.preferredPetSizes.includes("medium"),
-      willServiceLarge: carer.preferredPetSizes.includes("large"),
+      preferredPetTypes: new Map(),
+      preferredPetSizes: new Map(),
     },
   });
 
@@ -104,16 +112,13 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
       geocodedLocation[0].latitude,
     ];
 
-    const preferredPetTypes = [];
-    if (data.willServiceBirds) preferredPetTypes.push("bird");
-    if (data.willServiceCats) preferredPetTypes.push("cat");
-    if (data.willServiceDogs) preferredPetTypes.push("dog");
-    if (data.willServiceRabbits) preferredPetTypes.push("rabbit");
+    const preferredPetTypes = Array.from(data.preferredPetTypes)
+      .filter(([, b]) => b)
+      .map(([petType]) => petType);
 
-    const preferredPetSizes = [];
-    if (data.willServiceSmall) preferredPetSizes.push("small");
-    if (data.willServiceMedium) preferredPetSizes.push("medium");
-    if (data.willServiceLarge) preferredPetSizes.push("large");
+    const preferredPetSizes = Array.from(data.preferredPetSizes)
+      .filter(([, b]) => b)
+      .map(([petSize]) => petSize);
 
     const submittedData = {
       name: data.name,
@@ -142,11 +147,16 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
     }
 
     reset();
-    router.back();
+
+    if (navigateOnComplete) {
+      router.replace(navigateOnComplete);
+    } else {
+      router.back();
+    }
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: theme.colors.background }}>
       <View style={styles.form}>
         <View style={styles.pfpEdit}>
           {profilePicture ? (
@@ -164,9 +174,10 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
         </View>
         <Controller
           control={control}
+          rules={{ required: "A name is required" }}
           name="name"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Full Name"
               value={value}
               onBlur={onBlur}
@@ -181,11 +192,13 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
             />
           )}
         />
+        <ErrorText>{errors.name?.message}</ErrorText>
         <Controller
           control={control}
           name="email"
+          rules={{ required: "An email is required" }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Email"
               value={value}
               onBlur={onBlur}
@@ -196,11 +209,12 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
             />
           )}
         />
+        <ErrorText>{errors.email?.message}</ErrorText>
         <Controller
           control={control}
           name="phone"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Phone Number"
               value={value}
               onBlur={onBlur}
@@ -214,8 +228,9 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
         <Controller
           control={control}
           name="location.street"
+          rules={{ required: "Street name is required" }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Street Name"
               value={value}
               onBlur={onBlur}
@@ -230,11 +245,13 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
             />
           )}
         />
+        <ErrorText>{errors.location?.street?.message}</ErrorText>
         <Controller
           control={control}
           name="location.city"
+          rules={{ required: "City is required" }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="City"
               value={value}
               onBlur={onBlur}
@@ -245,11 +262,13 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
             />
           )}
         />
+        <ErrorText>{errors.location?.city?.message}</ErrorText>
         <Controller
           control={control}
           name="location.state"
+          rules={{ required: "State is required" }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="State"
               value={value}
               onBlur={onBlur}
@@ -260,11 +279,13 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
             />
           )}
         />
+        <ErrorText>{errors.location?.state?.message}</ErrorText>
         <Controller
           control={control}
           name="location.postcode"
+          rules={{ required: "Postcode is required" }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Postcode"
               value={value}
               onBlur={onBlur}
@@ -279,11 +300,12 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
             />
           )}
         />
+        <ErrorText>{errors.location?.postcode?.message}</ErrorText>
         <Controller
           control={control}
           name="bio"
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="About Me (Max 200 Characters)"
               value={value}
               multiline={true}
@@ -302,8 +324,23 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
         <Controller
           control={control}
           name="preferredTravelDistance"
+          rules={{
+            required: "Maximum travel distance is required",
+            validate: (dist) => {
+              const num = parseInt(dist);
+              if (isNaN(num)) {
+                return "Distance must be a number";
+              }
+
+              if (num < 0) {
+                return "Distance cant be negative";
+              }
+
+              return true;
+            },
+          }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Maximum Travel Distance"
               value={value}
               onBlur={onBlur}
@@ -317,8 +354,23 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
         <Controller
           control={control}
           name="hourlyRate"
+          rules={{
+            required: "Hourly rate is required",
+            validate: (dist) => {
+              const num = parseInt(dist);
+              if (isNaN(num)) {
+                return "Hourly rate must be a number";
+              }
+
+              if (num < 0) {
+                return "Rate cant be negative";
+              }
+
+              return true;
+            },
+          }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <EditableTextbox
+            <ThemedTextInput
               label="Hourly Rate"
               value={value}
               onBlur={onBlur}
@@ -333,82 +385,35 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
             />
           )}
         />
-        <Text variant="titleMedium">Types of Pets to Service</Text>
-        <Text>Birds</Text>
         <Controller
           control={control}
-          name="willServiceBirds"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
+          name="preferredPetTypes"
+          render={({ field: { value, onChange } }) => (
+            <CheckboxSelectorCard
+              title="Types of Pets to Service"
+              icon="dog-side"
+              border
+              items={petSelectorTypes}
+              values={value}
+              onItemSelect={onChange}
+              keyExtractor={(item) => item.key}
+              nameExtractor={(item) => item.name}
             />
           )}
         />
-        <Text>Cats</Text>
         <Controller
           control={control}
-          name="willServiceCats"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
-        <Text>Dogs</Text>
-        <Controller
-          control={control}
-          name="willServiceDogs"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
-        <Text>Rabbits</Text>
-        <Controller
-          control={control}
-          name="willServiceRabbits"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
-        <Text variant="titleMedium">Size of Pets</Text>
-        <Text>Small</Text>
-        <Controller
-          control={control}
-          name="willServiceSmall"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
-        <Text>Medium</Text>
-        <Controller
-          control={control}
-          name="willServiceMedium"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
-            />
-          )}
-        />
-        <Text>Large</Text>
-        <Controller
-          control={control}
-          name="willServiceLarge"
-          render={({ field: { onChange, value } }) => (
-            <Checkbox
-              status={value ? "checked" : "unchecked"}
-              onPress={() => onChange(!value)}
+          name="preferredPetSizes"
+          render={({ field: { value, onChange } }) => (
+            <CheckboxSelectorCard
+              title="Size of Pets"
+              icon="scale"
+              border
+              items={petSelectorSizes}
+              values={value}
+              onItemSelect={onChange}
+              keyExtractor={(item) => item.key}
+              nameExtractor={(item) => item.name}
             />
           )}
         />
@@ -429,8 +434,8 @@ const EditCarerProfileForm = ({ carer }: EditCarerProfileForm) => {
 
 const styles = StyleSheet.create({
   form: {
-    display: "flex",
-    flexDirection: "column",
+    flex: 1,
+    gap: 20,
     paddingTop: 15,
     paddingLeft: 20,
     paddingRight: 20,

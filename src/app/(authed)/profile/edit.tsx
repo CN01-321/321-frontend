@@ -1,5 +1,4 @@
 import { View, ScrollView } from "react-native";
-import axios from "axios";
 import EditOwnerProfileForm from "../../../components/forms/EditOwnerProfileForm";
 import EditCarerProfileForm from "../../../components/forms/EditCarerProfileForm";
 import Header from "../../../components/Header";
@@ -7,30 +6,18 @@ import { OwnerProfile, CarerProfile } from "../../../types/types";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../contexts/auth";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
+import { isOwner } from "../../../utilities/utils";
+import { fetchData } from "../../../utilities/fetch";
 
-function isOwner(user: OwnerProfile | CarerProfile): user is OwnerProfile {
-  return user.userType === "owner";
-}
-
-const EditProfile = () => {
+export default function EditProfile() {
   const [user, setUser] = useState<OwnerProfile | CarerProfile>();
   const { getTokenUser } = useAuth();
   const { pushError } = useMessageSnackbar();
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    (async () => {
-      try {
-        const { data } = await axios.get(`/users/${getTokenUser()?._id}`);
-        if (!ignore) setUser(data);
-      } catch (e) {
-        console.error(e);
-        pushError("Could not fetch profile information");
-      }
-    })();
-
-    return () => (ignore = true);
+  useEffect(() => {
+    fetchData(`/users/${getTokenUser()?._id}`, setUser, () =>
+      pushError("Could not fetch profile information")
+    );
   }, []);
 
   if (!user) return null;
@@ -47,6 +34,4 @@ const EditProfile = () => {
       </ScrollView>
     </View>
   );
-};
-
-export default EditProfile;
+}

@@ -3,9 +3,9 @@ import { Job } from "../../../types/types";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import ThemedTabView from "../../../components/views/ThemedTabView";
-import { fetchRequestInfo } from "../../../utilities/utils";
-import { FlatList, StyleSheet } from "react-native";
-import JobCard from "../../../components/cards/JobCard";
+import { isPastJob } from "../../../utilities/utils";
+import { fetchRequestInfo } from "../../../utilities/fetch";
+import JobListView from "../../../components/views/JobListView";
 
 export default function Jobs() {
   const [currentJobs, setCurrentJobs] = useState<Job[]>([]);
@@ -18,9 +18,6 @@ export default function Jobs() {
     try {
       const jobs = await fetchRequestInfo<Job>("/carers/jobs");
 
-      const isPastJob = (j: Job) =>
-        j.status === "rejected" || j.status === "completed";
-
       setCurrentJobs(jobs.filter((j) => !isPastJob(j)));
       setPastJobs(jobs.filter(isPastJob));
     } catch (e) {
@@ -31,33 +28,27 @@ export default function Jobs() {
     setRefreshing(false);
   };
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    if (!ignore) updateJobs();
-
-    return () => (ignore = true);
+  useEffect(() => {
+    updateJobs();
   }, []);
 
   const currentJobsScene = () => (
-    <FlatList
-      data={currentJobs}
-      renderItem={({ item }) => <JobCard job={item} updateJobs={updateJobs} />}
-      keyExtractor={(item) => item._id}
-      contentContainerStyle={styles.jobListContainer}
+    <JobListView
+      jobs={currentJobs}
       onRefresh={updateJobs}
       refreshing={refreshing}
+      emptyTitle="No Current Jobs"
+      emptySubtitle="Accept some offers for them to appear here"
     />
   );
 
   const pastJobsScene = () => (
-    <FlatList
-      data={pastJobs}
-      renderItem={({ item }) => <JobCard job={item} updateJobs={updateJobs} />}
-      keyExtractor={(item) => item._id}
-      contentContainerStyle={styles.jobListContainer}
+    <JobListView
+      jobs={pastJobs}
       onRefresh={updateJobs}
       refreshing={refreshing}
+      emptyTitle="No Past Jobs"
+      emptySubtitle="Complete some jobs for them to appear here"
     />
   );
 
@@ -73,9 +64,3 @@ export default function Jobs() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  jobListContainer: {
-    paddingBottom: 100,
-  },
-});

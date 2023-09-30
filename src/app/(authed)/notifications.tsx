@@ -1,10 +1,15 @@
-import { ScrollView, StyleSheet } from "react-native";
-import { Card, Text } from "react-native-paper";
+import { SectionList, StyleSheet, View } from "react-native";
+import { Text, useTheme } from "react-native-paper";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import DynamicAvatar from "../../components/DynamicAvatar";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
+import { fetchNotifications } from "../../utilities/fetch";
+import {
+  getNotificationSubject,
+  getNotificationTitle,
+  sortNotifications,
+} from "../../utilities/utils";
 
 type NotificationType =
   | "recievedDirect"
@@ -12,55 +17,55 @@ type NotificationType =
   | "acceptedDirect"
   | "acceptedBroad";
 
-interface Notification {
+export interface Notification {
   notificationType: NotificationType;
   subjectName: string;
   subjectPfp?: string;
   notifiedOn: Date;
 }
 
+export interface NotifTimeBucket {
+  title: string;
+  data: Notification[];
+}
+
 export default function Notifications() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<NotifTimeBucket[]>([]);
   const { pushError } = useMessageSnackbar();
+  const theme = useTheme();
 
-  useEffect((): (() => void) => {
-    let ignore = false;
+  const getNotifications = async () => {
+    try {
+      const notifs = await fetchNotifications();
+      const buckets = await sortNotifications(notifs);
+      setNotifications(buckets);
+    } catch (err) {
+      console.error(err);
+      pushError("Could not fetch notifications");
+    }
+  };
 
-    (async () => {
-      try {
-        const { data } = await axios.get<Notification[]>(
-          "/users/notifications"
-        );
-
-        // set notifications as decending in time
-        if (!ignore)
-          setNotifications(
-            data
-              .map((n) => {
-                return { ...n, notifiedOn: new Date(n.notifiedOn) };
-              })
-              .sort(
-                (n1, n2) => n2.notifiedOn.getTime() - n1.notifiedOn.getTime()
-              )
-          );
-      } catch (err) {
-        console.error(err);
-        pushError("Could not fetch notifications");
-      }
-    })();
-
-    return () => (ignore = true);
+  useEffect(() => {
+    getNotifications();
   }, []);
 
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <Header title="Notifications" />
-      <ScrollView contentContainerStyle={styles.notificationContainer}>
-        {notifications.map((notification, index) => (
-          <NotificationCard notification={notification} key={index} />
-        ))}
-      </ScrollView>
-    </>
+      <SectionList
+        contentContainerStyle={styles.notificationContainer}
+        sections={notifications}
+        renderItem={({ item }) => <NotificationCard notification={item} />}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text
+            variant="titleMedium"
+            style={{ paddingVertical: 5, color: theme.colors.primary }}
+          >
+            {title}
+          </Text>
+        )}
+      />
+    </View>
   );
 }
 
@@ -69,51 +74,37 @@ interface NotificationCardProps {
 }
 
 function NotificationCard({ notification }: NotificationCardProps) {
-  const getNotificationTitle = () => {
-    switch (notification.notificationType) {
-      case "recievedDirect":
-        return "You Have a New Job Offer";
-      case "recievedFeedback":
-        return "You Have Some New Feedback";
-      case "acceptedDirect":
-        return "Your Request Has Been Accepted";
-      case "acceptedBroad":
-        return "You Have Been Accepted for a Job";
-    }
-  };
-
-  const getNotificationSubject = () => {
-    switch (notification.notificationType) {
-      case "recievedDirect":
-        return `${notification.subjectName} has offered you a job`;
-      case "recievedFeedback":
-        return `${notification.subjectName} has left some feedback`;
-      case "acceptedDirect":
-        return `${notification.subjectName} has accepted your request`;
-      case "acceptedBroad":
-        return `${notification.subjectName} has hired you for the job`;
-    }
-  };
+  const title = getNotificationTitle(notification);
+  const subject = getNotificationSubject(notification);
 
   return (
-    <Card>
-      <DynamicAvatar pfp={notification.subjectPfp} defaultPfp="user" />
-      <Card.Content>
-        <Text variant="titleSmall">{getNotificationTitle()}</Text>
-        <Text variant="bodyMedium">{getNotificationSubject()}</Text>
-        <Text variant="bodySmall">
-          Notified On: {notification.notifiedOn.toISOString()}
+    <View
+      style={{
+        flex: 1,
+        margin: 5,
+        flexDirection: "row",
+        gap: 10,
+        alignItems: "center",
+      }}
+    >
+      <DynamicAvatar
+        pfp={notification.subjectPfp}
+        defaultPfp="user"
+        size={40}
+      />
+      <View>
+        <Text variant="titleSmall">{title}</Text>
+        <Text variant="bodyMedium" style={{ color: "#777777" }}>
+          {subject}
         </Text>
-      </Card.Content>
-    </Card>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   notificationContainer: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 5,
-    paddingRight: 5,
+    padding: 20,
+    gap: 10,
   },
 });

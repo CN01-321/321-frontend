@@ -1,12 +1,14 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
+import { View } from "react-native";
 import axios from "axios";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import PaymentModal from "../../../components/modals/PaymentModal";
 import { Respondent } from "../../../types/types";
-import RespondentCard from "../../../components/cards/RespondentCard";
+import { fetchData } from "../../../utilities/fetch";
+import RespondentListView from "../../../components/views/RespondentsListView";
+import { useTheme } from "react-native-paper";
 
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();
@@ -15,26 +17,12 @@ export default function Respondents() {
   const [visible, setVisible] = useState(false);
   const { pushMessage, pushError } = useMessageSnackbar();
   const router = useRouter();
+  const theme = useTheme();
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    (async () => {
-      try {
-        const { data } = await axios.get<Respondent[]>(
-          `/owners/requests/${requestId}/respondents`
-        );
-
-        if (!ignore) {
-          setRespondents(data);
-        }
-      } catch (e) {
-        console.error(e);
-        pushError("Could not fetch respondents");
-      }
-    })();
-
-    return () => (ignore = true);
+  useEffect(() => {
+    fetchData(`/owners/requests/${requestId}/respondents`, setRespondents, () =>
+      pushError("Could not fetch respondents")
+    );
   }, []);
 
   const handleAccept = async () => {
@@ -52,7 +40,7 @@ export default function Respondents() {
   };
 
   return (
-    <View>
+    <View style={{ backgroundColor: theme.colors.background, height: "100%" }}>
       <Header title="Request Respondents" />
       <PaymentModal
         visible={visible}
@@ -61,18 +49,14 @@ export default function Respondents() {
         onDismiss={() => setVisible(false)}
         respondent={currentRespondent}
       />
-      <FlatList
-        data={respondents}
-        renderItem={({ item }) => (
-          <RespondentCard
-            respondent={item}
-            onHire={() => {
-              setCurrentRespondent(item);
-              setVisible(true);
-            }}
-          />
-        )}
-        keyExtractor={(item) => item._id}
+      <RespondentListView
+        respondents={respondents}
+        onHire={(respondent) => {
+          setCurrentRespondent(respondent);
+          setVisible(true);
+        }}
+        emptyTitle="No Respondents"
+        emptySubtitle="Come back later to check for new respondents"
       />
     </View>
   );

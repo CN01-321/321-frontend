@@ -1,46 +1,51 @@
-import { StyleProp, TextStyle } from "react-native";
-import { TextInput, useTheme } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { TextInput, TextInputProps, useTheme } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
 
-interface ThemedTextInputProps {
+interface ThemedTextInputProps extends TextInputProps {
   label: string;
   icon?: IconSource;
-  value?: string;
-  onChangeText?: (s: string) => void;
-  multiline?: boolean;
-  editable?: boolean;
-  style?: StyleProp<TextStyle>;
 }
 
 export default function ThemedTextInput({
   label,
   icon,
-  value,
-  onChangeText,
-  multiline,
-  editable,
   style,
+  ...props
 }: ThemedTextInputProps) {
   const theme = useTheme();
 
   return (
     <TextInput
+      {...props}
       label={label}
-      mode="outlined"
-      value={value}
-      onChangeText={onChangeText}
-      outlineColor={theme.colors.primary}
-      multiline={multiline ?? false}
-      editable={editable ?? true}
-      outlineStyle={{
-        borderRadius: 14,
-      }}
+      mode={props.mode ?? "outlined"}
+      textColor="#505050"
+      outlineColor={props.outlineColor ?? theme.colors.primary}
+      outlineStyle={styles.box}
+      contentStyle={styles.text}
       left={
         icon ? (
           <TextInput.Icon icon={icon} iconColor={theme.colors.primary} />
         ) : null
       }
-      style={[style, { backgroundColor: "white" }]}
+      style={[
+        style,
+        {
+          fontFamily: "Montserrat-Medium",
+          fontSize: 15,
+        },
+      ]}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  text: {
+    fontFamily: "Montserrat-Medium",
+    fontSize: 15,
+  },
+  box: {
+    borderRadius: 14,
+  },
+});
