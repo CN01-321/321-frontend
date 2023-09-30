@@ -28,7 +28,10 @@ export default function SignUp() {
       console.log(
         `created new ${userType} with: ${formData.email} and ${formData.password}`
       );
-      router.replace({ pathname: "/login", params: { userType } });
+      router.replace({
+        pathname: "/registration-confirmation",
+        params: { userType },
+      });
     } catch (error) {
       console.error(error);
     }
@@ -38,7 +41,11 @@ export default function SignUp() {
 
   return (
     <SafeAreaView
-      style={{ backgroundColor: theme.colors.background, height: "100%" }}
+      style={{
+        backgroundColor: theme.colors.background,
+        height: "100%",
+        flex: 1,
+      }}
     >
       <View style={styles.graphicContainer}>
         <Image
@@ -88,6 +95,7 @@ export default function SignUp() {
               secureTextEntry
               outlineColor="#9797975E"
               activeOutlineColor={colour}
+              autoCapitalize="none"
             />
           )}
         />
@@ -101,33 +109,6 @@ export default function SignUp() {
         >
           Sign Up
         </Button>
-        <View style={styles.centeredTextContainer}>
-          <Text style={styles.connectWithText}>- Or Connect With -</Text>
-        </View>
-        <View style={styles.centeredTextContainer}>
-          <Text style={styles.bottomText}>
-            By signing up, I agree with{" "}
-            <Text
-              style={[
-                styles.bottomText,
-                styles.highlightedText,
-                { color: colour },
-              ]}
-            >
-              Terms of Use
-            </Text>{" "}
-            and{" "}
-            <Text
-              style={[
-                styles.bottomText,
-                styles.highlightedText,
-                { color: colour },
-              ]}
-            >
-              Privacy Policy
-            </Text>
-          </Text>
-        </View>
       </View>
     </SafeAreaView>
   );
@@ -177,25 +158,5 @@ const styles = StyleSheet.create({
   },
   signUpButtonContent: {
     height: 55,
-  },
-  centeredTextContainer: {
-    display: "flex",
-    alignItems: "center",
-  },
-  connectWithText: {
-    fontFamily: "Montserrat-Medium",
-    fontSize: 12,
-    color: "#000000A6",
-    marginBottom: 25,
-  },
-  bottomText: {
-    textAlign: "center",
-    fontFamily: "Montserrat-Medium",
-    fontSize: 14,
-    color: "#00000094",
-  },
-  highlightedText: {
-    fontFamily: "Montserrat-Bold",
-    textDecorationLine: "underline",
   },
 });

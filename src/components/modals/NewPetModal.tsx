@@ -43,6 +43,7 @@ export default function NewPetModal({
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<NewPetForm>({
     defaultValues: {
       name: "",
@@ -84,6 +85,7 @@ export default function NewPetModal({
       pushMessage("Successfully added new pet!");
       await updatePets();
       onDismiss();
+      reset();
     } catch (err) {
       console.error(err);
       pushError("Could not add new pet");

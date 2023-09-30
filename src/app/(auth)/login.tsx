@@ -39,20 +39,17 @@ export default function Login() {
     console.log("logging in");
     try {
       const { data } = await axios.post<GetToken>("/login", formData);
-      console.log("new token in login.tsx", data.token);
       await logIn(data.token);
       console.log(`logged in with: ${formData.email} and ${formData.password}`);
       router.replace("/home");
     } catch (err) {
-      console.error(err);
-      if (err instanceof AxiosError) {
-        console.log(JSON.stringify({ ...err }, null, 2));
-        if (err.response?.status === 401) {
-          setError("password", {
-            message: "Username or password is incorrect",
-          });
-        }
+      if (err instanceof AxiosError && err.response?.status === 401) {
+        setError("password", {
+          message: "Username or password is incorrect",
+        });
+        return;
       }
+      console.error(err);
     }
   };
 
@@ -107,6 +104,7 @@ export default function Login() {
               secureTextEntry
               outlineColor={colour}
               activeOutlineColor={colour}
+              autoCapitalize="none"
             />
           )}
         />
@@ -124,47 +122,43 @@ export default function Login() {
         >
           Sign In
         </Button>
-        <View style={styles.centeredTextContainer}>
-          <Text style={styles.loginWithText}>- Or Login With -</Text>
-        </View>
         <View style={[styles.centeredTextContainer, { marginBottom: 50 }]}>
-          <Text style={styles.bottomText}>
-            Don&apos;t have an account?{" "}
-            <Text
-              style={[
-                styles.bottomText,
-                styles.highlightedText,
-                { color: colour },
-              ]}
-            >
-              Sign Up
-            </Text>
-          </Text>
+          <Text style={styles.bottomText}>Don&apos;t have an account? </Text>
+          <Button
+            mode="text"
+            labelStyle={styles.highlightedText}
+            textColor={colour}
+            onPress={() =>
+              router.push({ pathname: "/(auth)/signup", params: { userType } })
+            }
+          >
+            Sign Up
+          </Button>
         </View>
-        <View style={styles.centeredTextContainer}>
-          <Text style={styles.bottomText}>
-            By signing in, I agree with{" "}
-            <Text
-              style={[
-                styles.bottomText,
-                styles.highlightedText,
-                { color: colour },
-              ]}
-            >
-              Terms of Use
-            </Text>{" "}
-            and{" "}
-            <Text
-              style={[
-                styles.bottomText,
-                styles.highlightedText,
-                { color: colour },
-              ]}
-            >
-              Privacy Policy
-            </Text>
+      </View>
+      <View style={styles.bottomTextContainer}>
+        <Text style={styles.bottomText}>
+          By signing in, I agree with{" "}
+          <Text
+            style={[
+              styles.bottomText,
+              styles.highlightedText,
+              { color: colour },
+            ]}
+          >
+            Terms of Use
+          </Text>{" "}
+          and{" "}
+          <Text
+            style={[
+              styles.bottomText,
+              styles.highlightedText,
+              { color: colour },
+            ]}
+          >
+            Privacy Policy
           </Text>
-        </View>
+        </Text>
       </View>
     </SafeAreaView>
   );
@@ -174,6 +168,7 @@ const styles = StyleSheet.create({
   view: {
     paddingLeft: 40,
     paddingRight: 40,
+    flex: 1,
   },
   heading: {
     fontFamily: "Montserrat-Bold",
@@ -216,7 +211,7 @@ const styles = StyleSheet.create({
   },
   signInButton: {
     borderRadius: 50,
-    marginBottom: 40,
+    marginBottom: 10,
   },
   signInButtonLabel: {
     fontFamily: "Montserrat-SemiBold",
@@ -230,12 +225,25 @@ const styles = StyleSheet.create({
   centeredTextContainer: {
     display: "flex",
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   loginWithText: {
     fontFamily: "Montserrat-Medium",
     fontSize: 12,
     color: "#000000A6",
     marginBottom: 25,
+  },
+  bottomTextContainer: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 30,
+    width: "100%",
+    paddingLeft: 40,
+    paddingRight: 40,
   },
   bottomText: {
     textAlign: "center",
@@ -246,5 +254,6 @@ const styles = StyleSheet.create({
   highlightedText: {
     fontFamily: "Montserrat-Bold",
     textDecorationLine: "underline",
+    fontSize: 14,
   },
 });
