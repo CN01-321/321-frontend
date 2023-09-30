@@ -32,7 +32,7 @@ export default function GetStarted() {
           {
             userType === "owner"
             ? `Find Loving Sitters\nto Care For your\nFurry Family`
-            : `Earn extra Money\nwith your Love\nforPets`
+            : `Earn extra Money\nwith your Love\nfor Pets`
           }
         </Text>
         <View style={styles.graphicContainer}>
