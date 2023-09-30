@@ -53,6 +53,7 @@ const EditOwnerProfileForm = ({
     handleSubmit,
     formState: { errors },
     reset,
+    setError,
   } = useForm<FormData>({
     defaultValues: {
       name: owner.name || "",
@@ -89,6 +90,11 @@ const EditOwnerProfileForm = ({
     const geocodedLocation = await Location.geocodeAsync(
       `${data.location.street} ${data.location.city} ${data.location.state} ${data.location.postcode}`
     );
+
+    if (!geocodedLocation[0]) {
+      setError("location.street", { message: "Could not find address" });
+      return;
+    }
 
     data.location.coordinates = [
       geocodedLocation[0].longitude,

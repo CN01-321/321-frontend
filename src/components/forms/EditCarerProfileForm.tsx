@@ -66,6 +66,7 @@ const EditCarerProfileForm = ({
     handleSubmit,
     formState: { errors },
     reset,
+    setError,
   } = useForm<FormData>({
     defaultValues: {
       name: carer.name || "",
@@ -80,8 +81,8 @@ const EditCarerProfileForm = ({
       bio: carer.bio || "",
       preferredTravelDistance: carer.preferredTravelDistance.toString() || "",
       hourlyRate: carer.hourlyRate.toString() || "",
-      preferredPetTypes: new Map(),
-      preferredPetSizes: new Map(),
+      preferredPetTypes: new Map(carer.preferredPetTypes.map((p) => [p, true])),
+      preferredPetSizes: new Map(carer.preferredPetSizes.map((s) => [s, true])),
     },
   });
 
@@ -106,6 +107,11 @@ const EditCarerProfileForm = ({
     const geocodedLocation = await Location.geocodeAsync(
       `${data.location.street} ${data.location.city} ${data.location.state} ${data.location.postcode}`
     );
+
+    if (!geocodedLocation[0]) {
+      setError("location.street", { message: "Could not find address" });
+      return;
+    }
 
     data.location.coordinates = [
       geocodedLocation[0].longitude,

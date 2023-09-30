@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, SafeAreaView } from "react-native";
 import { Text, Button, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
@@ -10,7 +10,9 @@ export default function Landing() {
   const theme = useTheme();
 
   return (
-    <View style={{ height: "100%", backgroundColor: theme.colors.background }}>
+    <SafeAreaView
+      style={{ height: "100%", backgroundColor: theme.colors.background }}
+    >
       <Header title="Landing" showHeader={false} />
       <View style={styles.logoContainer}>
         <Image
@@ -68,7 +70,7 @@ export default function Landing() {
           </Button>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -77,14 +79,14 @@ const styles = StyleSheet.create({
     width: "35%",
     height: 60,
     marginLeft: "5%",
-    marginTop: "15%",
+    marginTop: "5%",
     display: "flex",
   },
   graphicContainer: {
     width: "100%",
     height: "100%",
     position: "absolute",
-    top: -110,
+    top: -40,
     left: 0,
     display: "flex",
     flexDirection: "row",

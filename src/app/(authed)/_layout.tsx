@@ -88,6 +88,8 @@ export default function UserLayout() {
 
   const routes = getTokenUser()?.type === "owner" ? ownerRoutes : carerRoutes;
 
+  const isInMoreInfo = segments[1] === "more-info";
+
   useEffect(() => {
     const path = segments.filter((s) => s.match(/\(/) === null).join("/");
     console.log(path);
@@ -115,6 +117,7 @@ export default function UserLayout() {
               : route.key
           );
         }}
+        disabled={isInMoreInfo}
       />
     </MessageSnackbarProvider>
   );
@@ -124,9 +127,17 @@ interface UserBottomNavProps {
   routes: Route[];
   index: number;
   onChange: (route: Route) => void;
+  disabled?: boolean;
 }
 
-function UserBottomNav({ routes, index, onChange }: UserBottomNavProps) {
+function UserBottomNav({
+  routes,
+  index,
+  onChange,
+  disabled,
+}: UserBottomNavProps) {
+  if (disabled) return null;
+
   return (
     <BottomNavigation.Bar
       navigationState={{ index, routes }}
