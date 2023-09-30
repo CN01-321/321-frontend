@@ -36,6 +36,7 @@ export default function Login() {
   } = useForm<FormData>({});
 
   const login: SubmitHandler<FormData> = async (formData) => {
+    console.log("logging in");
     try {
       const { data } = await axios.post<GetToken>("/login", formData);
       console.log("new token in login.tsx", data.token);

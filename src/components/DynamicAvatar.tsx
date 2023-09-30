@@ -1,6 +1,5 @@
 import { ImageURISource } from "react-native";
 import { Avatar } from "react-native-paper";
-import { AXIOS_BASE_URL } from "@env";
 import { PetType, UserType } from "../types/types";
 
 type DefaultPfpType = "user" | UserType | PetType;
@@ -24,7 +23,7 @@ export default function DynamicAvatar({
 
     // otherwise convert it to an ImageUriSource
     return {
-      uri: AXIOS_BASE_URL + "/images/" + pfp,
+      uri: process.env.AXIOS_BASE_URL + "/images/" + pfp,
     };
   };
 

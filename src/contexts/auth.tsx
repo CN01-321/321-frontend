@@ -9,7 +9,6 @@ import {
 } from "react";
 import JWT from "expo-jwt";
 import * as SecureStore from "expo-secure-store";
-import { JWT_SECRET } from "@env";
 import axios from "axios";
 import { UserType } from "../types/types";
 
@@ -76,7 +75,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   // stores and sets the token
   const updateTokenUser = async (token: string) => {
     try {
-      const decode = JWT.decode<TokenUser>(token, JWT_SECRET);
+      const decode = JWT.decode<TokenUser>(token, process.env.JWT_SECRET ?? "");
       // set the Authorization header to send in axios calls if decode is
       // successful
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;

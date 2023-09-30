@@ -1,5 +1,4 @@
 import { Image, ImageProps, ImageSourcePropType } from "react-native";
-import { AXIOS_BASE_URL } from "@env";
 import { PetType, UserType } from "../types/types";
 
 type DefaultImageType = "user" | UserType | PetType;
@@ -16,7 +15,7 @@ export default function DynamicCardCover({
 }: DynamicCardCoverProps) {
   const getImageSource = (): ImageSourcePropType => {
     return {
-      uri: AXIOS_BASE_URL + "/images/" + imageId,
+      uri: process.env.AXIOS_BASE_URL + "/images/" + imageId,
       method: "GET",
     };
   };
