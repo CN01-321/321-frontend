@@ -27,7 +27,7 @@ export default function SignUp() {
       console.log(
         `created new ${userType} with: ${formData.email} and ${formData.password}`
       );
-      router.replace({ pathname: "/login", params: { userType } });
+      router.replace({ pathname: "/registrationconfirmation", params: { userType } });
     } catch (error) {
       console.error(error);
     }
@@ -36,7 +36,7 @@ export default function SignUp() {
   const colour = userType === "owner" ? OWNER_COLOUR : CARER_COLOUR;
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.graphicContainer}>
         <Image
           style={styles.graphicImage} 
@@ -96,12 +96,12 @@ export default function SignUp() {
         >
           Sign Up
         </Button>
-        <View style={styles.centeredTextContainer}>
+        {/* <View style={styles.centeredTextContainer}>
           <Text style={styles.connectWithText}>- Or Connect With -</Text>
-        </View>
-        <View style={styles.centeredTextContainer}>
-          <Text style={styles.bottomText}>By signing up, I agree with <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Terms of Use</Text> and <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Privacy Policy</Text></Text>
-        </View>
+        </View> */}
+      </View>
+      <View style={styles.bottomTextContainer}>
+        <Text style={styles.bottomText}>By signing up, I agree with <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Terms of Use</Text> and <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Privacy Policy</Text></Text>
       </View>
     </SafeAreaView>
   );
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   graphicContainer: {
     position: "absolute",
     left: 0,
-    top: -205,
+    top: -350,
     display: "flex",
     width: "100%",
     height: "100%",
@@ -161,6 +161,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#000000A6",
     marginBottom: 25,
+  },
+  bottomTextContainer: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 30,
+    width: "100%",
+    paddingLeft: 40,
+    paddingRight: 40,
   },
   bottomText: {
     textAlign: "center",

@@ -41,7 +41,7 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.graphicContainer}>
         <Image
           style={styles.graphicImage} 
@@ -103,9 +103,9 @@ export default function Login() {
         >
           Sign In
         </Button>
-        <View style={styles.centeredTextContainer}>
+        {/* <View style={styles.centeredTextContainer}>
           <Text style={styles.loginWithText}>- Or Login With -</Text>
-        </View>
+        </View> */}
         <View style={[styles.centeredTextContainer, { marginBottom: 50 }]}>
           <Text style={styles.bottomText}>Don&apos;t have an account? </Text>
           <Button
@@ -119,9 +119,9 @@ export default function Login() {
             Sign Up
           </Button>
         </View>
-        <View style={styles.centeredTextContainer}>
+      </View>
+      <View style={styles.bottomTextContainer}>
           <Text style={styles.bottomText}>By signing in, I agree with <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Terms of Use</Text> and <Text style={[styles.bottomText, styles.highlightedText, { color: colour }]}>Privacy Policy</Text></Text>
-        </View>
       </View>
     </SafeAreaView>
   );
@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
   view: {
     paddingLeft: 40,
     paddingRight: 40,
+    flex: 1,
   },
   heading: {
     fontFamily: "Montserrat-Bold",
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
   },
   signInButton: {
     borderRadius: 50,
-    marginBottom: 40,
+    marginBottom: 10,
   },
   signInButtonLabel: {
     fontFamily: "Montserrat-SemiBold",
@@ -195,6 +196,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#000000A6",
     marginBottom: 25,
+  },
+  bottomTextContainer: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 30,
+    width: "100%",
+    paddingLeft: 40,
+    paddingRight: 40,
   },
   bottomText: {
     textAlign: "center",
