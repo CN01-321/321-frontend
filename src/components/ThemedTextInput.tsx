@@ -1,3 +1,4 @@
+import { StyleSheet } from "react-native";
 import { TextInput, TextInputProps, useTheme } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
 
@@ -18,12 +19,11 @@ export default function ThemedTextInput({
     <TextInput
       {...props}
       label={label}
-      mode="outlined"
+      mode={props.mode ?? "outlined"}
       textColor="#505050"
-      outlineColor={theme.colors.primary}
-      outlineStyle={{
-        borderRadius: 14,
-      }}
+      outlineColor={props.outlineColor ?? theme.colors.primary}
+      outlineStyle={styles.box}
+      contentStyle={styles.text}
       left={
         icon ? (
           <TextInput.Icon icon={icon} iconColor={theme.colors.primary} />
@@ -39,3 +39,13 @@ export default function ThemedTextInput({
     />
   );
 }
+
+const styles = StyleSheet.create({
+  text: {
+    fontFamily: "Montserrat-Medium",
+    fontSize: 15,
+  },
+  box: {
+    borderRadius: 14,
+  },
+});

@@ -6,14 +6,15 @@ import DynamicCardCover from "../DynamicCardCover";
 
 type PetsViewProp = {
   pets: Pet[];
+  ownPets: boolean;
 };
 
-const PetsView = ({ pets }: PetsViewProp) => {
+const PetsView = ({ pets, ownPets }: PetsViewProp) => {
   return (
     <View style={{ width: "100%" }}>
       <FlatList
         data={pets}
-        renderItem={({ item }) => <PetCard pet={item} />}
+        renderItem={({ item }) => <PetCard pet={item} ownPet={ownPets} />}
         numColumns={2}
         contentContainerStyle={styles.container}
         keyExtractor={(item) => item._id}
@@ -22,7 +23,12 @@ const PetsView = ({ pets }: PetsViewProp) => {
   );
 };
 
-function PetCard({ pet }: { pet: Pet }) {
+interface PetCardProps {
+  pet: Pet;
+  ownPet: boolean;
+}
+
+function PetCard({ pet, ownPet }: PetCardProps) {
   const router = useRouter();
 
   const petType = petSelectorTypes.find(
@@ -35,7 +41,7 @@ function PetCard({ pet }: { pet: Pet }) {
       onPress={() =>
         router.push({
           pathname: `pet/${pet._id}`,
-          params: { ownPet: "true", petDetails: pet },
+          params: { ownPet: ownPet ? "true" : "false", petDetails: pet },
         })
       }
     >

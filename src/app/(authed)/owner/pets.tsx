@@ -7,11 +7,13 @@ import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import NewPetModal from "../../../components/modals/NewPetModal";
 import { fetchData } from "../../../utilities/fetch";
+import { useTheme } from "react-native-paper";
 
 export default function Pets() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [visible, setVisible] = useState(false);
   const { pushError } = useMessageSnackbar();
+  const theme = useTheme();
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -27,7 +29,9 @@ export default function Pets() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <Header title="Pets" />
       <NewPetModal
         title="Add Pet"
@@ -35,7 +39,7 @@ export default function Pets() {
         onDismiss={hideModal}
         updatePets={updatePets}
       />
-      <PetsView pets={pets} />
+      <PetsView pets={pets} ownPets />
       <ShowModalFab icon="plus" showModal={showModal} />
     </View>
   );

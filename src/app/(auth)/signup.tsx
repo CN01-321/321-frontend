@@ -3,7 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { Image } from "expo-image";
 import axios from "axios";
 import { View, StyleSheet } from "react-native";
-import { Button, Text, IconButton } from "react-native-paper";
+import { Button, Text, IconButton, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import Header from "../../components/Header";
 import ThemedTextInput from "../../components/ThemedTextInput";
@@ -17,6 +17,7 @@ type FormData = {
 export default function SignUp() {
   const { userType } = useLocalSearchParams<{ userType: UserType }>();
   const router = useRouter();
+  const theme = useTheme();
 
   const { control, handleSubmit } = useForm<FormData>({});
 
@@ -36,7 +37,9 @@ export default function SignUp() {
   const colour = userType === "owner" ? OWNER_COLOUR : CARER_COLOUR;
 
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{ backgroundColor: theme.colors.background, height: "100%" }}
+    >
       <View style={styles.graphicContainer}>
         <Image
           style={styles.graphicImage}
@@ -49,7 +52,10 @@ export default function SignUp() {
         />
       </View>
       <Header title="Sign Up" showHeader={false} />
-      <IconButton icon="arrow-left" onPress={() => router.back()} />
+      <IconButton
+        icon="arrow-left"
+        onPress={() => router.replace("/landing")}
+      />
       <View style={styles.view}>
         <Text style={styles.heading}>Let&apos;s Start Here</Text>
         <Text style={styles.subheading}>Sign in to your account</Text>
@@ -65,6 +71,7 @@ export default function SignUp() {
               onChangeText={onChange}
               outlineColor="#9797975E"
               activeOutlineColor={colour}
+              autoCapitalize="none"
             />
           )}
         />
@@ -147,7 +154,7 @@ const styles = StyleSheet.create({
   graphicContainer: {
     position: "absolute",
     left: 0,
-    top: -205,
+    top: -350,
     display: "flex",
     width: "100%",
     height: "100%",

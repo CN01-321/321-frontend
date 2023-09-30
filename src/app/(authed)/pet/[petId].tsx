@@ -40,12 +40,14 @@ export default function PetProfile() {
     return () => (ignore = true);
   }, [isFocused]);
 
-  const profileScene = () => <PetInfoView pet={pet} />;
+  const profileScene = () => (
+    <PetInfoView pet={pet} ownPet={ownPet === "true"} />
+  );
 
   const reviewsScene = () => (
     <ReviewsView
       profile={pet}
-      isSelf={ownPet !== undefined}
+      isSelf={ownPet === "true"}
       reviews={reviews}
       isPet={true}
       updateReviews={updatePetInfo}

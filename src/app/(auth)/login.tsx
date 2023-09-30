@@ -1,14 +1,15 @@
 import { View, StyleSheet } from "react-native";
-import { Button, IconButton, Text } from "react-native-paper";
+import { Button, IconButton, Text, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Image } from "expo-image";
 import { useAuth } from "../../contexts/auth";
 import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Header from "../../components/Header";
 import ThemedTextInput from "../../components/ThemedTextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ErrorText from "../../components/ErrorText";
 
 type GetToken = {
   token: string;
@@ -23,10 +24,16 @@ export default function Login() {
   const { userType } = useLocalSearchParams<{ userType: UserType }>();
   const { logIn } = useAuth();
   const router = useRouter();
+  const theme = useTheme();
 
   const colour = userType === "owner" ? OWNER_COLOUR : CARER_COLOUR;
 
-  const { control, handleSubmit } = useForm<FormData>({});
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<FormData>({});
 
   const login: SubmitHandler<FormData> = async (formData) => {
     try {
@@ -35,13 +42,23 @@ export default function Login() {
       await logIn(data.token);
       console.log(`logged in with: ${formData.email} and ${formData.password}`);
       router.replace("/home");
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      if (err instanceof AxiosError) {
+        console.log(JSON.stringify({ ...err }, null, 2));
+        if (err.response?.status === 401) {
+          setError("password", {
+            message: "Username or password is incorrect",
+          });
+        }
+      }
     }
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{ backgroundColor: theme.colors.background, height: "100%" }}
+    >
       <View style={styles.graphicContainer}>
         <Image
           style={styles.graphicImage}
@@ -53,7 +70,10 @@ export default function Login() {
         />
       </View>
       <Header title="Log In" showHeader={false} />
-      <IconButton icon="arrow-left" onPress={() => router.back()} />
+      <IconButton
+        icon="arrow-left"
+        onPress={() => router.replace("/landing")}
+      />
       <View style={styles.view}>
         <Text style={styles.heading}>Hello there.</Text>
         <Text style={styles.subheading}>Sign in to your account</Text>
@@ -67,8 +87,9 @@ export default function Login() {
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
-              outlineColor="#9797975E"
+              outlineColor={colour}
               activeOutlineColor={colour}
+              autoCapitalize="none"
             />
           )}
         />
@@ -83,11 +104,12 @@ export default function Login() {
               onBlur={onBlur}
               onChangeText={onChange}
               secureTextEntry
-              outlineColor="#9797975E"
+              outlineColor={colour}
               activeOutlineColor={colour}
             />
           )}
         />
+        <ErrorText>{errors.password?.message}</ErrorText>
         <View style={styles.forgotPasswordContainer}>
           <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
         </View>

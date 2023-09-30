@@ -2,12 +2,6 @@ import { Image, ImageProps, ImageSourcePropType } from "react-native";
 import { AXIOS_BASE_URL } from "@env";
 import { PetType, UserType } from "../types/types";
 
-const defaultUser = require("../../assets/icon.png");
-const defaultDog = require("../../assets/icon.png");
-const defaultCat = require("../../assets/icon.png");
-const defaultBird = require("../../assets/icon.png");
-const defaultRabbit = require("../../assets/icon.png");
-
 type DefaultImageType = "user" | UserType | PetType;
 
 interface DynamicCardCoverProps extends Omit<ImageProps, "source"> {
@@ -30,21 +24,31 @@ export default function DynamicCardCover({
   const getDefaultImage = () => {
     switch (defaultImage) {
       case "user":
-      case "owner":
-      case "carer":
-        return defaultUser;
+        return require("../../assets/icons/defaultuser.png");
       case "dog":
-        return defaultDog;
+        return require("../../assets/icons/defaultdog.png");
       case "cat":
-        return defaultCat;
+        return require("../../assets/icons/defaultcat.png");
       case "bird":
-        return defaultBird;
+        return require("../../assets/icons/defaultbird.png");
       case "rabbit":
-        return defaultRabbit;
+        return require("../../assets/icons/defaultrabbit.png");
+      default:
+        return require("../../assets/icons/defaultuser.png");
     }
   };
 
+  if (imageId) {
+    return <Image {...props} source={getImageSource()} />;
+  }
+
   return (
-    <Image {...props} source={imageId ? getImageSource() : getDefaultImage()} />
+    <Image
+      {...props}
+      source={getDefaultImage()}
+      style={{
+        transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }, { translateY: 15 }],
+      }}
+    />
   );
 }

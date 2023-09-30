@@ -1,5 +1,5 @@
 import { View, StyleSheet } from "react-native";
-import { Text, Button } from "react-native-paper";
+import { Text, Button, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import Header from "../../components/Header";
@@ -7,20 +7,29 @@ import { CARER_COLOUR, OWNER_COLOUR } from "../../types/types";
 
 export default function Landing() {
   const router = useRouter();
+  const theme = useTheme();
 
   return (
-    <View style={{ height: "100%" }}>
+    <View style={{ height: "100%", backgroundColor: theme.colors.background }}>
       <Header title="Landing" showHeader={false} />
       <View style={styles.logoContainer}>
-        <Image style={styles.logoImage} contentFit="contain" contentPosition="left" source={require("../../../assets/illustrations/logo-yellow.png")} />
+        <Image
+          style={styles.logoImage}
+          contentFit="contain"
+          contentPosition="left"
+          source={require("../../../assets/illustrations/logo-yellow.png")}
+        />
       </View>
 
-      <Text style={styles.heading}>
-        {`Joining Us\nToday As`}
-      </Text>
+      <Text style={styles.heading}>{`Joining Us\nToday As`}</Text>
 
       <View style={styles.graphicContainer}>
-        <Image style={styles.graphicImage} contentFit="contain" contentPosition="right" source={require("../../../assets/illustrations/landing.png")} />
+        <Image
+          style={styles.graphicImage}
+          contentFit="contain"
+          contentPosition="right"
+          source={require("../../../assets/illustrations/landing.png")}
+        />
       </View>
 
       <View style={styles.buttonsContainer}>
@@ -79,11 +88,11 @@ const styles = StyleSheet.create({
     left: 0,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
   logoImage: {
     width: "100%",
-    height: "100%"
+    height: "100%",
   },
   graphicImage: {
     width: "80%",
@@ -130,5 +139,5 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "#F6F7FA",
     paddingTop: 5,
-  }
+  },
 });

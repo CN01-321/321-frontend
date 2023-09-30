@@ -37,11 +37,13 @@ export default function Profile() {
 
   if (!user) return null;
 
+  const self = isSelf === "true";
+
   const profileRoute = () =>
     isOwner(user) ? (
-      <OwnerProfileInfoView owner={user} />
+      <OwnerProfileInfoView owner={user} isSelf={self} />
     ) : (
-      <CarerProfileInfoView carer={user} />
+      <CarerProfileInfoView carer={user} isSelf={self} />
     );
 
   const reviewsRoute = () => (

@@ -8,6 +8,7 @@ import PaymentModal from "../../../components/modals/PaymentModal";
 import { Respondent } from "../../../types/types";
 import { fetchData } from "../../../utilities/fetch";
 import RespondentListView from "../../../components/views/RespondentsListView";
+import { useTheme } from "react-native-paper";
 
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();
@@ -16,6 +17,7 @@ export default function Respondents() {
   const [visible, setVisible] = useState(false);
   const { pushMessage, pushError } = useMessageSnackbar();
   const router = useRouter();
+  const theme = useTheme();
 
   useEffect(() => {
     fetchData(`/owners/requests/${requestId}/respondents`, setRespondents, () =>
@@ -38,7 +40,7 @@ export default function Respondents() {
   };
 
   return (
-    <View>
+    <View style={{ backgroundColor: theme.colors.background, height: "100%" }}>
       <Header title="Request Respondents" />
       <PaymentModal
         visible={visible}

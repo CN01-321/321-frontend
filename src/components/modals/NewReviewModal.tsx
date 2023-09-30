@@ -118,9 +118,7 @@ export default function NewReviewModal({
             />
           )}
         />
-        {errors.message?.message ? (
-          <ErrorText errMsg={errors.message.message} />
-        ) : null}
+        <ErrorText>{errors.message?.message}</ErrorText>
         <View style={styles.reviewItem}>
           <Button
             style={{ width: "50%" }}

@@ -49,7 +49,7 @@ export function filterCarers(filters: Filters, carers: NearbyCarer[]) {
 
   for (const carer of carers) {
     // check if carer's hourly rate is less than then max price
-    if (filters.maxPrice && carer.hourlyRate < filters.maxPrice) {
+    if (filters.maxPrice && filters.maxPrice < carer.hourlyRate) {
       continue;
     }
 

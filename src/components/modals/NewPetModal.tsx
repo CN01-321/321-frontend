@@ -111,7 +111,7 @@ export default function NewPetModal({
             />
           )}
         />
-        {errors.name ? <ErrorText errMsg={errors.name.message} /> : null}
+        <ErrorText>{errors.name?.message}</ErrorText>
       </View>
 
       <View style={styles.inputArea}>

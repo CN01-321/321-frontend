@@ -19,9 +19,10 @@ import StatusIcon from "../../../assets/icons/pet/status.svg";
 
 type PetInfoViewProp = {
   pet: Pet;
+  ownPet: boolean;
 };
 
-const PetInfoView = ({ pet }: PetInfoViewProp) => {
+const PetInfoView = ({ pet, ownPet }: PetInfoViewProp) => {
   const theme = useTheme();
   const router = useRouter();
 
@@ -31,22 +32,24 @@ const PetInfoView = ({ pet }: PetInfoViewProp) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: theme.colors.background }}>
       <View style={styles.view}>
         <View style={styles.pfpAndNameContainer}>
           <DynamicAvatar pfp={pet.pfp} defaultPfp={pet.petType} size={120} />
           <Text style={styles.petName}>{pet.name}</Text>
-          <Button
-            mode="text"
-            labelStyle={styles.editButtonStyle}
-            contentStyle={{ flexDirection: "row-reverse" }}
-            onPress={() => router.push(editHref)}
-            icon={() => (
-              <EditIcon height={22} width={22} fill={theme.colors.primary} />
-            )}
-          >
-            Tap Here to Edit Profile
-          </Button>
+          {ownPet ? (
+            <Button
+              mode="text"
+              labelStyle={styles.editButtonStyle}
+              contentStyle={{ flexDirection: "row-reverse" }}
+              onPress={() => router.push(editHref)}
+              icon={() => (
+                <EditIcon height={22} width={22} fill={theme.colors.primary} />
+              )}
+            >
+              Tap Here to Edit Profile
+            </Button>
+          ) : null}
         </View>
         <List.Section>
           <List.Subheader style={styles.subheadingStyle}>

@@ -19,9 +19,12 @@ import PostcodeIcon from "../../../assets/icons/profile/mailbox.svg";
 import AboutMeIcon from "../../../assets/icons/profile/aboutme.svg";
 import { ImagePickerAsset } from "expo-image-picker";
 import ThemedTextInput from "../ThemedTextInput";
+import ErrorText from "../ErrorText";
+import { Href } from "expo-router/build/link/href";
 
 type EditOwnerProfileFormProp = {
   owner: OwnerProfile;
+  navigateOnComplete?: Href;
 };
 
 type FormData = {
@@ -38,11 +41,19 @@ type FormData = {
   bio: string;
 };
 
-const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
+const EditOwnerProfileForm = ({
+  owner,
+  navigateOnComplete,
+}: EditOwnerProfileFormProp) => {
   const router = useRouter();
   const theme = useTheme();
 
-  const { control, handleSubmit, reset } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
     defaultValues: {
       name: owner.name || "",
       email: owner.email,
@@ -107,11 +118,16 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
     }
 
     reset();
-    router.back();
+
+    if (navigateOnComplete) {
+      router.replace(navigateOnComplete);
+    } else {
+      router.back();
+    }
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: theme.colors.background }}>
       <View style={styles.form}>
         <View style={styles.pfpEdit}>
           {profilePicture ? (
@@ -129,6 +145,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
         </View>
         <Controller
           control={control}
+          rules={{ required: "A name is required" }}
           name="name"
           render={({ field: { onChange, onBlur, value } }) => (
             <ThemedTextInput
@@ -146,9 +163,11 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
             />
           )}
         />
+        <ErrorText>{errors.name?.message}</ErrorText>
         <Controller
           control={control}
           name="email"
+          rules={{ required: "An email is required" }}
           render={({ field: { onChange, onBlur, value } }) => (
             <ThemedTextInput
               label="Email"
@@ -161,6 +180,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
             />
           )}
         />
+        <ErrorText>{errors.email?.message}</ErrorText>
         <Controller
           control={control}
           name="phone"
@@ -179,6 +199,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
         <Controller
           control={control}
           name="location.street"
+          rules={{ required: "Street name is required" }}
           render={({ field: { onChange, onBlur, value } }) => (
             <ThemedTextInput
               label="Street Name"
@@ -195,9 +216,11 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
             />
           )}
         />
+        <ErrorText>{errors.location?.street?.message}</ErrorText>
         <Controller
           control={control}
           name="location.city"
+          rules={{ required: "City is required" }}
           render={({ field: { onChange, onBlur, value } }) => (
             <ThemedTextInput
               label="City"
@@ -210,9 +233,11 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
             />
           )}
         />
+        <ErrorText>{errors.location?.city?.message}</ErrorText>
         <Controller
           control={control}
           name="location.state"
+          rules={{ required: "State is required" }}
           render={({ field: { onChange, onBlur, value } }) => (
             <ThemedTextInput
               label="State"
@@ -225,9 +250,11 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
             />
           )}
         />
+        <ErrorText>{errors.location?.state?.message}</ErrorText>
         <Controller
           control={control}
           name="location.postcode"
+          rules={{ required: "Postcode is required" }}
           render={({ field: { onChange, onBlur, value } }) => (
             <ThemedTextInput
               label="Postcode"
@@ -244,6 +271,7 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
             />
           )}
         />
+        <ErrorText>{errors.location?.postcode?.message}</ErrorText>
         <Controller
           control={control}
           name="bio"
@@ -281,8 +309,8 @@ const EditOwnerProfileForm = ({ owner }: EditOwnerProfileFormProp) => {
 
 const styles = StyleSheet.create({
   form: {
-    display: "flex",
-    flexDirection: "column",
+    flex: 1,
+    gap: 20,
     paddingTop: 15,
     paddingLeft: 20,
     paddingRight: 20,

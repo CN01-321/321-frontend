@@ -23,7 +23,9 @@ const RequestPets = () => {
   return (
     <View>
       <Header title="Pets in Request" />
-      <View>{pets.length > 0 ? <PetsView pets={pets} /> : <></>}</View>
+      <View>
+        {pets.length > 0 ? <PetsView pets={pets} ownPets={false} /> : <></>}
+      </View>
     </View>
   );
 };

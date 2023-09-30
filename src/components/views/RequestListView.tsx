@@ -1,4 +1,4 @@
-import { FlatList } from "react-native";
+import { FlatList, View } from "react-native";
 import { Request } from "../../types/types";
 import EmptyListView, { EmptyListViewProps } from "./EmptyListView";
 import RequestCard from "../cards/RequestCard";
@@ -26,11 +26,18 @@ export default function RequestListView({
   }
 
   return (
-    <FlatList
-      data={requests}
-      renderItem={({ item }) => <RequestCard request={item} />}
-      keyExtractor={(item) => item._id}
-      contentContainerStyle={{ backgroundColor: theme.colors.background }}
-    />
+    <View
+      style={{
+        height: "100%",
+        backgroundColor: theme.colors.background,
+      }}
+    >
+      <FlatList
+        data={requests}
+        renderItem={({ item }) => <RequestCard request={item} />}
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={{}}
+      />
+    </View>
   );
 }

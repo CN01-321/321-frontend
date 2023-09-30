@@ -51,7 +51,7 @@ export default function Home() {
   useEffect(() => {
     fetchData(`/${userType}s/home`, setHomeInfo, (err) => {
       // if forbidden the user has not filled out their required information
-      if (err instanceof AxiosError && err.status === 403) {
+      if (err instanceof AxiosError && err.response?.status === 403) {
         router.replace("/more-info");
         return;
       }
@@ -209,7 +209,7 @@ function TopCarerCard({ carer }: { carer: TopCarer }) {
     <View style={{ margin: 5 }}>
       <Pressable onPress={handlePress}>
         <DynamicCardCover
-          style={{ zIndex: 0, width: 180, height: 180 }}
+          style={{ borderRadius: 25, width: 180, height: 180 }}
           imageId={carer.pfp}
           defaultImage="carer"
         />

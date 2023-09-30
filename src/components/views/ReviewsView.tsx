@@ -6,7 +6,7 @@ import { CommentsModal } from "../modals/CommentsModal";
 import NewReviewModal from "../modals/NewReviewModal";
 import ReviewCard from "../cards/ReviewCard";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 
 export interface Profile {
   _id: string;
@@ -55,14 +55,7 @@ export default function ReviewsView({
   const [commentsVisible, setCommentsVisible] = useState(false);
   const [currentReview, setCurrentReview] = useState<Review>();
   const { pushError } = useMessageSnackbar();
-
-  if (reviews.length === 0) {
-    return (
-      <Text variant="titleLarge" style={{ padding: 20 }}>
-        No Reviews
-      </Text>
-    );
-  }
+  const theme = useTheme();
 
   const handleLike = async (reviewId: string) => {
     const prefix = `/${isPet ? "pets" : "users"}`;
@@ -95,8 +88,8 @@ export default function ReviewsView({
   };
 
   return (
-    <>
-      <View>
+    <View style={{ height: "100%", backgroundColor: theme.colors.background }}>
+      {reviews.length > 0 ? (
         <FlatList
           data={reviews}
           renderItem={({ item }) => (
@@ -109,30 +102,34 @@ export default function ReviewsView({
           keyExtractor={(item) => item._id}
           contentContainerStyle={{ paddingBottom: 70 }}
         />
-        {currentReview ? (
-          <CommentsModal
-            title="Comments"
-            comments={currentReview.comments}
-            onComment={submitComment}
-            visible={commentsVisible}
-            onDismiss={() => setCommentsVisible(false)}
-          />
-        ) : null}
-        <NewReviewModal
-          title="Rate & Review"
-          visible={newReviewVisible}
-          onDismiss={() => setNewReviewVisible(false)}
-          reviewingPet={isPet ?? false}
-          profileId={profile._id}
-          updateReviews={updateReviews}
+      ) : (
+        <Text variant="titleLarge" style={{ textAlign: "center", padding: 40 }}>
+          No Reviews
+        </Text>
+      )}
+      {currentReview ? (
+        <CommentsModal
+          title="Comments"
+          comments={currentReview.comments}
+          onComment={submitComment}
+          visible={commentsVisible}
+          onDismiss={() => setCommentsVisible(false)}
         />
-      </View>
+      ) : null}
+      <NewReviewModal
+        title="Rate & Review"
+        visible={newReviewVisible}
+        onDismiss={() => setNewReviewVisible(false)}
+        reviewingPet={isPet ?? false}
+        profileId={profile._id}
+        updateReviews={updateReviews}
+      />
       {isSelf ? null : (
         <ShowModalFab
           icon="lead-pencil"
           showModal={() => setNewReviewVisible(true)}
         />
       )}
-    </>
+    </View>
   );
 }

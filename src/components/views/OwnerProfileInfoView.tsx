@@ -14,28 +14,33 @@ import Star from "../Star";
 
 type OwnerProfileInfoViewProp = {
   owner: OwnerProfile;
+  isSelf: boolean;
 };
 
-const OwnerProfileInfoView = ({ owner }: OwnerProfileInfoViewProp) => {
+const OwnerProfileInfoView = ({ owner, isSelf }: OwnerProfileInfoViewProp) => {
   const theme = useTheme();
   const router = useRouter();
 
   return (
-    <ScrollView style={styles.view}>
+    <ScrollView
+      style={[styles.view, { backgroundColor: theme.colors.background }]}
+    >
       <View style={styles.pfpAndNameContainer}>
         <DynamicAvatar pfp={owner.pfp} defaultPfp="user" size={120} />
         <Text style={styles.fullName}>{owner.name}</Text>
-        <Button
-          mode="text"
-          labelStyle={styles.editButtonStyle}
-          contentStyle={{ flexDirection: "row-reverse" }}
-          onPress={() => router.push(`/profile/edit`)}
-          icon={() => (
-            <EditIcon height={22} width={22} fill={theme.colors.primary} />
-          )}
-        >
-          Tap Here to Edit Profile
-        </Button>
+        {isSelf ? (
+          <Button
+            mode="text"
+            labelStyle={styles.editButtonStyle}
+            contentStyle={{ flexDirection: "row-reverse" }}
+            onPress={() => router.push(`/profile/edit`)}
+            icon={() => (
+              <EditIcon height={22} width={22} fill={theme.colors.primary} />
+            )}
+          >
+            Tap Here to Edit Profile
+          </Button>
+        ) : null}
         <OwnerStats
           totalReviews={owner.totalReviews}
           rating={owner.rating ?? 0}

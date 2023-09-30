@@ -85,9 +85,7 @@ export default function PasswordReset() {
           </View>
         )}
       />
-      {errors.current?.message ? (
-        <ErrorText errMsg={errors.current.message} />
-      ) : null}
+      <ErrorText>{errors.current?.message}</ErrorText>
       <Controller
         control={control}
         name="newPassword"
@@ -108,9 +106,7 @@ export default function PasswordReset() {
           </View>
         )}
       />
-      {errors.newPassword?.message ? (
-        <ErrorText errMsg={errors.newPassword.message} />
-      ) : null}
+      <ErrorText>{errors.newPassword?.message}</ErrorText>
       <Controller
         control={control}
         rules={{
@@ -138,9 +134,7 @@ export default function PasswordReset() {
           </View>
         )}
       />
-      {errors.confirmPassword?.message ? (
-        <ErrorText errMsg={errors.confirmPassword.message} />
-      ) : null}
+      <ErrorText>{errors.confirmPassword?.message}</ErrorText>
       <View style={styles.inputArea}>
         <Button mode="contained" onPress={handleSubmit(onSubmit)}>
           Reset

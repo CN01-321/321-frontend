@@ -8,6 +8,7 @@ import ThemedTabView from "../../../components/views/ThemedTabView";
 import { isPastRequest } from "../../../utilities/utils";
 import { fetchRequestInfo } from "../../../utilities/fetch";
 import RequestListView from "../../../components/views/RequestListView";
+import Header from "../../../components/Header";
 
 export default function Requests() {
   const [currentRequests, setCurrentRequests] = useState<Request[]>([]);
@@ -58,6 +59,7 @@ export default function Requests() {
 
   return (
     <>
+      <Header title="Requests" />
       <ThemedTabView scenes={scenes} />
       <NewRequestModal
         title="New Request"
