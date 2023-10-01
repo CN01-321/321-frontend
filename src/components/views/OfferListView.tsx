@@ -2,30 +2,28 @@ import { FlatList, View } from "react-native";
 import { Job, OfferType } from "../../types/types";
 import OfferCard from "../cards/OfferCard";
 import { useState } from "react";
-import axios from "axios";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 import OfferInfoModal from "../modals/OfferInfoModal";
 import EmptyListView, { EmptyListViewProps } from "./EmptyListView";
 import { useTheme } from "react-native-paper";
+import { useOffers } from "../../contexts/offers";
 
 interface OffersListViewProps extends Omit<EmptyListViewProps, "userType"> {
   offers: Job[];
   offerType: OfferType;
-  updateOffers: () => Promise<void>;
 }
 
 export default function OffersListView({
   offers,
   offerType,
-  updateOffers,
   emptyTitle,
   emptySubtitle,
 }: OffersListViewProps) {
   const [visible, setVisible] = useState(false);
   const [currentOffer, setCurrentOffer] = useState<Job>();
-  const [refreshing, setRefreshing] = useState(false);
-  const { pushMessage, pushError } = useMessageSnackbar();
+  const { pushError } = useMessageSnackbar();
   const theme = useTheme();
+  const { acceptOffer, rejectOffer } = useOffers();
 
   if (offers.length === 0) {
     return (
@@ -38,38 +36,33 @@ export default function OffersListView({
   }
 
   const handleAccept = async () => {
-    setRefreshing(true);
     try {
-      await axios.post(`/carers/${offerType}/${currentOffer?._id}/accept`);
-      if (updateOffers) await updateOffers();
-      pushMessage(
-        offerType === "direct"
-          ? 'Offer has been succeessfully moved to "Jobs".'
-          : `Successfully applied to ${currentOffer?.ownerName}'s request`
-      );
+      if (!currentOffer) {
+        throw new Error("No offer selected");
+      }
+
+      await acceptOffer(currentOffer, offerType);
     } catch (err) {
       console.error(err);
       pushError("Failed to accept offer");
     }
 
     setVisible(false);
-    setRefreshing(false);
   };
 
   const handleReject = async () => {
-    setRefreshing(true);
     try {
-      await axios.post(`/carers/${offerType}/${currentOffer?._id}/reject`);
-      if (updateOffers) await updateOffers();
+      if (!currentOffer) {
+        throw new Error("No offer selected");
+      }
 
-      pushMessage("Offer has been succeessfully rejected.");
+      await rejectOffer(currentOffer, offerType);
     } catch (err) {
       console.error(err);
       pushError("Failed to reject offer");
     }
 
     setVisible(false);
-    setRefreshing(false);
   };
 
   return (
@@ -95,8 +88,6 @@ export default function OffersListView({
           paddingBottom: 100,
           backgroundColor: theme.colors.background,
         }}
-        onRefresh={updateOffers}
-        refreshing={refreshing}
       />
       {currentOffer ? (
         <OfferInfoModal

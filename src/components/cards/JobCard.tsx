@@ -5,28 +5,26 @@ import { sinceRequested } from "../../utilities/utils";
 import RequestStatusText from "../RequestStatusText";
 import { useState } from "react";
 import JobInfoModal from "../modals/JobInfoModal";
-import axios from "axios";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
+import { useOffers } from "../../contexts/offers";
 
 const paw = require("../../../assets/icons/pet/carerPaws.png");
 
 interface JobCardProps {
   job: Job;
-  updateJobs: () => Promise<void>;
 }
 
-export default function JobCard({ job, updateJobs }: JobCardProps) {
+export default function JobCard({ job }: JobCardProps) {
   const [visible, setVisible] = useState(false);
-  const { pushMessage, pushError } = useMessageSnackbar();
+  const { pushError } = useMessageSnackbar();
+  const { completeJob } = useOffers();
 
   const cardTitle = job.pets.map((p) => p.name).join(", ");
   const whenRequested = () => `Requested ${sinceRequested(job.requestedOn)}`;
 
   const handleComplete = async () => {
     try {
-      await axios.post(`/carers/jobs/${job._id}/complete`);
-      await updateJobs();
-      pushMessage("Successfully completed job!");
+      await completeJob(job);
     } catch (err) {
       console.error(err);
       pushError("Could not complete job");

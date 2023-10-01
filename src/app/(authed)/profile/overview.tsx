@@ -1,13 +1,12 @@
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import ReviewsView, { Review } from "../../../components/views/ReviewsView";
+import { useEffect } from "react";
+import ReviewsView from "../../../components/views/ReviewsView";
 import { OwnerProfile, CarerProfile } from "../../../types/types";
-import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import Header from "../../../components/Header";
 import ThemedTabView from "../../../components/views/ThemedTabView";
 import OwnerProfileInfoView from "../../../components/views/OwnerProfileInfoView";
 import CarerProfileInfoView from "../../../components/views/CarerProfileInfoView";
-import { fetchData } from "../../../utilities/fetch";
+import { useProfile } from "../../../contexts/profile";
 
 function isOwner(user: OwnerProfile | CarerProfile): user is OwnerProfile {
   return user.userType === "owner";
@@ -18,22 +17,13 @@ export default function Profile() {
     profileId: string;
     isSelf?: string;
   }>();
-  const [user, setUser] = useState<OwnerProfile | CarerProfile>();
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const { pushError } = useMessageSnackbar();
-
-  const updateProfile = async () => {
-    await fetchData(`/users/${profileId}`, setUser, () =>
-      pushError("Could not fetch user profile")
-    );
-    await fetchData(`/users/${profileId}/feedback`, setReviews, () =>
-      pushError("Could not fetch user reviews")
-    );
-  };
+  const { fetchProfile, getUserProfile, getReviews } = useProfile();
 
   useEffect(() => {
-    updateProfile();
+    fetchProfile(profileId ?? "", "user");
   }, [profileId]);
+
+  const user = getUserProfile();
 
   if (!user) return null;
 
@@ -47,12 +37,7 @@ export default function Profile() {
     );
 
   const reviewsRoute = () => (
-    <ReviewsView
-      profile={user}
-      isSelf={isSelf === "true"}
-      reviews={reviews}
-      updateReviews={updateProfile}
-    />
+    <ReviewsView isSelf={isSelf === "true"} reviews={getReviews()} />
   );
 
   const scenes = [

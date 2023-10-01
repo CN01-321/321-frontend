@@ -4,18 +4,23 @@ import DynamicAvatar from "../DynamicAvatar";
 import { StyleSheet, View } from "react-native";
 import { toDDMMYYYY } from "../../utilities/utils";
 import { StarRating } from "../StarRating";
+import { useProfile } from "../../contexts/profile";
 
 interface ReivewCardProps {
   review: Review;
-  onLike: () => void;
   onShowComments: () => void;
 }
 
 export default function ReviewCard({
   review,
-  onLike,
   onShowComments,
 }: ReivewCardProps) {
+  const { likeReview } = useProfile();
+
+  const handleLike = async () => {
+    await likeReview(review._id);
+  };
+
   return (
     <Card style={{ margin: 5 }}>
       <Card.Content>
@@ -47,7 +52,7 @@ export default function ReviewCard({
               {review.likes} Liked
             </Button>
           ) : (
-            <Button mode="text" icon="thumb-up-outline" onPress={onLike}>
+            <Button mode="text" icon="thumb-up-outline" onPress={handleLike}>
               {review.likes} Like
             </Button>
           )}

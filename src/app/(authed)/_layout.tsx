@@ -12,6 +12,8 @@ import FindCarersIcon from "../../../assets/icons/navbar/findcarers.svg";
 import PetsIcon from "../../../assets/icons/navbar/pets.svg";
 import ProfileIcon from "../../../assets/icons/navbar/profile.svg";
 import { MessageSnackbarProvider } from "../../contexts/messageSnackbar";
+import { UserContextProvider } from "../../contexts/user";
+import { ProfileContextProvider } from "../../contexts/profile";
 
 export interface Route {
   key: string;
@@ -98,27 +100,34 @@ export default function UserLayout() {
 
   return (
     <MessageSnackbarProvider>
-      <Portal.Host>
-        <Stack />
-      </Portal.Host>
-      <UserBottomNav
-        routes={routes}
-        index={index}
-        onChange={(route: Route) => {
-          console.log(route);
-          setIndex(routes.findIndex((r) => r.key === route.key));
+      <UserContextProvider>
+        <ProfileContextProvider>
+          <Portal.Host>
+            <Stack />
+          </Portal.Host>
+          <UserBottomNav
+            routes={routes}
+            index={index}
+            onChange={(route: Route) => {
+              console.log(route);
+              setIndex(routes.findIndex((r) => r.key === route.key));
 
-          router.push(
-            route.key === "profile/overview"
-              ? {
-                  pathname: `/profile/overview`,
-                  params: { profileId: getTokenUser()?._id, isSelf: "true" },
-                }
-              : route.key
-          );
-        }}
-        disabled={isInMoreInfo}
-      />
+              router.push(
+                route.key === "profile/overview"
+                  ? {
+                      pathname: `/profile/overview`,
+                      params: {
+                        profileId: getTokenUser()?._id,
+                        isSelf: "true",
+                      },
+                    }
+                  : route.key
+              );
+            }}
+            disabled={isInMoreInfo}
+          />
+        </ProfileContextProvider>
+      </UserContextProvider>
     </MessageSnackbarProvider>
   );
 }

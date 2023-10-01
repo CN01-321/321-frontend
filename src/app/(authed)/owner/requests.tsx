@@ -1,44 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import NewRequestModal from "../../../components/modals/NewRequestModal";
 import ShowModalFab from "../../../components/ShowModalFab";
-import { Request } from "../../../types/types";
-import { useIsFocused } from "@react-navigation/native";
-import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import ThemedTabView from "../../../components/views/ThemedTabView";
-import { isPastRequest } from "../../../utilities/utils";
-import { fetchRequestInfo } from "../../../utilities/fetch";
 import RequestListView from "../../../components/views/RequestListView";
 import Header from "../../../components/Header";
+import { useRequests } from "../../../contexts/requests";
 
 export default function Requests() {
-  const [currentRequests, setCurrentRequests] = useState<Request[]>([]);
-  const [pastRequests, setPastRequests] = useState<Request[]>([]);
   const [visible, setVisible] = useState(false);
-  const { pushError } = useMessageSnackbar();
-
-  const isFocused = useIsFocused();
-
-  const updateRequests = async () => {
-    try {
-      const reqs = await fetchRequestInfo<Request>("/owners/requests");
-
-      setCurrentRequests(reqs.filter((r) => !isPastRequest(r)));
-      setPastRequests(reqs.filter(isPastRequest));
-    } catch (e) {
-      console.error(e);
-      pushError("Could not fetch requests");
-    }
-  };
-
-  useEffect(() => {
-    if (!isFocused) return;
-
-    updateRequests();
-  }, [isFocused]);
+  const { getCurrentRequests, getPastRequests } = useRequests();
 
   const currentRequestsScene = () => (
     <RequestListView
-      requests={currentRequests}
+      requests={getCurrentRequests()}
       emptyTitle="No Current Requests"
       emptySubtitle="New requests will appear here"
     />
@@ -46,7 +20,7 @@ export default function Requests() {
 
   const pastRequestsScene = () => (
     <RequestListView
-      requests={pastRequests}
+      requests={getPastRequests()}
       emptyTitle="No Past Requests"
       emptySubtitle="Completed/rejected requests will appear here"
     />
@@ -65,7 +39,6 @@ export default function Requests() {
         title="New Request"
         visible={visible}
         onDismiss={() => setVisible(false)}
-        updateRequests={updateRequests}
       />
       <ShowModalFab icon="plus" showModal={() => setVisible(true)} />
     </>

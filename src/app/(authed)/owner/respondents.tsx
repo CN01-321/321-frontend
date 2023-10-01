@@ -1,7 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import axios from "axios";
 import Header from "../../../components/Header";
 import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import PaymentModal from "../../../components/modals/PaymentModal";
@@ -9,13 +8,15 @@ import { Respondent } from "../../../types/types";
 import { fetchData } from "../../../utilities/fetch";
 import RespondentListView from "../../../components/views/RespondentsListView";
 import { useTheme } from "react-native-paper";
+import { useRequests } from "../../../contexts/requests";
 
 export default function Respondents() {
   const { requestId } = useLocalSearchParams<{ requestId: string }>();
   const [currentRespondent, setCurrentRespondent] = useState<Respondent>();
   const [respondents, setRespondents] = useState<Respondent[]>([]);
   const [visible, setVisible] = useState(false);
-  const { pushMessage, pushError } = useMessageSnackbar();
+  const { acceptRespondent } = useRequests();
+  const { pushError } = useMessageSnackbar();
   const router = useRouter();
   const theme = useTheme();
 
@@ -27,10 +28,7 @@ export default function Respondents() {
 
   const handleAccept = async () => {
     try {
-      await axios.post(
-        `/owners/requests/${requestId}/respondents/${currentRespondent?._id}`
-      );
-      pushMessage("Your request has been successfully made!");
+      await acceptRespondent(requestId ?? "", currentRespondent?._id ?? "");
       setVisible(false);
       router.push("/owner/requests");
     } catch (err) {

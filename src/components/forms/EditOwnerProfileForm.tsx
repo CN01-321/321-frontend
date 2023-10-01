@@ -4,8 +4,7 @@ import { Button, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { useRouter } from "expo-router";
 import * as Location from "expo-location";
-import axios from "axios";
-import { pickImage, uploadImage } from "../../utilities/image";
+import { pickImage } from "../../utilities/image";
 import DynamicAvatar from "../DynamicAvatar";
 import { OwnerProfile } from "../../types/types";
 
@@ -21,6 +20,8 @@ import { ImagePickerAsset } from "expo-image-picker";
 import ThemedTextInput from "../ThemedTextInput";
 import ErrorText from "../ErrorText";
 import { Href } from "expo-router/build/link/href";
+import { useUser } from "../../contexts/user";
+import { useProfile } from "../../contexts/profile";
 
 type EditOwnerProfileFormProp = {
   owner: OwnerProfile;
@@ -70,6 +71,8 @@ const EditOwnerProfileForm = ({
   });
 
   const [profilePicture, setProfilePicture] = useState<ImagePickerAsset>();
+  const { getUser, updateUser } = useUser();
+  const { fetchProfile } = useProfile();
 
   const editProfilePicture = async () => {
     const image = await pickImage();
@@ -116,9 +119,8 @@ const EditOwnerProfileForm = ({
     };
 
     try {
-      await axios.put("/owners", submittedData);
-      if (profilePicture != undefined)
-        await uploadImage("/users/pfp", profilePicture);
+      await updateUser(submittedData, "owner", profilePicture);
+      await fetchProfile(getUser()._id, "user");
     } catch (error) {
       console.log(error);
     }

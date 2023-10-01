@@ -6,14 +6,10 @@ import { useTheme } from "react-native-paper";
 
 interface JobListViewProps extends Omit<EmptyListViewProps, "userType"> {
   jobs: Job[];
-  onRefresh: () => Promise<void>;
-  refreshing: boolean;
 }
 
 export default function JobListView({
   jobs,
-  onRefresh,
-  refreshing,
   emptyTitle,
   emptySubtitle,
 }: JobListViewProps) {
@@ -33,14 +29,12 @@ export default function JobListView({
     <View style={{ backgroundColor: theme.colors.background, height: "100%" }}>
       <FlatList
         data={jobs}
-        renderItem={({ item }) => <JobCard job={item} updateJobs={onRefresh} />}
+        renderItem={({ item }) => <JobCard job={item} />}
         keyExtractor={(item) => item._id}
         contentContainerStyle={{
           paddingBottom: 100,
           backgroundColor: theme.colors.background,
         }}
-        onRefresh={onRefresh}
-        refreshing={refreshing}
       />
     </View>
   );

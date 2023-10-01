@@ -5,27 +5,37 @@ import { Comment } from "../views/ReviewsView";
 import DynamicAvatar from "../DynamicAvatar";
 import { sinceRequested } from "../../utilities/utils";
 import { useState } from "react";
+import { useProfile } from "../../contexts/profile";
 
 interface CommentsModalProps extends BaseModalProps {
+  reviewId: string;
   comments: Comment[];
-  onComment: (message: string) => Promise<void>;
 }
 
 export function CommentsModal({
   title,
   visible,
   onDismiss,
+  reviewId,
   comments,
-  onComment,
 }: CommentsModalProps) {
   const [message, setMessage] = useState<string>();
   const theme = useTheme();
+  const { newComment } = useProfile();
 
   // sort comments by date decending
   comments = comments.sort(
     (c1, c2) =>
       new Date(c2.postedOn).getTime() - new Date(c1.postedOn).getTime()
   );
+
+  const handleComment = async () => {
+    if (!message) return;
+
+    await newComment(reviewId, message);
+    setMessage("");
+    // onDismiss();
+  };
 
   return (
     <BaseModal title={title} visible={visible} onDismiss={onDismiss}>
@@ -41,13 +51,7 @@ export function CommentsModal({
           <TextInput.Icon
             icon="send-outline"
             iconColor={theme.colors.primary}
-            onPress={() => {
-              if (message) {
-                onComment(message);
-                setMessage("");
-                onDismiss();
-              }
-            }}
+            onPress={handleComment}
           />
         }
       />
