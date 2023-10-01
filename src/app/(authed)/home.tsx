@@ -7,8 +7,6 @@ import {
   Pressable,
 } from "react-native";
 import { useAuth } from "../../contexts/auth";
-import { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
 import Header from "../../components/Header";
 import { Review } from "../../components/views/ReviewsView";
 import DynamicCardCover from "../../components/DynamicCardCover";
@@ -18,7 +16,7 @@ import { toDDMMYYYY } from "../../utilities/utils";
 import { UserType } from "../../types/types";
 import { useRouter } from "expo-router";
 import Star from "../../components/Star";
-import { useMessageSnackbar } from "../../contexts/messageSnackbar";
+import { useUser } from "../../contexts/user";
 
 interface TopCarer {
   _id: string;
@@ -29,7 +27,7 @@ interface TopCarer {
   recentReview?: Review;
 }
 
-interface HomeInfo {
+export interface HomeInfo {
   name: string;
   completed: number;
   pending: number;
@@ -40,30 +38,14 @@ interface HomeInfo {
 
 export default function Home() {
   const { getTokenUser } = useAuth();
-  const [homeInfo, setHomeInfo] = useState<HomeInfo>({} as HomeInfo);
   const theme = useTheme();
-  const { pushError } = useMessageSnackbar();
-  const router = useRouter();
+  const { getHomeInfo } = useUser();
 
   const userType = getTokenUser()?.type ?? "owner";
 
-  const getHomeInfo = async () => {
-    try {
-      const { data } = await axios.get<HomeInfo>(`/${userType}s/home`);
-      setHomeInfo(data);
-    } catch (err) {
-      if (err instanceof AxiosError && err.response?.status === 403) {
-        router.replace("/more-info");
-        return;
-      }
-      console.error(err);
-      pushError("Could not fetch home page information");
-    }
-  };
+  const homeInfo = getHomeInfo();
 
-  useEffect(() => {
-    getHomeInfo();
-  }, []);
+  if (!homeInfo) return null;
 
   return (
     <SafeAreaView

@@ -1,38 +1,15 @@
-import { useEffect, useState } from "react";
-import { Job } from "../../../types/types";
 import Header from "../../../components/Header";
-import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import OffersListView from "../../../components/views/OfferListView";
 import ThemedTabView from "../../../components/views/ThemedTabView";
-import { fetchRequestInfo } from "../../../utilities/fetch";
+import { useOffers } from "../../../contexts/offers";
 
 export default function Offers() {
-  const [direct, setDirect] = useState<Job[]>([]);
-  const [broad, setBroad] = useState<Job[]>([]);
-  const { pushError } = useMessageSnackbar();
-
-  const updateOffers = async () => {
-    try {
-      const direct = await fetchRequestInfo<Job>("/carers/direct");
-      setDirect(direct);
-
-      const broad = await fetchRequestInfo<Job>("/carers/broad");
-      setBroad(broad);
-    } catch (e) {
-      console.error(e);
-      pushError(`Could not fetch offers`);
-    }
-  };
-
-  useEffect(() => {
-    updateOffers();
-  }, []);
+  const { getDirectOffers, getBroadOffers } = useOffers();
 
   const directOffersScene = () => (
     <OffersListView
-      offers={direct}
+      offers={getDirectOffers()}
       offerType="direct"
-      updateOffers={updateOffers}
       emptyTitle="No Offers"
       emptySubtitle="Come back later to check for new offers"
     />
@@ -40,9 +17,8 @@ export default function Offers() {
 
   const broadOffersScene = () => (
     <OffersListView
-      offers={broad}
-      offerType={"broad"}
-      updateOffers={updateOffers}
+      offers={getBroadOffers()}
+      offerType="broad"
       emptyTitle="No Nearby Offers"
       emptySubtitle="Come back later to check for new offers"
     />

@@ -4,8 +4,7 @@ import { Button, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { useRouter } from "expo-router";
 import * as Location from "expo-location";
-import axios from "axios";
-import { pickImage, uploadImage } from "../../utilities/image";
+import { pickImage } from "../../utilities/image";
 import DynamicAvatar from "../DynamicAvatar";
 import {
   CarerProfile,
@@ -30,6 +29,7 @@ import ThemedTextInput from "../ThemedTextInput";
 import CheckboxSelectorCard from "../cards/CheckboxSelectorCard";
 import ErrorText from "../ErrorText";
 import { Href } from "expo-router/build/link/href";
+import { useUser } from "../../contexts/user";
 
 type EditCarerProfileForm = {
   carer: CarerProfile;
@@ -87,6 +87,7 @@ const EditCarerProfileForm = ({
   });
 
   const [profilePicture, setProfilePicture] = useState<ImagePickerAsset>();
+  const { updateUser } = useUser();
 
   const editProfilePicture = async () => {
     const image = await pickImage();
@@ -145,9 +146,7 @@ const EditCarerProfileForm = ({
     };
 
     try {
-      await axios.put("/carers", submittedData);
-      if (profilePicture != undefined)
-        await uploadImage("/users/pfp", profilePicture);
+      await updateUser(submittedData, "carer", profilePicture);
     } catch (error) {
       console.log(error);
     }

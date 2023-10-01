@@ -1,57 +1,32 @@
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import ReviewsView, { Review } from "../../../components/views/ReviewsView";
-import { Pet } from "../../../types/types";
+import { useEffect } from "react";
+import ReviewsView from "../../../components/views/ReviewsView";
 import Header from "../../../components/Header";
-import { useMessageSnackbar } from "../../../contexts/messageSnackbar";
 import PetInfoView from "../../../components/views/PetInfoView";
 import ThemedTabView from "../../../components/views/ThemedTabView";
-import { fetchData } from "../../../utilities/fetch";
-import { useIsFocused } from "@react-navigation/native";
+import { useProfile } from "../../../contexts/profile";
 
 export default function PetProfile() {
   const { petId, ownPet } = useLocalSearchParams<{
     petId: string;
     ownPet?: "true" | undefined;
   }>();
-  const [pet, setPet] = useState<Pet>({
-    _id: "",
-    name: "Pet",
-    petType: "dog",
-    petSize: "small",
-  });
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const { pushError } = useMessageSnackbar();
-  const isFocused = useIsFocused();
+  const { fetchProfile, getPetProfile, getReviews } = useProfile();
 
-  const updatePetInfo = async () => {
-    await fetchData(`/pets/${petId}/`, setPet, () =>
-      pushError("Could not fetch pet profile")
-    );
+  useEffect(() => {
+    fetchProfile(petId ?? "", "pet");
+  }, [petId]);
 
-    await fetchData(`/pets/${petId}/feedback`, setReviews, () =>
-      pushError("Could not fetch pet reviews")
-    );
-  };
+  const pet = getPetProfile();
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-    if (!ignore && isFocused) updatePetInfo();
-    return () => (ignore = true);
-  }, [isFocused]);
+  if (!pet) return null;
 
   const profileScene = () => (
     <PetInfoView pet={pet} ownPet={ownPet === "true"} />
   );
 
   const reviewsScene = () => (
-    <ReviewsView
-      profile={pet}
-      isSelf={ownPet === "true"}
-      reviews={reviews}
-      isPet={true}
-      updateReviews={updatePetInfo}
-    />
+    <ReviewsView isSelf={ownPet === "true"} reviews={getReviews()} />
   );
 
   const scenes = [

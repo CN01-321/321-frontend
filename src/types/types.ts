@@ -38,7 +38,6 @@ export interface CarerProfile extends UserProfile {
 }
 
 export interface UserLocation {
-  type: "Point"; // the GeoJSON type is always "Point"
   coordinates: [number, number]; // longitude, latitude
   street: string;
   city: string;

@@ -15,15 +15,13 @@ import ErrorText from "../ErrorText";
 import RadioSelectorCard from "../cards/RadioSelectorCard";
 import CheckboxSelectorCard from "../cards/CheckboxSelectorCard";
 import * as ImagePicker from "expo-image-picker";
-import axios from "axios";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
-import { pickImage, uploadImage } from "../../utilities/image";
+import { pickImage } from "../../utilities/image";
+import { usePets } from "../../contexts/pets";
 
 const icon = require("../../../assets/icon.png");
 
-interface NewPetModalProps extends BaseModalProps {
-  updatePets: () => Promise<void>;
-}
+interface NewPetModalProps extends BaseModalProps {}
 
 interface NewPetForm {
   name: string;
@@ -37,7 +35,6 @@ export default function NewPetModal({
   title,
   visible,
   onDismiss,
-  updatePets,
 }: NewPetModalProps) {
   const {
     control,
@@ -52,7 +49,8 @@ export default function NewPetModal({
       statuses: new Map(),
     },
   });
-  const { pushMessage, pushError } = useMessageSnackbar();
+  const { pushError } = useMessageSnackbar();
+  const { newPet } = usePets();
 
   const onSubmit: SubmitHandler<NewPetForm> = async (formData) => {
     const petData = {
@@ -67,23 +65,7 @@ export default function NewPetModal({
     console.log(petData);
 
     try {
-      const { data } = await axios.post<{ _id: string }>(
-        "/owners/pets",
-        petData
-      );
-      const petId = data;
-      console.log(petId);
-
-      if (formData.image) {
-        try {
-          await uploadImage(`/owners/pets/${petId}/pfp`, formData.image);
-        } catch (err) {
-          if (err instanceof Error) pushError(err.message);
-        }
-      }
-
-      pushMessage("Successfully added new pet!");
-      await updatePets();
+      newPet(petData, formData.image);
       onDismiss();
       reset();
     } catch (err) {

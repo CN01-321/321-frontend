@@ -1,15 +1,16 @@
 import { Button, Text } from "react-native-paper";
 import BaseModal, { BaseModalProps } from "./BaseModal";
-import { useEffect, useState } from "react";
-import { CarerResult, Pet } from "../../types/types";
+import { useEffect } from "react";
+import { CarerResult } from "../../types/types";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { DatePickerInput } from "../DatePickerInput";
-import axios from "axios";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 import CheckboxSelectorCard from "../cards/CheckboxSelectorCard";
 import { View } from "react-native";
 import ThemedTextInput from "../ThemedTextInput";
 import ErrorText from "../ErrorText";
+import { useRequests } from "../../contexts/requests";
+import { usePets } from "../../contexts/pets";
 
 interface NewRequestForm {
   pets: Map<string, boolean>;
@@ -22,7 +23,6 @@ interface NewRequestForm {
 
 interface NewRequestModalProps extends BaseModalProps {
   carerResult?: CarerResult;
-  updateRequests?: () => void;
 }
 
 export default function NewRequestModal({
@@ -30,9 +30,9 @@ export default function NewRequestModal({
   visible,
   onDismiss,
   carerResult,
-  updateRequests,
 }: NewRequestModalProps) {
-  const [pets, setPets] = useState<Pet[]>([]);
+  const { newRequest } = useRequests();
+  const { getPets } = usePets();
   const {
     control,
     handleSubmit,
@@ -44,24 +44,7 @@ export default function NewRequestModal({
       pets: new Map(),
     },
   });
-  const { pushMessage, pushError } = useMessageSnackbar();
-
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    (async () => {
-      try {
-        const { data } = await axios.get<Pet[]>("/owners/pets");
-        if (!ignore) {
-          setPets(data);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-
-    return () => (ignore = true);
-  }, []);
+  const { pushError } = useMessageSnackbar();
 
   // reset the form whenever the form gets dissmissed
   useEffect(() => {
@@ -83,12 +66,7 @@ export default function NewRequestModal({
     console.log("request data is ", postData);
 
     try {
-      await axios.post("/owners/requests", postData);
-
-      pushMessage("Created new request");
-
-      // update the new list if updateRequests is not undefined
-      updateRequests && updateRequests();
+      await newRequest(postData);
     } catch (e) {
       console.error(e);
       pushError("Error creating new request");
@@ -194,7 +172,7 @@ export default function NewRequestModal({
                 title="Pets"
                 icon="dog-side"
                 border={true}
-                items={pets}
+                items={getPets()}
                 values={value}
                 onItemSelect={onChange}
                 keyExtractor={(item) => item._id}

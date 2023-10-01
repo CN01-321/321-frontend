@@ -1,39 +1,30 @@
 import { StyleSheet, View } from "react-native";
 import BaseModal, { BaseModalProps } from "./BaseModal";
 import DynamicAvatar from "../DynamicAvatar";
-import { useEffect, useState } from "react";
-import { User } from "../../types/types";
 import { Button, Text } from "react-native-paper";
-import axios from "axios";
-import { useAuth } from "../../contexts/auth";
 import { useMessageSnackbar } from "../../contexts/messageSnackbar";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import ThemedTextInput from "../ThemedTextInput";
 import ErrorText from "../ErrorText";
 import { StarRating } from "../StarRating";
+import { useUser } from "../../contexts/user";
+import { useProfile } from "../../contexts/profile";
 
-interface ReviewForm {
+export interface ReviewForm {
   rating?: number;
   message: string;
 }
 
-interface NewReviewModalProps extends BaseModalProps {
-  reviewingPet: boolean;
-  profileId: string;
-  updateReviews: () => Promise<void>;
-}
+interface NewReviewModalProps extends BaseModalProps {}
 
 export default function NewReviewModal({
   title,
   visible,
   onDismiss,
-  reviewingPet,
-  profileId,
-  updateReviews,
 }: NewReviewModalProps) {
-  const [reviewer, setReviewer] = useState<User>();
-  const { getTokenUser } = useAuth();
-  const { pushMessage, pushError } = useMessageSnackbar();
+  const { getUser } = useUser();
+  const { newReview } = useProfile();
+  const { pushError } = useMessageSnackbar();
   const {
     control,
     handleSubmit,
@@ -41,33 +32,9 @@ export default function NewReviewModal({
     formState: { errors },
   } = useForm<ReviewForm>();
 
-  useEffect((): (() => void) => {
-    let ignore = false;
-
-    (async () => {
-      try {
-        const { data } = await axios.get<User>(`/${getTokenUser()?.type}s`);
-        if (!ignore) setReviewer(data);
-      } catch (err) {
-        console.error(err);
-        pushError("Could not fetch information for reviewing");
-      }
-    })();
-
-    return () => (ignore = true);
-  }, []);
-
   const onSubmit: SubmitHandler<ReviewForm> = async (data) => {
-    console.log(data);
-
     try {
-      const prefix = `/${reviewingPet ? "pets" : "users"}`;
-      await axios.post(`${prefix}/${profileId}/feedback`, data);
-      console.log(
-        `submitting rating to ${profileId} with rating: ${data.rating} and message "${data.message}"`
-      );
-      pushMessage("Successfully submitted review!");
-      await updateReviews();
+      await newReview(data);
     } catch (err) {
       console.error(err);
       pushError("Could not submit review");
@@ -86,8 +53,8 @@ export default function NewReviewModal({
           paddingTop: 10,
         }}
       >
-        <DynamicAvatar pfp={reviewer?.pfp} defaultPfp="user" size={100} />
-        <Text variant="titleMedium">{reviewer?.name}</Text>
+        <DynamicAvatar pfp={getUser().pfp} defaultPfp="user" size={100} />
+        <Text variant="titleMedium">{getUser().name}</Text>
         <View style={styles.reviewItem}>
           <Controller
             control={control}
