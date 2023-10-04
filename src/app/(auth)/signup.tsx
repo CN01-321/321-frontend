@@ -1,13 +1,14 @@
 import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Image } from "expo-image";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { View, StyleSheet } from "react-native";
 import { Button, Text, IconButton, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import Header from "../../components/Header";
 import ThemedTextInput from "../../components/ThemedTextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ErrorText from "../../components/ErrorText";
 
 type FormData = {
   email: string;
@@ -19,7 +20,12 @@ export default function SignUp() {
   const router = useRouter();
   const theme = useTheme();
 
-  const { control, handleSubmit } = useForm<FormData>({});
+  const { 
+    control, 
+    handleSubmit, 
+    setError, 
+    formState: { errors }
+  } = useForm<FormData>({});
 
   const signup: SubmitHandler<FormData> = async (formData) => {
     try {
@@ -33,6 +39,12 @@ export default function SignUp() {
         params: { userType },
       });
     } catch (error) {
+      if (error instanceof AxiosError && error.response?.status === 500) {
+        setError("email", {
+          message: "Email address already in use!",
+        });
+        return;
+      }
       console.error(error);
     }
   };
@@ -47,6 +59,11 @@ export default function SignUp() {
         flex: 1,
       }}
     >
+      <Stack.Screen
+        options={{
+          animation: "slide_from_right"
+        }}
+      />
       <View style={styles.graphicContainer}>
         <Image
           style={styles.graphicImage}
@@ -61,7 +78,7 @@ export default function SignUp() {
       <Header title="Sign Up" showHeader={false} />
       <IconButton
         icon="arrow-left"
-        onPress={() => router.replace("/landing")}
+        onPress={() => router.back()}
       />
       <View style={styles.view}>
         <Text style={styles.heading}>Let&apos;s Start Here</Text>
@@ -82,6 +99,7 @@ export default function SignUp() {
             />
           )}
         />
+        <ErrorText>{errors.email?.message}</ErrorText>
         <Controller
           control={control}
           name="password"
