@@ -111,7 +111,7 @@ export default function UserLayout() {
             onChange={(route: Route) => {
               console.log(route);
               setIndex(routes.findIndex((r) => r.key === route.key));
-              router.push(
+              router.replace(
                 route.key === "profile/overview"
                   ? {
                       pathname: `/profile/overview`,
