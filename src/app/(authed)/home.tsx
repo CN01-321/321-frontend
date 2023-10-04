@@ -3,8 +3,8 @@ import {
   View,
   StyleSheet,
   FlatList,
-  SafeAreaView,
   Pressable,
+  ScrollView,
 } from "react-native";
 import { useAuth } from "../../contexts/auth";
 import Header from "../../components/Header";
@@ -17,6 +17,7 @@ import { UserType } from "../../types/types";
 import { useRouter } from "expo-router";
 import Star from "../../components/Star";
 import { useUser } from "../../contexts/user";
+import { useEffect } from "react";
 
 interface TopCarer {
   _id: string;
@@ -39,17 +40,26 @@ export interface HomeInfo {
 export default function Home() {
   const { getTokenUser } = useAuth();
   const theme = useTheme();
-  const { getHomeInfo } = useUser();
+  const { fetchHomeInfo, getHomeInfo } = useUser();
 
   const userType = getTokenUser()?.type ?? "owner";
+
+  useEffect(() => {
+    fetchHomeInfo();
+  }, []);
 
   const homeInfo = getHomeInfo();
 
   if (!homeInfo) return null;
 
   return (
-    <SafeAreaView
-      style={{ ...styles.container, backgroundColor: theme.colors.background }}
+    <ScrollView
+      contentContainerStyle={styles.container}
+      style={{
+        // ...styles.container,
+        flex: 1,
+        backgroundColor: theme.colors.background,
+      }}
     >
       <Header title="Home" showButtons={true} />
       <GreetingCard homeInfo={homeInfo} userType={userType} />
@@ -60,7 +70,7 @@ export default function Home() {
       ) : (
         <CarerHomeReviewView homeInfo={homeInfo} />
       )}
-    </SafeAreaView>
+    </ScrollView>
   );
 }
 
@@ -76,7 +86,7 @@ function GreetingCard({
 
   return (
     <View style={styles.greeting}>
-      <View style={{ flexDirection: "column" }}>
+      <View style={{ width: "60%" }}>
         <Text variant="titleLarge">Hello {homeInfo.name},</Text>
         <Text variant="bodySmall">Your total pending {type}s are:</Text>
       </View>
@@ -287,7 +297,7 @@ function TopReviewCard({
       style={{ minWidth: 200, maxWidth: 300, margin: 2 }}
       onPress={handlePress}
     >
-      <Card.Content>
+      <Card.Content style={{ flex: 1, gap: 10 }}>
         <View
           style={{
             flexDirection: "row",
@@ -316,14 +326,15 @@ function TopReviewCard({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingVertical: 5,
     paddingHorizontal: 25,
-    justifyContent: "space-evenly",
+    gap: 40,
+    overflow: "visible",
   },
   greeting: {
     flexDirection: "row",
     paddingTop: 10,
+    paddingHorizontal: "10%",
     justifyContent: "space-evenly",
     alignItems: "center",
   },

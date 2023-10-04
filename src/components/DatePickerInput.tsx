@@ -17,22 +17,23 @@ export function DatePickerInput({
 }: DatePickerInputProps) {
   const [visible, setVisible] = useState(false);
 
+  const handleDismiss = () => setVisible(false);
+
   return (
-    <>
-      <Pressable onPress={() => setVisible(true)}>
-        <ThemedTextInput
-          editable={false}
-          label={label}
-          value={date ? `${toDDMMYYYY(date)} ${date.toLocaleTimeString()}` : ""}
-          icon="calendar-outline"
-        />
-      </Pressable>
+    <Pressable onPress={() => setVisible(true)}>
+      <ThemedTextInput
+        editable={false}
+        label={label}
+        value={date ? `${toDDMMYYYY(date)} ${date.toLocaleTimeString()}` : ""}
+        icon="calendar-outline"
+      />
       <DateTimePickerModal
         isVisible={visible}
         mode="datetime"
         onConfirm={updateDate}
-        onCancel={() => setVisible(false)}
+        onCancel={handleDismiss}
+        onHide={handleDismiss}
       />
-    </>
+    </Pressable>
   );
 }

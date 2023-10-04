@@ -1,4 +1,4 @@
-import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Button, IconButton, Text, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Image } from "expo-image";
@@ -54,120 +54,94 @@ export default function Login() {
   };
 
   return (
-    <KeyboardAvoidingView>
-      <SafeAreaView
-        style={{ backgroundColor: theme.colors.background, height: "100%" }}
-      >
-        <Stack.Screen
-          options={{
-            animation: "slide_from_right"
-          }}
+    <SafeAreaView
+      style={{ backgroundColor: theme.colors.background, height: "100%" }}
+    >
+      <Stack.Screen
+        options={{
+          animation: "slide_from_right",
+        }}
+      />
+      <View style={styles.graphicContainer}>
+        <Image
+          style={styles.graphicImage}
+          source={
+            userType == "owner"
+              ? require("../../../assets/illustrations/catpaw-yellow.png")
+              : require("../../../assets/illustrations/dogpaw-brown.png")
+          }
         />
-        <View style={styles.graphicContainer}>
-          <Image
-            style={styles.graphicImage}
-            source={
-              userType == "owner"
-                ? require("../../../assets/illustrations/catpaw-yellow.png")
-                : require("../../../assets/illustrations/dogpaw-brown.png")
-            }
-          />
+      </View>
+      <Header title="Log In" showHeader={false} />
+      <IconButton icon="arrow-left" onPress={() => router.back()} />
+      <View style={styles.view}>
+        <Text style={styles.heading}>Hello there.</Text>
+        <Text style={styles.subheading}>Sign in to your account</Text>
+        <Controller
+          control={control}
+          name="email"
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <ThemedTextInput
+              label="Email"
+              value={value}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              outlineColor={colour}
+              activeOutlineColor={colour}
+              autoCapitalize="none"
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="password"
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <ThemedTextInput
+              label="Password"
+              value={value}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              secureTextEntry
+              outlineColor={colour}
+              activeOutlineColor={colour}
+              autoCapitalize="none"
+            />
+          )}
+        />
+        <ErrorText>{errors.password?.message}</ErrorText>
+        <View style={styles.forgotPasswordContainer}>
+          <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
         </View>
-        <Header title="Log In" showHeader={false} />
-        <IconButton
-          icon="arrow-left"
-          onPress={() => router.back()}
-        />
-        <View style={styles.view}>
-          <Text style={styles.heading}>Hello there.</Text>
-          <Text style={styles.subheading}>Sign in to your account</Text>
-          <Controller
-            control={control}
-            name="email"
-            rules={{ required: true }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <ThemedTextInput
-                label="Email"
-                value={value}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                outlineColor={colour}
-                activeOutlineColor={colour}
-                autoCapitalize="none"
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="password"
-            rules={{ required: true }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <ThemedTextInput
-                label="Password"
-                value={value}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                secureTextEntry
-                outlineColor={colour}
-                activeOutlineColor={colour}
-                autoCapitalize="none"
-              />
-            )}
-          />
-          <ErrorText>{errors.password?.message}</ErrorText>
-          <View style={styles.forgotPasswordContainer}>
-            <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
-          </View>
+        <Button
+          mode="contained"
+          style={styles.signInButton}
+          labelStyle={styles.signInButtonLabel}
+          contentStyle={styles.signInButtonContent}
+          onPress={handleSubmit(login)}
+          theme={{ colors: { primary: colour } }}
+        >
+          Sign In
+        </Button>
+        <View style={[styles.centeredTextContainer, { marginBottom: 50 }]}>
+          <Text style={styles.bottomText}>Don&apos;t have an account? </Text>
           <Button
-            mode="contained"
-            style={styles.signInButton}
-            labelStyle={styles.signInButtonLabel}
-            contentStyle={styles.signInButtonContent}
-            onPress={handleSubmit(login)}
-            theme={{ colors: { primary: colour } }}
+            mode="text"
+            labelStyle={styles.highlightedText}
+            textColor={colour}
+            onPress={() =>
+              router.push({
+                pathname: "/(auth)/signup",
+                params: { userType },
+              })
+            }
           >
-            Sign In
+            Sign Up
           </Button>
-          <View style={[styles.centeredTextContainer, { marginBottom: 50 }]}>
-            <Text style={styles.bottomText}>Don&apos;t have an account? </Text>
-            <Button
-              mode="text"
-              labelStyle={styles.highlightedText}
-              textColor={colour}
-              onPress={() =>
-                router.push({ pathname: "/(auth)/signup", params: { userType } })
-              }
-            >
-              Sign Up
-            </Button>
-          </View>
         </View>
-        <View style={styles.bottomTextContainer}>
-          <Text style={styles.bottomText}>
-            By signing in, I agree with{" "}
-            <Text
-              style={[
-                styles.bottomText,
-                styles.highlightedText,
-                { color: colour },
-              ]}
-            >
-              Terms of Use
-            </Text>{" "}
-            and{" "}
-            <Text
-              style={[
-                styles.bottomText,
-                styles.highlightedText,
-                { color: colour },
-              ]}
-            >
-              Privacy Policy
-            </Text>
-          </Text>
-        </View>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -240,17 +214,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#000000A6",
     marginBottom: 25,
-  },
-  bottomTextContainer: {
-    display: "flex",
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
-    position: "absolute",
-    bottom: 30,
-    width: "100%",
-    paddingLeft: 40,
-    paddingRight: 40,
   },
   bottomText: {
     textAlign: "center",
