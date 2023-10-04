@@ -10,6 +10,7 @@ import ResetOwnerPasswordSVG from "../../../assets/ResetOwnerPassword.svg";
 import ResetCarerPasswordSVG from "../../../assets/ResetCarerPassword.svg";
 import { verifyPassword } from "../../utilities/utils";
 import { useAuth } from "../../contexts/auth";
+import Header from "../../components/Header";
 
 interface ResetPasswordForm {
   current: string;
@@ -48,6 +49,7 @@ export default function PasswordReset() {
       behavior="position"
       style={{ flex: 1, backgroundColor: "white", padding: 10 }}
     >
+      <Header title="Reset Password" />
       <View
         style={{ padding: 40, justifyContent: "center", alignItems: "center" }}
       >
