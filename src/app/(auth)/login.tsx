@@ -1,11 +1,11 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { Button, IconButton, Text, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Image } from "expo-image";
 import { useAuth } from "../../contexts/auth";
 import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
 import axios, { AxiosError } from "axios";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import Header from "../../components/Header";
 import ThemedTextInput from "../../components/ThemedTextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -54,113 +54,120 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaView
-      style={{ backgroundColor: theme.colors.background, height: "100%" }}
-    >
-      <View style={styles.graphicContainer}>
-        <Image
-          style={styles.graphicImage}
-          source={
-            userType == "owner"
-              ? require("../../../assets/illustrations/catpaw-yellow.png")
-              : require("../../../assets/illustrations/dogpaw-brown.png")
-          }
+    <KeyboardAvoidingView>
+      <SafeAreaView
+        style={{ backgroundColor: theme.colors.background, height: "100%" }}
+      >
+        <Stack.Screen
+          options={{
+            animation: "slide_from_right"
+          }}
         />
-      </View>
-      <Header title="Log In" showHeader={false} />
-      <IconButton
-        icon="arrow-left"
-        onPress={() => router.replace("/landing")}
-      />
-      <View style={styles.view}>
-        <Text style={styles.heading}>Hello there.</Text>
-        <Text style={styles.subheading}>Sign in to your account</Text>
-        <Controller
-          control={control}
-          name="email"
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <ThemedTextInput
-              label="Email"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              outlineColor={colour}
-              activeOutlineColor={colour}
-              autoCapitalize="none"
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="password"
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <ThemedTextInput
-              label="Password"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              secureTextEntry
-              outlineColor={colour}
-              activeOutlineColor={colour}
-              autoCapitalize="none"
-            />
-          )}
-        />
-        <ErrorText>{errors.password?.message}</ErrorText>
-        <View style={styles.forgotPasswordContainer}>
-          <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
-        </View>
-        <Button
-          mode="contained"
-          style={styles.signInButton}
-          labelStyle={styles.signInButtonLabel}
-          contentStyle={styles.signInButtonContent}
-          onPress={handleSubmit(login)}
-          theme={{ colors: { primary: colour } }}
-        >
-          Sign In
-        </Button>
-        <View style={[styles.centeredTextContainer, { marginBottom: 50 }]}>
-          <Text style={styles.bottomText}>Don&apos;t have an account? </Text>
-          <Button
-            mode="text"
-            labelStyle={styles.highlightedText}
-            textColor={colour}
-            onPress={() =>
-              router.push({ pathname: "/(auth)/signup", params: { userType } })
+        <View style={styles.graphicContainer}>
+          <Image
+            style={styles.graphicImage}
+            source={
+              userType == "owner"
+                ? require("../../../assets/illustrations/catpaw-yellow.png")
+                : require("../../../assets/illustrations/dogpaw-brown.png")
             }
-          >
-            Sign Up
-          </Button>
+          />
         </View>
-      </View>
-      <View style={styles.bottomTextContainer}>
-        <Text style={styles.bottomText}>
-          By signing in, I agree with{" "}
-          <Text
-            style={[
-              styles.bottomText,
-              styles.highlightedText,
-              { color: colour },
-            ]}
+        <Header title="Log In" showHeader={false} />
+        <IconButton
+          icon="arrow-left"
+          onPress={() => router.back()}
+        />
+        <View style={styles.view}>
+          <Text style={styles.heading}>Hello there.</Text>
+          <Text style={styles.subheading}>Sign in to your account</Text>
+          <Controller
+            control={control}
+            name="email"
+            rules={{ required: true }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <ThemedTextInput
+                label="Email"
+                value={value}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                outlineColor={colour}
+                activeOutlineColor={colour}
+                autoCapitalize="none"
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="password"
+            rules={{ required: true }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <ThemedTextInput
+                label="Password"
+                value={value}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                secureTextEntry
+                outlineColor={colour}
+                activeOutlineColor={colour}
+                autoCapitalize="none"
+              />
+            )}
+          />
+          <ErrorText>{errors.password?.message}</ErrorText>
+          <View style={styles.forgotPasswordContainer}>
+            <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
+          </View>
+          <Button
+            mode="contained"
+            style={styles.signInButton}
+            labelStyle={styles.signInButtonLabel}
+            contentStyle={styles.signInButtonContent}
+            onPress={handleSubmit(login)}
+            theme={{ colors: { primary: colour } }}
           >
-            Terms of Use
-          </Text>{" "}
-          and{" "}
-          <Text
-            style={[
-              styles.bottomText,
-              styles.highlightedText,
-              { color: colour },
-            ]}
-          >
-            Privacy Policy
+            Sign In
+          </Button>
+          <View style={[styles.centeredTextContainer, { marginBottom: 50 }]}>
+            <Text style={styles.bottomText}>Don&apos;t have an account? </Text>
+            <Button
+              mode="text"
+              labelStyle={styles.highlightedText}
+              textColor={colour}
+              onPress={() =>
+                router.push({ pathname: "/(auth)/signup", params: { userType } })
+              }
+            >
+              Sign Up
+            </Button>
+          </View>
+        </View>
+        <View style={styles.bottomTextContainer}>
+          <Text style={styles.bottomText}>
+            By signing in, I agree with{" "}
+            <Text
+              style={[
+                styles.bottomText,
+                styles.highlightedText,
+                { color: colour },
+              ]}
+            >
+              Terms of Use
+            </Text>{" "}
+            and{" "}
+            <Text
+              style={[
+                styles.bottomText,
+                styles.highlightedText,
+                { color: colour },
+              ]}
+            >
+              Privacy Policy
+            </Text>
           </Text>
-        </Text>
-      </View>
-    </SafeAreaView>
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 

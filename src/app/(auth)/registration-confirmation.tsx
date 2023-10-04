@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import { Button, Text, useTheme } from "react-native-paper";
 import { UserType, CARER_COLOUR, OWNER_COLOUR } from "../../types/types";
 import { Image } from "expo-image";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 
 export default function RegistrationConfirmation() {
   const { userType } = useLocalSearchParams<{ userType: UserType }>();
@@ -15,6 +15,11 @@ export default function RegistrationConfirmation() {
 
   return (
     <SafeAreaView style={{ backgroundColor: theme.colors.background }}>
+      <Stack.Screen
+        options={{
+          animation: "slide_from_right"
+        }}
+      />
       <Header title="Registration" showHeader={false} />
       <View style={styles.view}>
         <Text style={styles.heading}>{`Registration\nSuccessful!`}</Text>

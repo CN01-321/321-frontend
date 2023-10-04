@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
 import { Image, ImageBackground } from "expo-image";
 import { Text, Button, useTheme } from "react-native-paper";
@@ -40,6 +40,11 @@ export default function GetStarted() {
         height: "100%",
       }}
     >
+      <Stack.Screen
+        options={{
+          animation: "slide_from_right"
+        }}
+      />
       <Header title="Get Started" showHeader={false} />
       <View style={styles.logoContainer}>
         <Image
