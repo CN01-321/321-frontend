@@ -91,7 +91,7 @@ export function isPastRequest(request: Request) {
 }
 
 export function sinceRequested(date: Date) {
-  const duration = getDuration(new Date(), date);
+  const duration = getDuration(date, new Date());
   if (duration === "now") {
     return duration;
   }
