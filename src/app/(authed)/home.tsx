@@ -1,4 +1,4 @@
-import { Card, Divider, Text, useTheme } from "react-native-paper";
+import { Button, Card, Divider, Text, useTheme } from "react-native-paper";
 import {
   View,
   StyleSheet,
@@ -38,7 +38,7 @@ export interface HomeInfo {
 }
 
 export default function Home() {
-  const { getTokenUser } = useAuth();
+  const { getTokenUser, logOut } = useAuth();
   const theme = useTheme();
   const { fetchHomeInfo, getHomeInfo } = useUser();
 
@@ -50,7 +50,12 @@ export default function Home() {
 
   const homeInfo = getHomeInfo();
 
-  if (!homeInfo) return null;
+  if (!homeInfo)
+    return (
+      <Button mode="text" onPress={logOut}>
+        Log out
+      </Button>
+    );
 
   return (
     <ScrollView
