@@ -237,12 +237,13 @@ function PaymentDetails() {
         style={{
           paddingVertical: 10,
           flex: 1,
+          gap: 10,
           flexDirection: "row",
           justifyContent: "space-between",
         }}
       >
         <TextInput
-          style={{ flexBasis: 270 }}
+          style={{ flexBasis: 230 }}
           mode="outlined"
           label="Expiration Date"
           outlineColor={theme.colors.primary}
@@ -255,7 +256,7 @@ function PaymentDetails() {
           }
         />
         <TextInput
-          style={{ flexBasis: 100 }}
+          style={{ flexGrow: 1 }}
           mode="outlined"
           label="CVV"
           outlineColor={theme.colors.primary}
