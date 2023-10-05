@@ -46,7 +46,11 @@ export default function NewPetModal({
       name: "",
       petType: petSelectorTypes[0],
       petSize: petSelectorSizes[0],
-      statuses: new Map(),
+      statuses: new Map([
+        ["isVaccinated", false],
+        ["isFriendly", false],
+        ["isNeutered", false],
+      ]),
     },
   });
   const { pushError } = useMessageSnackbar();
@@ -66,8 +70,8 @@ export default function NewPetModal({
 
     try {
       newPet(petData, formData.image);
-      onDismiss();
       reset();
+      onDismiss();
     } catch (err) {
       console.error(err);
       pushError("Could not add new pet");
@@ -144,7 +148,7 @@ export default function NewPetModal({
             <CheckboxSelectorCard
               title="Pet Status"
               icon="list-status"
-              border={true}
+              border
               items={petStatuses}
               values={value}
               onItemSelect={(event) => {

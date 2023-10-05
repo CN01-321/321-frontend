@@ -16,14 +16,16 @@ export default function Pets() {
   const hideModal = () => setVisible(false);
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
+    <>
       <Header title="Pets" />
-      <NewPetModal title="Add Pet" visible={visible} onDismiss={hideModal} />
-      <PetsView pets={getPets()} ownPets />
-      <ShowModalFab icon="plus" showModal={showModal} />
-    </View>
+      <View
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
+        <NewPetModal title="Add Pet" visible={visible} onDismiss={hideModal} />
+        <PetsView pets={getPets()} ownPets />
+        <ShowModalFab icon="plus" showModal={showModal} />
+      </View>
+    </>
   );
 }
 

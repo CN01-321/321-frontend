@@ -59,7 +59,9 @@ export function UserContextProvider({ children }: PropsWithChildren) {
   const { pushError } = useMessageSnackbar();
 
   const fetchUser = async () => {
-    await fetchData(`/users/${getTokenUser()?._id}`, setUser);
+    await fetchData(`/${getTokenUser()?.type}s`, setUser, () =>
+      pushError("Could not fetch user")
+    );
   };
 
   useEffect(() => {
