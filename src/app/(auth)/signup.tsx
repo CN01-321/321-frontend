@@ -2,7 +2,7 @@ import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Image } from "expo-image";
 import axios, { AxiosError } from "axios";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { Button, Text, IconButton, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import Header from "../../components/Header";
@@ -52,83 +52,87 @@ export default function SignUp() {
   const colour = userType === "owner" ? OWNER_COLOUR : CARER_COLOUR;
 
   return (
-    <SafeAreaView
-      style={{
-        backgroundColor: theme.colors.background,
-        height: "100%",
-        flex: 1,
-      }}
-    >
-      <Stack.Screen
-        options={{
-          animation: "slide_from_right"
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <SafeAreaView
+        style={{
+          backgroundColor: theme.colors.background,
+          height: "100%",
+          flex: 1,
         }}
-      />
-      <View style={styles.graphicContainer}>
-        <Image
-          style={styles.graphicImage}
-          contentFit="contain"
-          source={
-            userType == "owner"
-              ? require("../../../assets/illustrations/paws-yellow.png")
-              : require("../../../assets/illustrations/paws-brown.png")
-          }
-        />
-      </View>
-      <Header title="Sign Up" showHeader={false} />
-      <IconButton
-        icon="arrow-left"
-        onPress={() => router.back()}
-      />
-      <View style={styles.view}>
-        <Text style={styles.heading}>Let&apos;s Start Here</Text>
-        <Text style={styles.subheading}>Sign in to your account</Text>
-        <Controller
-          control={control}
-          name="email"
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <ThemedTextInput
-              label="Email"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              outlineColor="#9797975E"
-              activeOutlineColor={colour}
-              autoCapitalize="none"
+      >
+        <ScrollView>
+          <Stack.Screen
+            options={{
+              animation: "slide_from_right"
+            }}
+          />
+          <View style={styles.graphicContainer}>
+            <Image
+              style={styles.graphicImage}
+              contentFit="contain"
+              source={
+                userType == "owner"
+                  ? require("../../../assets/illustrations/paws-yellow.png")
+                  : require("../../../assets/illustrations/paws-brown.png")
+              }
             />
-          )}
-        />
-        <ErrorText>{errors.email?.message}</ErrorText>
-        <Controller
-          control={control}
-          name="password"
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <ThemedTextInput
-              label="Password"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              secureTextEntry
-              outlineColor="#9797975E"
-              activeOutlineColor={colour}
-              autoCapitalize="none"
+          </View>
+          <Header title="Sign Up" showHeader={false} />
+          <IconButton
+            icon="arrow-left"
+            onPress={() => router.back()}
+          />
+          <View style={styles.view}>
+            <Text style={styles.heading}>Let&apos;s Start Here</Text>
+            <Text style={styles.subheading}>Sign in to your account</Text>
+            <Controller
+              control={control}
+              name="email"
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <ThemedTextInput
+                  label="Email"
+                  value={value}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  outlineColor="#9797975E"
+                  activeOutlineColor={colour}
+                  autoCapitalize="none"
+                />
+              )}
             />
-          )}
-        />
-        <Button
-          mode="contained"
-          style={styles.signUpButton}
-          labelStyle={styles.signUpButtonLabel}
-          contentStyle={styles.signUpButtonContent}
-          onPress={handleSubmit(signup)}
-          theme={{ colors: { primary: colour } }}
-        >
-          Sign Up
-        </Button>
-      </View>
-    </SafeAreaView>
+            <ErrorText>{errors.email?.message}</ErrorText>
+            <Controller
+              control={control}
+              name="password"
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <ThemedTextInput
+                  label="Password"
+                  value={value}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  secureTextEntry
+                  outlineColor="#9797975E"
+                  activeOutlineColor={colour}
+                  autoCapitalize="none"
+                />
+              )}
+            />
+            <Button
+              mode="contained"
+              style={styles.signUpButton}
+              labelStyle={styles.signUpButtonLabel}
+              contentStyle={styles.signUpButtonContent}
+              onPress={handleSubmit(signup)}
+              theme={{ colors: { primary: colour } }}
+            >
+              Sign Up
+            </Button>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 

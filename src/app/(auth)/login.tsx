@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { Button, IconButton, Text, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Image } from "expo-image";
@@ -54,94 +54,98 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaView
-      style={{ backgroundColor: theme.colors.background, height: "100%" }}
-    >
-      <Stack.Screen
-        options={{
-          animation: "slide_from_right",
-        }}
-      />
-      <View style={styles.graphicContainer}>
-        <Image
-          style={styles.graphicImage}
-          source={
-            userType == "owner"
-              ? require("../../../assets/illustrations/catpaw-yellow.png")
-              : require("../../../assets/illustrations/dogpaw-brown.png")
-          }
-        />
-      </View>
-      <Header title="Log In" showHeader={false} />
-      <IconButton icon="arrow-left" onPress={() => router.back()} />
-      <View style={styles.view}>
-        <Text style={styles.heading}>Hello there.</Text>
-        <Text style={styles.subheading}>Sign in to your account</Text>
-        <Controller
-          control={control}
-          name="email"
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <ThemedTextInput
-              label="Email"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              outlineColor={colour}
-              activeOutlineColor={colour}
-              autoCapitalize="none"
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <SafeAreaView
+        style={{ backgroundColor: theme.colors.background, height: "100%" }}
+      >
+        <ScrollView>
+          <Stack.Screen
+            options={{
+              animation: "slide_from_right",
+            }}
+          />
+          <View style={styles.graphicContainer}>
+            <Image
+              style={styles.graphicImage}
+              source={
+                userType == "owner"
+                  ? require("../../../assets/illustrations/catpaw-yellow.png")
+                  : require("../../../assets/illustrations/dogpaw-brown.png")
+              }
             />
-          )}
-        />
-        <Controller
-          control={control}
-          name="password"
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <ThemedTextInput
-              label="Password"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              secureTextEntry
-              outlineColor={colour}
-              activeOutlineColor={colour}
-              autoCapitalize="none"
+          </View>
+          <Header title="Log In" showHeader={false} />
+          <IconButton icon="arrow-left" onPress={() => router.back()} />
+          <View style={styles.view}>
+            <Text style={styles.heading}>Hello there.</Text>
+            <Text style={styles.subheading}>Sign in to your account</Text>
+            <Controller
+              control={control}
+              name="email"
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <ThemedTextInput
+                  label="Email"
+                  value={value}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  outlineColor={colour}
+                  activeOutlineColor={colour}
+                  autoCapitalize="none"
+                />
+              )}
             />
-          )}
-        />
-        <ErrorText>{errors.password?.message}</ErrorText>
-        <View style={styles.forgotPasswordContainer}>
-          <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
-        </View>
-        <Button
-          mode="contained"
-          style={styles.signInButton}
-          labelStyle={styles.signInButtonLabel}
-          contentStyle={styles.signInButtonContent}
-          onPress={handleSubmit(login)}
-          theme={{ colors: { primary: colour } }}
-        >
-          Sign In
-        </Button>
-        <View style={[styles.centeredTextContainer, { marginBottom: 50 }]}>
-          <Text style={styles.bottomText}>Don&apos;t have an account? </Text>
-          <Button
-            mode="text"
-            labelStyle={styles.highlightedText}
-            textColor={colour}
-            onPress={() =>
-              router.push({
-                pathname: "/(auth)/signup",
-                params: { userType },
-              })
-            }
-          >
-            Sign Up
-          </Button>
-        </View>
-      </View>
-    </SafeAreaView>
+            <Controller
+              control={control}
+              name="password"
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <ThemedTextInput
+                  label="Password"
+                  value={value}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  secureTextEntry
+                  outlineColor={colour}
+                  activeOutlineColor={colour}
+                  autoCapitalize="none"
+                />
+              )}
+            />
+            <ErrorText>{errors.password?.message}</ErrorText>
+            <View style={styles.forgotPasswordContainer}>
+              <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
+            </View>
+            <Button
+              mode="contained"
+              style={styles.signInButton}
+              labelStyle={styles.signInButtonLabel}
+              contentStyle={styles.signInButtonContent}
+              onPress={handleSubmit(login)}
+              theme={{ colors: { primary: colour } }}
+            >
+              Sign In
+            </Button>
+            <View style={[styles.centeredTextContainer, { marginBottom: 50 }]}>
+              <Text style={styles.bottomText}>Don&apos;t have an account? </Text>
+              <Button
+                mode="text"
+                labelStyle={styles.highlightedText}
+                textColor={colour}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(auth)/signup",
+                    params: { userType },
+                  })
+                }
+              >
+                Sign Up
+              </Button>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
