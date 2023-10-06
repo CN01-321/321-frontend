@@ -47,7 +47,7 @@ export default function Profile() {
 
   return (
     <>
-      <Header title={user.name} />
+      <Header title={user.name} showLogo={true} showButtons={true} />
       <ThemedTabView scenes={scenes} />
     </>
   );

@@ -66,7 +66,7 @@ export default function Home() {
         backgroundColor: theme.colors.background,
       }}
     >
-      <Header title="Home" showButtons={true} />
+      <Header title="Home" showLogo={true} showButtons={true} />
       <GreetingCard homeInfo={homeInfo} userType={userType} />
       <HomeInfoCard homeInfo={homeInfo} userType={userType} />
       <TopCarerView homeInfo={homeInfo} />
