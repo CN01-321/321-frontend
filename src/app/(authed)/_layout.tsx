@@ -14,6 +14,9 @@ import ProfileIcon from "../../../assets/icons/navbar/profile.svg";
 import { MessageSnackbarProvider } from "../../contexts/messageSnackbar";
 import { UserContextProvider } from "../../contexts/user";
 import { ProfileContextProvider } from "../../contexts/profile";
+import { RequestContextProvider } from "../../contexts/requests";
+import { PetsContextProvider } from "../../contexts/pets";
+import { OffersContextProvider } from "../../contexts/offers";
 
 export interface Route {
   key: string;
@@ -88,7 +91,9 @@ export default function UserLayout() {
   const router = useRouter();
   const segments = useSegments();
 
-  const routes = getTokenUser()?.type === "owner" ? ownerRoutes : carerRoutes;
+  const tokenUser = getTokenUser();
+
+  const routes = tokenUser?.type === "owner" ? ownerRoutes : carerRoutes;
 
   const isInMoreInfo = segments[1] === "more-info";
 
@@ -98,12 +103,24 @@ export default function UserLayout() {
     setIndex(routes.findIndex((r) => r.key === path));
   }, [segments]);
 
+  if (!tokenUser) return null;
+
   return (
     <MessageSnackbarProvider>
       <UserContextProvider>
         <ProfileContextProvider>
           <Portal.Host>
-            <Stack />
+            {tokenUser.type === "owner" ? (
+              <RequestContextProvider>
+                <PetsContextProvider>
+                  <Stack />
+                </PetsContextProvider>
+              </RequestContextProvider>
+            ) : (
+              <OffersContextProvider>
+                <Stack />
+              </OffersContextProvider>
+            )}
           </Portal.Host>
           <UserBottomNav
             routes={routes}

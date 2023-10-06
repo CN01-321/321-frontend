@@ -9,7 +9,7 @@
     },
     "preview": {
       "env": {
-        "AXIOS_BASE_URL": "http://10.0.2.2:5000/api",
+        "AXIOS_BASE_URL": "http://pet-carer.com/api",
         "JWT_SECRET": "secret"
       },
       "distribution": "internal"

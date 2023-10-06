@@ -122,7 +122,7 @@ const EditOwnerProfileForm = ({
       await updateUser(submittedData, "owner", profilePicture);
       await fetchProfile(getUser()._id, "user");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     reset();
