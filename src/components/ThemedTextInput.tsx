@@ -24,6 +24,7 @@ export default function ThemedTextInput({
       outlineColor={props.outlineColor ?? theme.colors.primary}
       outlineStyle={styles.box}
       contentStyle={styles.text}
+      autoCapitalize={props.autoCapitalize ?? "sentences"}
       left={
         icon ? (
           <TextInput.Icon icon={icon} iconColor={theme.colors.primary} />
