@@ -305,7 +305,10 @@ function TopReviewCard({
           }}
         >
           <DynamicAvatar pfp={review.authorIcon} defaultPfp="user" size={30} />
-          <Text style={{ paddingLeft: 6, flex: 1 }} variant="titleSmall">
+          <Text
+            style={{ paddingLeft: 6, flexShrink: 1, maxWidth: 200 }}
+            variant="titleSmall"
+          >
             {review.authorName}{" "}
             {carer ? (
               <Text variant="bodyMedium">
