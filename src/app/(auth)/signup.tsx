@@ -52,12 +52,23 @@ export default function SignUp() {
   const colour = userType === "owner" ? OWNER_COLOUR : CARER_COLOUR;
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <View style={styles.graphicContainer}>
+        <Image
+          style={styles.graphicImage}
+          contentFit="contain"
+          contentPosition={"top center"}
+          source={
+            userType == "owner"
+              ? require("../../../assets/illustrations/paws-yellow.png")
+              : require("../../../assets/illustrations/paws-brown.png")
+          }
+        />
+      </View>
       <SafeAreaView
         style={{
           backgroundColor: theme.colors.background,
           height: "100%",
-          flex: 1,
         }}
       >
         <ScrollView>
@@ -66,17 +77,6 @@ export default function SignUp() {
               animation: "slide_from_right"
             }}
           />
-          <View style={styles.graphicContainer}>
-            <Image
-              style={styles.graphicImage}
-              contentFit="contain"
-              source={
-                userType == "owner"
-                  ? require("../../../assets/illustrations/paws-yellow.png")
-                  : require("../../../assets/illustrations/paws-brown.png")
-              }
-            />
-          </View>
           <Header title="Sign Up" showHeader={false} />
           <IconButton
             icon="arrow-left"
@@ -84,7 +84,7 @@ export default function SignUp() {
           />
           <View style={styles.view}>
             <Text style={styles.heading}>Let&apos;s Start Here</Text>
-            <Text style={styles.subheading}>Sign in to your account</Text>
+            <Text style={styles.subheading}>Fill in your details</Text>
             <Controller
               control={control}
               name="email"
@@ -101,7 +101,9 @@ export default function SignUp() {
                 />
               )}
             />
-            <ErrorText>{errors.email?.message}</ErrorText>
+            <View style={styles.errorTextContainer}>
+              <ErrorText>{errors.email?.message}</ErrorText>
+            </View>
             <Controller
               control={control}
               name="password"
@@ -155,12 +157,15 @@ const styles = StyleSheet.create({
     marginBottom: 35,
   },
   graphicContainer: {
+    zIndex: 1,
     position: "absolute",
     left: 0,
-    top: -350,
+    top: 0,
     display: "flex",
-    width: "100%",
-    height: "100%",
+    width: "80%",
+    marginLeft: "10%",
+    marginRight: "10%",
+    height: 120,
     flexDirection: "row",
     justifyContent: "center",
   },
@@ -181,4 +186,7 @@ const styles = StyleSheet.create({
   signUpButtonContent: {
     height: 55,
   },
+  errorTextContainer: {
+    height: 18,
+  }
 });

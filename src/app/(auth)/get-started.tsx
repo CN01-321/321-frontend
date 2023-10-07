@@ -2,7 +2,8 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
 import { Image, ImageBackground } from "expo-image";
 import { Text, Button, useTheme } from "react-native-paper";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/Header";
 
 const ownerGetStartedImg = require("../../../assets/illustrations/owner-get-started.png");
@@ -68,17 +69,23 @@ export default function GetStarted() {
         style={{
           width: "80%",
           alignSelf: "center",
+          borderRadius: 50,
+        }}
+        contentStyle={{
+          height: 60,
         }}
         labelStyle={{
-          fontSize: 15,
+          paddingTop: 5,
+          fontSize: 22,
           fontFamily: "Montserrat-SemiBold",
+          color: "#FFF"
         }}
       >
         Get Started
       </Button>
-      <Text variant="bodyMedium" style={{ textAlign: "center", padding: 10 }}>
+      <Text variant="bodyMedium" style={[ styles.bottomText, { marginTop: 20, textAlign: "center", padding: 10 }]}>
         Already registered?{" "}
-        <Text onPress={routeToLogin} style={{ color: colour }}>
+        <Text onPress={routeToLogin} style={[ styles.bottomTextHighlighted, { color: colour }]}>
           Sign in
         </Text>
       </Text>
@@ -90,8 +97,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     width: "35%",
     height: 60,
-    marginLeft: "5%",
-    marginTop: "15%",
+    marginLeft: "8%",
   },
   graphicContainer: {
     width: "100%",
@@ -117,4 +123,12 @@ const styles = StyleSheet.create({
     color: "#312F4A",
     width: "90%",
   },
+  bottomText: {
+    fontFamily: "Montserrat-Medium",
+    color: "#00000099"
+  },
+  bottomTextHighlighted: {
+    fontFamily: "Montserrat-Bold",
+    textDecorationLine: "underline"
+  }
 });
