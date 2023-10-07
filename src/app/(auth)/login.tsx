@@ -95,6 +95,7 @@ export default function Login() {
                 />
               )}
             />
+            <View style={{ height: 10 }}></View>
             <Controller
               control={control}
               name="password"
@@ -112,7 +113,9 @@ export default function Login() {
                 />
               )}
             />
-            <ErrorText>{errors.password?.message}</ErrorText>
+            <View style={{ height: 17, marginBottom: 10 }}>
+              <ErrorText>{errors.password?.message}</ErrorText>
+            </View>
             <View style={styles.forgotPasswordContainer}>
               <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
             </View>
@@ -126,12 +129,10 @@ export default function Login() {
             >
               Sign In
             </Button>
-            <View style={[styles.centeredTextContainer, { marginBottom: 50 }]}>
+            <View style={[styles.centeredTextContainer, { marginTop: 30 }]}>
               <Text style={styles.bottomText}>Don&apos;t have an account? </Text>
-              <Button
-                mode="text"
-                labelStyle={styles.highlightedText}
-                textColor={colour}
+              <Text
+                style={[styles.highlightedText, { color: colour }]}
                 onPress={() =>
                   router.push({
                     pathname: "/(auth)/signup",
@@ -140,7 +141,7 @@ export default function Login() {
                 }
               >
                 Sign Up
-              </Button>
+              </Text>
             </View>
           </View>
         </ScrollView>
