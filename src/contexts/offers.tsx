@@ -74,7 +74,11 @@ export function OffersContextProvider({ children }: PropsWithChildren) {
   };
 
   const fetchAll = async () => {
-    Promise.all([fetchOffers(), fetchJobs()]);
+    try {
+      Promise.all([fetchOffers(), fetchJobs()]);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {

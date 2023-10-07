@@ -33,7 +33,9 @@ export default function SearchResultCard({
       }
     >
       <View style={styles.titleArea}>
-        <Text variant="titleLarge">{carer.name}</Text>
+        <Text variant="titleLarge" style={{ maxWidth: "80%", flexShrink: 1 }}>
+          {carer.name}
+        </Text>
         {carer.rating ? (
           <>
             <View style={{ paddingLeft: 10 }}>

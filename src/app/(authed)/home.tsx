@@ -17,7 +17,6 @@ import { UserType } from "../../types/types";
 import { useRouter } from "expo-router";
 import Star from "../../components/Star";
 import { useUser } from "../../contexts/user";
-import { useEffect } from "react";
 
 interface TopCarer {
   _id: string;
@@ -40,13 +39,9 @@ export interface HomeInfo {
 export default function Home() {
   const { getTokenUser, logOut } = useAuth();
   const theme = useTheme();
-  const { fetchHomeInfo, getHomeInfo } = useUser();
+  const { getHomeInfo } = useUser();
 
   const userType = getTokenUser()?.type ?? "owner";
-
-  useEffect(() => {
-    fetchHomeInfo();
-  }, []);
 
   const homeInfo = getHomeInfo();
 
@@ -310,7 +305,10 @@ function TopReviewCard({
           }}
         >
           <DynamicAvatar pfp={review.authorIcon} defaultPfp="user" size={30} />
-          <Text style={{ paddingLeft: 6, flex: 1 }} variant="titleSmall">
+          <Text
+            style={{ paddingLeft: 6, flexShrink: 1, maxWidth: 200 }}
+            variant="titleSmall"
+          >
             {review.authorName}{" "}
             {carer ? (
               <Text variant="bodyMedium">
