@@ -1,3 +1,8 @@
+/**
+ * @file Route for resetting a user's password
+ * @author George Bull
+ */
+
 import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import { Button, Text } from "react-native-paper";
 import ThemedTextInput from "../../components/ThemedTextInput";

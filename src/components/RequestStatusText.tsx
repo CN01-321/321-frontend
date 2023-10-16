@@ -1,3 +1,9 @@
+/**
+ * @file Component to render text in a particular colour, depending on the given
+ * status
+ * @author George Bull
+ */
+
 import { Text, useTheme } from "react-native-paper";
 import {
   COMPLETED_COLOUR,

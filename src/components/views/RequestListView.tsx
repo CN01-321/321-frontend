@@ -1,3 +1,8 @@
+/**
+ * @file Shows a list of owners's requests or an empty list view
+ * @author George Bull
+ */
+
 import { FlatList, View } from "react-native";
 import { Request } from "../../types/types";
 import EmptyListView, { EmptyListViewProps } from "./EmptyListView";

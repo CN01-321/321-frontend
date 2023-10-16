@@ -1,3 +1,8 @@
+/**
+ * @file Entrypoint of the program
+ * @author George Bull
+ */
+
 import { LogBox } from "react-native";
 import axios from "axios";
 import "expo-router/entry";

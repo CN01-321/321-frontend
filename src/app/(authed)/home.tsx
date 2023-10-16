@@ -1,3 +1,8 @@
+/**
+ * @file Home overview route
+ * @author George Bull
+ */
+
 import { Button, Card, Divider, Text, useTheme } from "react-native-paper";
 import {
   View,

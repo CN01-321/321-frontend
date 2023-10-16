@@ -1,3 +1,8 @@
+/**
+ * @file Component to show error text if it is supplied, otherwise show nothing
+ * @author George Bull
+ */
+
 import { Text, useTheme } from "react-native-paper";
 
 interface ErrorTextProps {

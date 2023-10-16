@@ -1,3 +1,8 @@
+/**
+ * @file Card component to show a carer's offers
+ * @author George Bull
+ */
+
 import { Button, Text } from "react-native-paper";
 import { Job } from "../../types/types";
 import BaseRequestCard from "./BaseRequestCard";

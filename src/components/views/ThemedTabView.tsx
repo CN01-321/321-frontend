@@ -1,3 +1,8 @@
+/**
+ * @file Component that handles the theming and indexing of two tab views
+ * @author George Bull
+ */
+
 import { useState } from "react";
 import { useWindowDimensions } from "react-native";
 import { useTheme } from "react-native-paper";

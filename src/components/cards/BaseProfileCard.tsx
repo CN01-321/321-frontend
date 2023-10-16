@@ -1,3 +1,8 @@
+/**
+ * @file Base card component that contains a profile picture
+ * @author George Bull
+ */
+
 import { PropsWithChildren } from "react";
 import { View, StyleSheet } from "react-native";
 import { Card } from "react-native-paper";

@@ -1,3 +1,9 @@
+/**
+ * @file Base layout for the app
+ * @author George Bull
+ * @author Matthew Kolega
+ */
+
 import { Slot } from "expo-router";
 import {
   MD3LightTheme,

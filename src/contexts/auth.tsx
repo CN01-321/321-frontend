@@ -1,4 +1,11 @@
-// based off of https://expo.github.io/router/docs/guides/auth/
+/**
+ * @file Authentication context, handles the users login token as well as
+ * protecting routes the user is allowed to navigate to.
+ * @author George Bull
+ *
+ * based off of https://expo.github.io/router/docs/guides/auth/
+ */
+
 import { useRouter, useSegments } from "expo-router";
 import {
   PropsWithChildren,
@@ -96,8 +103,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setUser(null);
   };
 
-  // set the user whenever the token is reset or changed
-  // and store/remove token from secure storage
+  // fetch and set the token from secure storage initally if present
   useEffect((): (() => void) => {
     let ignore = false;
 
@@ -110,11 +116,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
       }
 
       if (token && !ignore) {
-        console.log("updating token in useEffect");
         try {
           await updateTokenUser(token);
-        } catch (e) {
-          console.error(e);
+        } catch (err) {
+          console.error(err);
         }
       }
     })();
@@ -126,7 +131,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   const logIn = async (token: string) => {
     try {
-      console.log("updating token in logIn");
       await updateTokenUser(token);
     } catch (e) {
       console.error(e);

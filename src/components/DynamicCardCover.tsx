@@ -1,3 +1,8 @@
+/**
+ * @file Component to show a user/pet's pfp as a card cover
+ * @author George Bull
+ */
+
 import { Image, ImageProps, ImageSourcePropType } from "react-native";
 import { PetType, UserType } from "../types/types";
 

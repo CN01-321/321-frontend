@@ -1,3 +1,8 @@
+/**
+ * @file Card component to show a review
+ * @author George Bull
+ */
+
 import { Button, Card, Divider, Text } from "react-native-paper";
 import { Review } from "../views/ReviewsView";
 import DynamicAvatar from "../DynamicAvatar";

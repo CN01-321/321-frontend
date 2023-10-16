@@ -1,3 +1,8 @@
+/**
+ * @file Component to show a user/pet's pfp as a circle
+ * @author George Bull
+ */
+
 import { ImageURISource } from "react-native";
 import { Avatar } from "react-native-paper";
 import { PetType, UserType } from "../types/types";

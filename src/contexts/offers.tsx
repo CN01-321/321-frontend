@@ -1,3 +1,8 @@
+/**
+ * @file Context for carer's offers and jobs
+ * @author George Bull
+ */
+
 import {
   PropsWithChildren,
   createContext,
@@ -22,29 +27,7 @@ interface OffersContextType {
   completeJob: (job: Job) => Promise<void>;
 }
 
-const OffersContext = createContext<OffersContextType>({
-  getBroadOffers: () => {
-    throw new Error("Offers context not initialised");
-  },
-  getDirectOffers: () => {
-    throw new Error("Offers context not initialised");
-  },
-  getCurrentJobs: () => {
-    throw new Error("Offers context not initialised");
-  },
-  getPastJobs: () => {
-    throw new Error("Offers context not initialised");
-  },
-  acceptOffer: () => {
-    throw new Error("Offers context not initialised");
-  },
-  rejectOffer: () => {
-    throw new Error("Offers context not initialised");
-  },
-  completeJob: () => {
-    throw new Error("Offers context not initialised");
-  },
-});
+const OffersContext = createContext<OffersContextType>({} as OffersContextType);
 
 export function useOffers() {
   return useContext(OffersContext);

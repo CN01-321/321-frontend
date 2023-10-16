@@ -1,3 +1,8 @@
+/**
+ * @file Context for the user information and the user's home page
+ * @author George Bull
+ */
+
 import {
   PropsWithChildren,
   createContext,

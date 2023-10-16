@@ -1,3 +1,8 @@
+/**
+ * @file Route for owners to search for nearby carers
+ * @author George Bull
+ */
+
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { Searchbar, useTheme } from "react-native-paper";

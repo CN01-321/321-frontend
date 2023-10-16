@@ -1,3 +1,8 @@
+/**
+ * @file Context for success and error message handling
+ * @author George Bull
+ */
+
 import {
   PropsWithChildren,
   createContext,
@@ -13,10 +18,9 @@ interface MessageSnackbarContextType {
   pushError: (message: string) => void;
 }
 
-const MessageSnackbarContext = createContext<MessageSnackbarContextType>({
-  pushMessage: () => {},
-  pushError: () => {},
-});
+const MessageSnackbarContext = createContext<MessageSnackbarContextType>(
+  {} as MessageSnackbarContextType
+);
 
 export function useMessageSnackbar() {
   return useContext(MessageSnackbarContext);
@@ -33,6 +37,11 @@ export function MessageSnackbarProvider({ children }: PropsWithChildren) {
   const [messageQueue, setMessageQueue] = useState<Message[]>([]);
   const theme = useTheme();
 
+  const showSnackbar = () => setVisible(true);
+  const hideSnackbar = () => setVisible(false);
+
+  // while there are messages in the message queue and the snackbar is not
+  // visible, pop a message from the queue and show it to the user
   useEffect(() => {
     if (!visible && messageQueue.length > 0) {
       popMessage();
@@ -40,21 +49,22 @@ export function MessageSnackbarProvider({ children }: PropsWithChildren) {
     }
   }, [visible, messageQueue]);
 
-  const popMessage = () => {
-    setMessage(messageQueue.shift() ?? null);
-    setMessageQueue(Array.from(messageQueue));
-  };
-
-  const showSnackbar = () => setVisible(true);
-  const hideSnackbar = () => setVisible(false);
-
+  // add a message to the end of the queue
   const pushMessage = (message: string) => {
     messageQueue.push({ message, type: "message" });
     setMessageQueue(Array.from(messageQueue));
   };
 
+  // add an error to the end of the queue
   const pushError = (message: string) => {
     messageQueue.push({ message, type: "error" });
+    setMessageQueue(Array.from(messageQueue));
+  };
+
+  // remove the message from the start of the queue and set it as the current
+  // message
+  const popMessage = () => {
+    setMessage(messageQueue.shift() ?? null);
     setMessageQueue(Array.from(messageQueue));
   };
 

@@ -1,3 +1,9 @@
+/**
+ * @file Utility functions for uploading and selecting images
+ * @author George Bull
+ * @author Matthew Kolega
+ */
+
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { Buffer } from "buffer";

@@ -1,3 +1,8 @@
+/**
+ * @file Route to a user's notifications
+ * @author George Bull
+ */
+
 import { SectionList, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import Header from "../../components/Header";

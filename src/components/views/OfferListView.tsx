@@ -1,3 +1,8 @@
+/**
+ * @file Shows a list of carer's offers or an empty list view
+ * @author George Bull
+ */
+
 import { FlatList, View } from "react-native";
 import { Job, OfferType } from "../../types/types";
 import OfferCard from "../cards/OfferCard";

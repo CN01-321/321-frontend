@@ -1,24 +1,25 @@
 {
   "expo": {
-    "name": "pet-carer",
+    "name": "Pet Carer",
     "slug": "pet-carer",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/pet-carer-logo-resized.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/pet-carer-logo-resized.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffc966"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.petcarer.petcarer"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/pet-carer-logo-resized.png",
+        "backgroundColor": "#ffc966"
       },
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
@@ -53,8 +54,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "8a147f40-0253-43e4-9fdf-a4aaed94971f"
+        "projectId": "6f26cc0a-0d6d-49ac-9c16-66b98ad3d9a4"
       }
-    }
+    },
+    "owner": "pet-carer"
   }
 }

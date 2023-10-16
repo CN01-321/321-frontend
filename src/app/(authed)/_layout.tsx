@@ -1,3 +1,8 @@
+/**
+ * @file Base layout for the authed routes
+ * @author George Bull
+ */
+
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";

@@ -1,3 +1,9 @@
+/**
+ * @file Route for viewing a pet profile
+ * @author George Bull
+ * @author Matthew Kolega
+ */
+
 import { useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 import ReviewsView from "../../../components/views/ReviewsView";

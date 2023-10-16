@@ -1,3 +1,8 @@
+/**
+ * @file Modal component for creating a new pet
+ * @author George Bull
+ */
+
 import { Button, Text } from "react-native-paper";
 import BaseModal, { BaseModalProps } from "./BaseModal";
 import ThemedTextInput from "../ThemedTextInput";
@@ -65,8 +70,6 @@ export default function NewPetModal({
       isFriendly: formData.statuses.get("isFriendly") ?? false,
       isNeutered: formData.statuses.get("isNeutered") ?? false,
     };
-
-    console.log(petData);
 
     try {
       newPet(petData, formData.image);

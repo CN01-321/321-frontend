@@ -1,3 +1,8 @@
+/**
+ * @file Base card component for all request cards
+ * @author George Bull
+ */
+
 import { Image, ImageRequireSource, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import BaseProfileCard, { BaseProfileCardProps } from "./BaseProfileCard";

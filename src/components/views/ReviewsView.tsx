@@ -1,3 +1,8 @@
+/**
+ * @file Shows a list of a reviews for a profile
+ * @author George Bull
+ */
+
 import { useState } from "react";
 import { FlatList, View } from "react-native";
 import ShowModalFab from "../ShowModalFab";

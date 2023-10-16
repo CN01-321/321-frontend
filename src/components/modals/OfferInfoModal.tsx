@@ -1,3 +1,8 @@
+/**
+ * @file Modal component for viewing an offer information
+ * @author George Bull
+ */
+
 import { View } from "react-native";
 import BaseOfferInfoModal, {
   BaseOfferInfoModalProps,

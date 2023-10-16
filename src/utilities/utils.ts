@@ -1,3 +1,8 @@
+/**
+ * @file Utility functions
+ * @author George Bull
+ */
+
 import {
   CarerProfile,
   Job,

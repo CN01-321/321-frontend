@@ -1,3 +1,8 @@
+/**
+ * @file Wrapper for TextInput that applies some common default configuration
+ * @author George Bull
+ */
+
 import { StyleSheet } from "react-native";
 import { TextInput, TextInputProps, useTheme } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";

@@ -1,3 +1,9 @@
+/**
+ * @file Common types
+ * @author George Bull
+ * @author Matthew Kolega
+ */
+
 export const CARER_COLOUR = "#a87351";
 export const OWNER_COLOUR = "#e2ac54";
 export const ERROR_COLOUR = "#eb2c2c";

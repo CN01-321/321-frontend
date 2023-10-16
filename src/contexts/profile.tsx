@@ -1,3 +1,8 @@
+/**
+ * @file Context for the user/pet profile being viewed in the profiles views
+ * @author George Bull
+ */
+
 import { PropsWithChildren, createContext, useContext, useState } from "react";
 import { fetchData } from "../utilities/fetch";
 import { useMessageSnackbar } from "./messageSnackbar";
@@ -10,11 +15,7 @@ type ProfileType = "user" | "pet";
 type ContextProfile = OwnerProfile | CarerProfile | Pet;
 
 function isPet(pet: ContextProfile): pet is Pet {
-  if ("userType" in pet) {
-    return false;
-  }
-
-  return true;
+  return !("userType" in pet);
 }
 
 interface ProfileContextType {
@@ -75,7 +76,7 @@ export function ProfileContextProvider({ children }: PropsWithChildren) {
       pushError("Could not fetch profile reviews");
     });
 
-    setProfileType(profileType);
+    setProfileType(type);
   };
 
   const getPetProfile = () => {
