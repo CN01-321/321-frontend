@@ -1,3 +1,9 @@
+/**
+ * @file Component for pet profile cards for an owner or request
+ * @author George Bull
+ * @author Matthew Kolega
+ */
+
 import { FlatList, StyleSheet, View } from "react-native";
 import { Pet, petSelectorTypes } from "../../types/types";
 import { useRouter } from "expo-router";

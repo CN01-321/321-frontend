@@ -1,3 +1,8 @@
+/**
+ * @file Registration confirmation page
+ * @author Matthew Kolega
+ */
+
 import { View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/Header";
@@ -17,7 +22,7 @@ export default function RegistrationConfirmation() {
     <SafeAreaView style={{ backgroundColor: theme.colors.background }}>
       <Stack.Screen
         options={{
-          animation: "slide_from_right"
+          animation: "slide_from_right",
         }}
       />
       <Header title="Registration" showHeader={false} />

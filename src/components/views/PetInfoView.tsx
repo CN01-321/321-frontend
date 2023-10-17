@@ -1,3 +1,8 @@
+/**
+ * @file Component for viewing pet profiles
+ * @author Matthew Kolega
+ */
+
 import { View, ScrollView, StyleSheet } from "react-native";
 import {
   Text,

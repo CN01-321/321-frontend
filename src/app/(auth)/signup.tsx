@@ -1,8 +1,19 @@
+/**
+ * @file Signup page
+ * @author Matthew Kolega
+ */
+
 import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Image } from "expo-image";
 import axios, { AxiosError } from "axios";
-import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { Button, Text, IconButton, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import Header from "../../components/Header";
@@ -20,11 +31,11 @@ export default function SignUp() {
   const router = useRouter();
   const theme = useTheme();
 
-  const { 
-    control, 
-    handleSubmit, 
-    setError, 
-    formState: { errors }
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors },
   } = useForm<FormData>({});
 
   const signup: SubmitHandler<FormData> = async (formData) => {
@@ -52,7 +63,9 @@ export default function SignUp() {
   const colour = userType === "owner" ? OWNER_COLOUR : CARER_COLOUR;
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <View style={styles.graphicContainer}>
         <Image
           style={styles.graphicImage}
@@ -74,13 +87,13 @@ export default function SignUp() {
         <ScrollView>
           <Stack.Screen
             options={{
-              animation: "slide_from_right"
+              animation: "slide_from_right",
             }}
           />
           <Header title="Sign Up" showHeader={false} />
           <IconButton
             icon="arrow-left"
-            onPress={() => router.back()}
+            onPress={() => router.replace("/landing")}
           />
           <View style={styles.view}>
             <Text style={styles.heading}>Let&apos;s Start Here</Text>
@@ -188,5 +201,5 @@ const styles = StyleSheet.create({
   },
   errorTextContainer: {
     height: 18,
-  }
+  },
 });

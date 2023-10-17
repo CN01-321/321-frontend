@@ -1,3 +1,8 @@
+/**
+ * @file Component for viewing carer profiles
+ * @author Matthew Kolega
+ */
+
 import { ScrollView, View, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { Text, List, Divider, Button, useTheme } from "react-native-paper";

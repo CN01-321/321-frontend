@@ -1,3 +1,8 @@
+/**
+ * @file Pet Edit route
+ * @author Matthew Kolega
+ */
+
 import { useState, useEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import Header from "../../../components/Header";

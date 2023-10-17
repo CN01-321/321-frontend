@@ -1,4 +1,15 @@
-import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+/**
+ * @file Login page for the app
+ * @author Matthew Kolega
+ */
+
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { Button, IconButton, Text, useTheme } from "react-native-paper";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Image } from "expo-image";
@@ -54,7 +65,10 @@ export default function Login() {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <SafeAreaView
         style={{ backgroundColor: theme.colors.background, height: "100%" }}
       >
@@ -75,7 +89,10 @@ export default function Login() {
             />
           </View>
           <Header title="Log In" showHeader={false} />
-          <IconButton icon="arrow-left" onPress={() => router.back()} />
+          <IconButton
+            icon="arrow-left"
+            onPress={() => router.replace("/landing")}
+          />
           <View style={styles.view}>
             <Text style={styles.heading}>Hello there.</Text>
             <Text style={styles.subheading}>Sign in to your account</Text>
@@ -117,7 +134,9 @@ export default function Login() {
               <ErrorText>{errors.password?.message}</ErrorText>
             </View>
             <View style={styles.forgotPasswordContainer}>
-              <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
+              <Text style={styles.forgotPasswordText}>
+                Forgot your password?
+              </Text>
             </View>
             <Button
               mode="contained"
@@ -130,7 +149,9 @@ export default function Login() {
               Sign In
             </Button>
             <View style={[styles.centeredTextContainer, { marginTop: 30 }]}>
-              <Text style={styles.bottomText}>Don&apos;t have an account? </Text>
+              <Text style={styles.bottomText}>
+                Don&apos;t have an account?{" "}
+              </Text>
               <Text
                 style={[styles.highlightedText, { color: colour }]}
                 onPress={() =>

@@ -1,3 +1,8 @@
+/**
+ * @file Component for items on a profile page
+ * @author Matthew Kolega
+ */
+
 import { StyleSheet } from "react-native";
 import { List } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
@@ -5,8 +10,8 @@ import { IconSource } from "react-native-paper/lib/typescript/src/components/Ico
 type ProfileListItemProps = {
   title: string;
   description?: string;
-  icon?: IconSource
-}
+  icon?: IconSource;
+};
 
 const ProfileListItem = ({
   title,
@@ -19,10 +24,10 @@ const ProfileListItem = ({
       titleStyle={styles.titleStyle}
       description={description}
       descriptionStyle={styles.descriptionStyle}
-      left={props => icon ? <List.Icon {...props} icon={icon} /> : null}
+      left={(props) => (icon ? <List.Icon {...props} icon={icon} /> : null)}
     />
   );
-}
+};
 
 const styles = StyleSheet.create({
   titleStyle: {
@@ -34,5 +39,5 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Regular",
   },
 });
- 
+
 export default ProfileListItem;

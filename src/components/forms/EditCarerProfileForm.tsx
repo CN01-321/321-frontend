@@ -1,3 +1,8 @@
+/**
+ * @file Component for editing carer profiles
+ * @author Matthew Kolega
+ */
+
 import { useState } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import { Button, useTheme } from "react-native-paper";

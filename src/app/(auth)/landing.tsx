@@ -1,3 +1,8 @@
+/**
+ * @file Landing page for the app
+ * @author Matthew Kolega
+ */
+
 import { View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Button, useTheme } from "react-native-paper";

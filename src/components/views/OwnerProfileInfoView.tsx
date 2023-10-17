@@ -1,3 +1,8 @@
+/**
+ * @file Component for viewing owner profiles
+ * @author Matthew Kolega
+ */
+
 import { View, StyleSheet, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { Text, List, Divider, Button, useTheme } from "react-native-paper";

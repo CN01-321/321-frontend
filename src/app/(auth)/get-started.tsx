@@ -1,3 +1,8 @@
+/**
+ * @file Shows some more information about the selected user
+ * @author Matthew Kolega
+ */
+
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { CARER_COLOUR, OWNER_COLOUR, UserType } from "../../types/types";
 import { Image, ImageBackground } from "expo-image";
@@ -43,7 +48,7 @@ export default function GetStarted() {
     >
       <Stack.Screen
         options={{
-          animation: "slide_from_right"
+          animation: "slide_from_right",
         }}
       />
       <Header title="Get Started" showHeader={false} />
@@ -78,14 +83,23 @@ export default function GetStarted() {
           paddingTop: 5,
           fontSize: 22,
           fontFamily: "Montserrat-SemiBold",
-          color: "#FFF"
+          color: "#FFF",
         }}
       >
         Get Started
       </Button>
-      <Text variant="bodyMedium" style={[ styles.bottomText, { marginTop: 20, textAlign: "center", padding: 10 }]}>
+      <Text
+        variant="bodyMedium"
+        style={[
+          styles.bottomText,
+          { marginTop: 20, textAlign: "center", padding: 10 },
+        ]}
+      >
         Already registered?{" "}
-        <Text onPress={routeToLogin} style={[ styles.bottomTextHighlighted, { color: colour }]}>
+        <Text
+          onPress={routeToLogin}
+          style={[styles.bottomTextHighlighted, { color: colour }]}
+        >
           Sign in
         </Text>
       </Text>
@@ -125,10 +139,10 @@ const styles = StyleSheet.create({
   },
   bottomText: {
     fontFamily: "Montserrat-Medium",
-    color: "#00000099"
+    color: "#00000099",
   },
   bottomTextHighlighted: {
     fontFamily: "Montserrat-Bold",
-    textDecorationLine: "underline"
-  }
+    textDecorationLine: "underline",
+  },
 });

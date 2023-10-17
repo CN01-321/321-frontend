@@ -1,6 +1,7 @@
 /**
  * @file Wrapper for TextInput that applies some common default configuration
  * @author George Bull
+ * @author Matthew Kolega
  */
 
 import { StyleSheet } from "react-native";

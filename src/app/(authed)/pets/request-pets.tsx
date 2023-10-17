@@ -1,3 +1,8 @@
+/**
+ * @file Route for viewing pets for a request
+ * @author Matthew Kolega
+ */
+
 import { View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";

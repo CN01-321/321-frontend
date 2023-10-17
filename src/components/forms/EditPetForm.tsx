@@ -1,3 +1,8 @@
+/**
+ * @file Component for editing pet profiles
+ * @author Matthew Kolega
+ */
+
 import { View, StyleSheet } from "react-native";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import {
