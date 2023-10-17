@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     position: "absolute",
     top: "55%",
-    left: 0,
+    left: "-10%",
+    right: "-10%",
     gap: 35,
   },
   buttonContainer: {
@@ -122,17 +123,11 @@ const styles = StyleSheet.create({
   },
   leftButton: {
     width: "60%",
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-    borderTopRightRadius: 50,
-    borderBottomRightRadius: 50,
+    borderRadius: 50,
   },
   rightButton: {
     width: "60%",
-    borderTopLeftRadius: 50,
-    borderBottomLeftRadius: 50,
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
+    borderRadius: 50,
   },
   buttonContent: {
     height: 80,
