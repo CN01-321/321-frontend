@@ -51,12 +51,14 @@ export function MessageSnackbarProvider({ children }: PropsWithChildren) {
 
   // add a message to the end of the queue
   const pushMessage = (message: string) => {
+    console.log(`Snackbar message: ${message}`);
     messageQueue.push({ message, type: "message" });
     setMessageQueue(Array.from(messageQueue));
   };
 
   // add an error to the end of the queue
   const pushError = (message: string) => {
+    console.error(`Snackbar error: ${message}`);
     messageQueue.push({ message, type: "error" });
     setMessageQueue(Array.from(messageQueue));
   };
