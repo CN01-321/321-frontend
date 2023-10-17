@@ -30,17 +30,17 @@ export default function DynamicAvatar({
   const getDefaultPfp = () => {
     switch (defaultPfp) {
       case "user":
-        return require("../../assets/icons/defaultuser.png");
+        return require("../../assets/icons/defaultprofile/user.png");
       case "dog":
-        return require("../../assets/icons/defaultdog.png");
+        return require("../../assets/icons/defaultprofile/dog.png");
       case "cat":
-        return require("../../assets/icons/defaultcat.png");
+        return require("../../assets/icons/defaultprofile/cat.png");
       case "bird":
-        return require("../../assets/icons/defaultbird.png");
+        return require("../../assets/icons/defaultprofile/bird.png");
       case "rabbit":
-        return require("../../assets/icons/defaultrabbit.png");
+        return require("../../assets/icons/defaultprofile/rabbit.png");
       default:
-        return require("../../assets/icons/defaultuser.png");
+        return require("../../assets/icons/defaultprofile/user.png");
     }
   };
 
