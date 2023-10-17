@@ -11,12 +11,13 @@ type PetsViewProp = {
 
 const PetsView = ({ pets, ownPets }: PetsViewProp) => {
   return (
-    <View style={{ width: "100%" }}>
+    <View style={styles.view}>
       <FlatList
         data={pets}
         renderItem={({ item }) => <PetCard pet={item} ownPet={ownPets} />}
         numColumns={2}
         contentContainerStyle={styles.container}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
         keyExtractor={(item) => item._id}
       />
     </View>
@@ -59,8 +60,12 @@ function PetCard({ pet, ownPet }: PetCardProps) {
 }
 
 const styles = StyleSheet.create({
+  view: {
+    width: "100%",
+  },
   container: {
-    alignItems: "center",
+    marginLeft: "4%",
+    marginRight: "4%",
   },
   petCard: {
     margin: "2%",
