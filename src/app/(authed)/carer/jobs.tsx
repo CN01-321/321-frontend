@@ -29,7 +29,7 @@ export default function Jobs() {
 
   return (
     <>
-      <Header title="Jobs" />
+      <Header showLogo showButtons title="Jobs" />
       <ThemedTabView scenes={scenes} />
     </>
   );

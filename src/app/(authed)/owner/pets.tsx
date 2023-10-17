@@ -17,7 +17,7 @@ export default function Pets() {
 
   return (
     <>
-      <Header title="Pets" />
+      <Header showLogo showButtons title="Pets" />
       <View
         style={[styles.container, { backgroundColor: theme.colors.background }]}
       >

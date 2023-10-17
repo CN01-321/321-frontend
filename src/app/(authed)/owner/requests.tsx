@@ -33,7 +33,7 @@ export default function Requests() {
 
   return (
     <>
-      <Header title="Requests" />
+      <Header showLogo showButtons title="Requests" />
       <ThemedTabView scenes={scenes} />
       <NewRequestModal
         title="New Request"

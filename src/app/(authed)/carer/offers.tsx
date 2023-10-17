@@ -31,7 +31,7 @@ export default function Offers() {
 
   return (
     <>
-      <Header title="Offers" />
+      <Header showLogo showButtons title="Offers" />
       <ThemedTabView scenes={scenes} />
     </>
   );
