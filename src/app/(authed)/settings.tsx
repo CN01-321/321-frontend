@@ -1,3 +1,8 @@
+/**
+ * @file Route for showing app settings
+ * @author Matthew Kolega
+ */
+
 import { StyleSheet, View } from "react-native";
 import { List, useTheme } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/src/components/Icon";
