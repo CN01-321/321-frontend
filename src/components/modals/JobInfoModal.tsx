@@ -1,3 +1,8 @@
+/**
+ * @file Modal component for Job information
+ * @author George Bull
+ */
+
 import { Button } from "react-native-paper";
 import BaseOfferInfoModal, {
   BaseOfferInfoModalProps,

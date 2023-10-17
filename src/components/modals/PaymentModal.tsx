@@ -1,3 +1,8 @@
+/**
+ * @file Modal component for owners to accept a carer for a request
+ * @author George Bull
+ */
+
 import { PropsWithChildren, useEffect, useState } from "react";
 import { Pet, Request } from "../../types/types";
 import BaseModal from "./BaseModal";
@@ -57,8 +62,6 @@ export default function PaymentModal({
           `/owners/requests/${requestId}/pets`
         );
 
-        console.log("pets are: ", data);
-
         if (!ignore) setPets(data);
       } catch (err) {
         console.error(err);
@@ -70,6 +73,7 @@ export default function PaymentModal({
           `/owners/requests/${requestId}`
         );
 
+        // map request dates to date objects
         const req = {
           ...data,
           dateRange: {
@@ -77,8 +81,6 @@ export default function PaymentModal({
             endDate: new Date(data.dateRange.endDate),
           },
         };
-
-        console.log(req, null, 2);
 
         if (!ignore) setRequest(req);
       } catch (err) {

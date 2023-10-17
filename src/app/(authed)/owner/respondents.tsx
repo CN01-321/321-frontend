@@ -1,3 +1,8 @@
+/**
+ * @file Route for showing requests respondents
+ * @author George Bull
+ */
+
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";

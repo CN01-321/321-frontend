@@ -1,3 +1,8 @@
+/**
+ * @file Modal component for filtering search results
+ * @author George Bull
+ */
+
 import { Button, Text } from "react-native-paper";
 import BaseModal, { BaseModalProps } from "./BaseModal";
 import {

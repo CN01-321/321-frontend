@@ -1,3 +1,8 @@
+/**
+ * @file Context for owner's requests
+ * @author George Bull
+ */
+
 import {
   PropsWithChildren,
   createContext,
@@ -29,20 +34,9 @@ interface RequestContextType {
   acceptRespondent: (requestId: string, respondentId: string) => Promise<void>;
 }
 
-const RequestContext = createContext<RequestContextType>({
-  getCurrentRequests: () => {
-    throw new Error("Requests context not initialised");
-  },
-  getPastRequests: () => {
-    throw new Error("Requests context not initialised");
-  },
-  newRequest: () => {
-    throw new Error("Requests context not initialised");
-  },
-  acceptRespondent: () => {
-    throw new Error("Requests context not initialised");
-  },
-});
+const RequestContext = createContext<RequestContextType>(
+  {} as RequestContextType
+);
 
 export function useRequests() {
   return useContext(RequestContext);
@@ -79,7 +73,6 @@ export function RequestContextProvider({ children }: PropsWithChildren) {
 
       pushMessage("Created new request");
 
-      // update the new list if updateRequests is not undefined
       await fetchRequests();
       fetchHomeInfo();
     } catch (e) {

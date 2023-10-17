@@ -1,3 +1,8 @@
+/**
+ * @file Modal component for showing and writing comments
+ * @author George Bull
+ */
+
 import { StyleSheet, View } from "react-native";
 import { Text, TextInput, useTheme } from "react-native-paper";
 import BaseModal, { BaseModalProps } from "./BaseModal";
@@ -34,7 +39,6 @@ export function CommentsModal({
 
     await newComment(reviewId, message);
     setMessage("");
-    // onDismiss();
   };
 
   return (

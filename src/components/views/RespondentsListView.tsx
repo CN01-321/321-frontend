@@ -1,3 +1,8 @@
+/**
+ * @file Shows a list of a request's respondents or an empty list view
+ * @author George Bull
+ */
+
 import { FlatList } from "react-native";
 import { Respondent } from "../../types/types";
 import EmptyListView, { EmptyListViewProps } from "./EmptyListView";

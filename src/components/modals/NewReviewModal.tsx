@@ -1,3 +1,8 @@
+/**
+ * @file Modal component for creating a new review
+ * @author George Bull
+ */
+
 import { StyleSheet, View } from "react-native";
 import BaseModal, { BaseModalProps } from "./BaseModal";
 import DynamicAvatar from "../DynamicAvatar";

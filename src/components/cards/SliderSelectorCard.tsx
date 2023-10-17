@@ -1,3 +1,8 @@
+/**
+ * @file Form Card for slider input
+ * @author George Bull
+ */
+
 import Slider from "@react-native-community/slider";
 import BaseFormCard, { BaseFormCardProps } from "./BaseFormCard";
 import { Text, useTheme } from "react-native-paper";

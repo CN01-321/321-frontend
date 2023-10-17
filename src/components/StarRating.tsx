@@ -1,3 +1,8 @@
+/**
+ * @file Input/view for rating profiles out of 5 stars
+ * @author George Bull
+ */
+
 import { Pressable, View } from "react-native";
 import Star from "./Star";
 

@@ -1,3 +1,8 @@
+/**
+ * @file Shows an empty view with a graphic for list views that have no elements
+ * @author George Bull
+ */
+
 import { View } from "react-native";
 import { UserType } from "../../types/types";
 

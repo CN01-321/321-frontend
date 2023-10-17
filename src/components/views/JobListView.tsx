@@ -1,3 +1,8 @@
+/**
+ * @file Shows a list of carer's jobs or an empty list view
+ * @author George Bull
+ */
+
 import { FlatList, View } from "react-native";
 import { Job } from "../../types/types";
 import EmptyListView, { EmptyListViewProps } from "./EmptyListView";

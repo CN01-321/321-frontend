@@ -1,3 +1,8 @@
+/**
+ * @file Route for showing carer's offers
+ * @author George Bull
+ */
+
 import Header from "../../../components/Header";
 import OffersListView from "../../../components/views/OfferListView";
 import ThemedTabView from "../../../components/views/ThemedTabView";

@@ -1,3 +1,8 @@
+/**
+ * @file Modal component for creating a new request
+ * @author George Bull
+ */
+
 import { Button, Text } from "react-native-paper";
 import BaseModal, { BaseModalProps } from "./BaseModal";
 import { useEffect } from "react";
@@ -62,8 +67,6 @@ export default function NewRequestModal({
         .map(([petId]) => petId),
       carer: carerResult?._id ?? null,
     };
-
-    console.log("request data is ", postData);
 
     try {
       await newRequest(postData);

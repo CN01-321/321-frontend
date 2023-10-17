@@ -1,11 +1,16 @@
+/**
+ * @file Form Card for checkbox input
+ * @author George Bull
+ */
+
 import { View, StyleSheet } from "react-native";
 import { Text, Checkbox, Divider, useTheme } from "react-native-paper";
 import BaseFormCard, { BaseFormCardProps } from "./BaseFormCard";
 
 interface CheckboxSelectorCardProps<T, K extends string>
   extends BaseFormCardProps {
-  items: T[];
-  values?: Map<K, boolean>;
+  items: T[]; // a list of items to choose from
+  values?: Map<K, boolean>; // a map of which items have been selected
   onItemSelect?: (event: Map<K, boolean>) => void;
   keyExtractor: (item: T) => K;
   nameExtractor: (item: T) => string;
@@ -36,9 +41,10 @@ export default function CheckboxSelectorCard<T, K extends string>({
       return;
     }
 
-    // toggle the current checkbox or set it as checked if not currently present
     const key = keyExtractor(item);
     const current = getValue(item);
+
+    // toggle the current checkbox or set it as checked if not currently present
     values.set(key, !current);
     onItemSelect(new Map([...values]));
   };

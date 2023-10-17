@@ -1,3 +1,8 @@
+/**
+ * @file Card component to show an respondents to a request
+ * @author George Bull
+ */
+
 import { Button, Text } from "react-native-paper";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Respondent } from "../../types/types";

@@ -18,7 +18,7 @@ const RequestPets = () => {
     fetchData(`owners/requests/${requestId}/pets`, setPets, () =>
       pushError("Could not fetch pet")
     );
-  }, []);
+  }, [requestId]);
 
   return (
     <View>

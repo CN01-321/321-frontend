@@ -1,3 +1,8 @@
+/**
+ * @file Route to redirect new users to edit profile pages
+ * @author George Bull
+ */
+
 import { useEffect, useState } from "react";
 import EditOwnerProfileForm from "../../components/forms/EditOwnerProfileForm";
 import { useAuth } from "../../contexts/auth";

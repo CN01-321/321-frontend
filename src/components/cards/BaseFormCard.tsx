@@ -1,3 +1,8 @@
+/**
+ * @file Base card component that each form card can inherit from
+ * @author George Bull
+ */
+
 import { PropsWithChildren } from "react";
 import { StyleProp, TextStyle, View } from "react-native";
 import { Text, Card, IconButton, useTheme } from "react-native-paper";

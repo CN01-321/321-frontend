@@ -1,3 +1,8 @@
+/**
+ * @file Card component to show an owners's requests
+ * @author George Bull
+ */
+
 import { Button, Text } from "react-native-paper";
 import BaseRequestCard from "./BaseRequestCard";
 import { Request } from "../../types/types";
@@ -13,6 +18,8 @@ interface RequestCardProps {
 export default function RequestCard({ request }: RequestCardProps) {
   const router = useRouter();
 
+  // fetch the first pet that has a profile picture, will be undefined if none
+  // are avaliable
   const randPetPfp = () => {
     const pfps = request.pets.filter((p) => p.pfp).map((p) => p.pfp);
     return pfps[0];

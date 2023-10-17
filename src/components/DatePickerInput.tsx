@@ -1,3 +1,8 @@
+/**
+ * @file Component that handles selecting date and time
+ * @author George Bull
+ */
+
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useState } from "react";
 import { Pressable } from "react-native";

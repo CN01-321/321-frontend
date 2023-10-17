@@ -1,3 +1,8 @@
+/**
+ * @file Card component to show a result from the search
+ * @author George Bull
+ */
+
 import { Button, IconButton, Text, useTheme } from "react-native-paper";
 import { NearbyCarer } from "../../types/types";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";

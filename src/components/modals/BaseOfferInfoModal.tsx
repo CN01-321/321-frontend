@@ -1,3 +1,8 @@
+/**
+ * @file Base modal component that each offer modal can inherit from
+ * @author George Bull
+ */
+
 import { View, StyleSheet, Pressable } from "react-native";
 import { IconButton, Text, useTheme } from "react-native-paper";
 import { Job } from "../../types/types";

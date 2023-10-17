@@ -1,10 +1,15 @@
+/**
+ * @file Form Card for radio input
+ * @author George Bull
+ */
+
 import { View, StyleSheet } from "react-native";
 import { Text, RadioButton, Divider, useTheme } from "react-native-paper";
 import BaseFormCard, { BaseFormCardProps } from "./BaseFormCard";
 
 interface RadioSelectorCardProps<T> extends BaseFormCardProps {
-  items: T[];
-  value: T;
+  items: T[]; // a list of items to choose from
+  value: T; // the current selected item
   onItemSelect: (value: T) => void;
   keyExtractor: (item: T) => string;
   nameExtractor: (item: T) => string;
@@ -32,7 +37,7 @@ export default function RadioSelectorCard<T>({
           key={keyExtractor(item)}
           name={nameExtractor(item)}
           checked={
-            keyExtractor(item) == keyExtractor(value) ? "checked" : "unchecked"
+            keyExtractor(item) === keyExtractor(value) ? "checked" : "unchecked"
           }
           onCheck={() => onItemSelect(item)}
         />

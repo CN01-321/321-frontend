@@ -1,3 +1,8 @@
+/**
+ * @file Shows a list of search results or an empty list view
+ * @author George Bull
+ */
+
 import { FlatList } from "react-native";
 import { NearbyCarer } from "../../types/types";
 import EmptyListView, { EmptyListViewProps } from "./EmptyListView";

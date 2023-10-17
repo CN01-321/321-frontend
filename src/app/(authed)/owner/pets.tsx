@@ -1,3 +1,8 @@
+/**
+ * @file Route for showing owners's pets
+ * @author George Bull
+ */
+
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import ShowModalFab from "../../../components/ShowModalFab";

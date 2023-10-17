@@ -1,3 +1,8 @@
+/**
+ * @file Base modal component that each modal can inherit from
+ * @author George Bull
+ */
+
 import { PropsWithChildren, useEffect, useState } from "react";
 import { Keyboard, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -17,14 +22,14 @@ export default function BaseModal({
 }: BaseModalProps) {
   const [keyboardShown, setKeyboardShown] = useState(false);
 
+  // register listeners to determine whether the keyboard is present to move
+  // the modal up if needed
   useEffect((): (() => void) => {
     const show = Keyboard.addListener("keyboardDidShow", () => {
-      console.log("keyboard showing");
       setKeyboardShown(true);
     });
 
     const hide = Keyboard.addListener("keyboardDidHide", () => {
-      console.log("keyboard hiding");
       setKeyboardShown(false);
     });
 

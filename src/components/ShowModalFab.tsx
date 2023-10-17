@@ -1,3 +1,8 @@
+/**
+ * @file FAB component to trigger opening a modal
+ * @author George Bull
+ */
+
 import { FAB } from "react-native-paper";
 
 interface ShowModalFabProps {
